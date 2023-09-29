@@ -26,13 +26,13 @@ struct Vector {
 		return Vector( this->x - vecSubtract.x, this->y - vecSubtract.y, this->z - vecSubtract.z );
 	}
 
-	Vector( int x, int y, int z ) : x( x ), y( y ), z( z ) {};
+	Vector( int x, int y, int z ) : x( static_cast< float >( x ) ), y( static_cast< float >( y ) ), z( static_cast< float >( z ) ) {};
 	Vector( float x, float y, float z ) : x( x ), y( y ), z( z ) {};
 };
 
 
 struct Vector2D {
-	int x{ }, y{ };
+	float x{ }, y{ };
 
 	constexpr bool operator > ( const Vector2D& rhs ) const {
 		return ( this->x > rhs.x && this->y > rhs.y );

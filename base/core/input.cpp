@@ -1,8 +1,9 @@
 #include "input.h"
 
 void Input::Update( ) {
-	if ( GetForegroundWindow( ) != ctx.hwnd )
-		return;
+	// TODO:
+	//if ( GetForegroundWindow( ) != ctx.hwnd )
+	//	return;
 
 	for ( int i{ }; i < 256; ++i ) {
 		m_bPrevState[ i ] = m_bState[ i ];

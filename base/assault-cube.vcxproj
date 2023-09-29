@@ -28,20 +28,35 @@
     <ClCompile Include="dependencies\minhook\hde\hde64.c" />
     <ClCompile Include="dependencies\minhook\hook.c" />
     <ClCompile Include="dependencies\minhook\trampoline.c" />
+    <ClCompile Include="hooks\directx.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="menu\controls\button.cpp" />
-    <ClCompile Include="menu\controls\checkbox.cpp" />
-    <ClCompile Include="menu\controls\colorpicker.cpp" />
-    <ClCompile Include="menu\controls\combo.cpp" />
-    <ClCompile Include="menu\controls\group.cpp" />
-    <ClCompile Include="menu\controls\listbox.cpp" />
-    <ClCompile Include="menu\controls\multicombo.cpp" />
-    <ClCompile Include="menu\controls\slider.cpp" />
-    <ClCompile Include="menu\controls\textinput.cpp" />
-    <ClCompile Include="menu\elements.cpp" />
-    <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="utils\gl_text.cpp" />
-    <ClCompile Include="utils\render.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1ColorRGBAInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTargetInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1Factory.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1FactoryInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1FontWrapper.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1FontWrapperInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphAtlas.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphAtlasInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphProvider.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphProviderInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphRenderStates.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphRenderStatesInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphSheet.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphSheetInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphVertexDrawer.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphVertexDrawerInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1StateSaver.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextGeometry.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextGeometryInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextRenderer.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextRendererInterface.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\FW1FontWrapper.cpp" />
+    <ClCompile Include="utils\render\FW1FontWrapper\FW1Precompiled.cpp" />
+    <ClCompile Include="utils\render\init.cpp" />
+    <ClCompile Include="utils\render\render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\config.h" />
@@ -58,18 +73,28 @@
     <ClInclude Include="dependencies\minhook\hde\table64.h" />
     <ClInclude Include="dependencies\minhook\minhook.h" />
     <ClInclude Include="dependencies\minhook\trampoline.h" />
-    <ClInclude Include="menu\abuse.h" />
-    <ClInclude Include="menu\controls\argument_types.h" />
-    <ClInclude Include="menu\controls\containers.h" />
-    <ClInclude Include="menu\menu.h" />
     <ClInclude Include="sdk\color.h" />
     <ClInclude Include="sdk\gun.h" />
     <ClInclude Include="sdk\math.h" />
     <ClInclude Include="sdk\player.h" />
     <ClInclude Include="sdk\vector.h" />
-    <ClInclude Include="utils\gl_text.h" />
-    <ClInclude Include="utils\math.h" />
-    <ClInclude Include="utils\render.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1Factory.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1FontWrapper.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphAtlas.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphProvider.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphRenderStates.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphSheet.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphVertexDrawer.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1Object.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1StateSaver.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1TextGeometry.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\CFW1TextRenderer.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\FW1CompileSettings.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\FW1FontWrapper.h" />
+    <ClInclude Include="utils\render\FW1FontWrapper\FW1Precompiled.h" />
+    <ClInclude Include="utils\render\render.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -134,8 +159,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>base</TargetName>
-    <ExternalIncludePath>$(SolutionDir)dependencies\freetype\include;$(SolutionDir)dependencies\json;$(DXSDK_DIR)Include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)dependencies\freetype\win32;$(DXSDK_DIR)Lib\x86;$(LibraryPath);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <ExternalIncludePath>$(DXSDK_DIR)Include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -148,8 +173,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>base</TargetName>
-    <ExternalIncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)base\dependencies\freetype\include;$(SolutionDir)base\dependencies\json;$(DXSDK_DIR)Include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;E:\software major work\HSC-Assault-Cube-Cheat\base\dependencies\SDL-1.2.15\include;$(SolutionDir)base\dependencies\freetype\win32;$(DXSDK_DIR)Lib\x86;$(LibraryPath);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <ExternalIncludePath>$(DXSDK_DIR)Include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -164,12 +189,13 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>opengl32.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dependencies\FW1FontWrapper.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -184,12 +210,14 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>opengl32.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dependencies\FW1FontWrapper.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -217,7 +245,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>opengl32.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dependencies\FW1FontWrapper.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -246,7 +274,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>opengl32.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dependencies\FW1FontWrapper.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

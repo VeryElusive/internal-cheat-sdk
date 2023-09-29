@@ -25,8 +25,10 @@ public:
 };
 
 #define NEW_HOOK(name, returnVal, callingConvention) inline CHooked name{ }; returnVal callingConvention hk##name(
+#define INIT_HOOK(name, address) name.Hook( address, &hk##name );
 
 namespace Hooks {
+	NEW_HOOK( Present, HRESULT, APIENTRY ) IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags );
 
 	void Init( );
 }
