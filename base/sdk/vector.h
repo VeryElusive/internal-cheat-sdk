@@ -81,6 +81,11 @@ struct Vector2D {
 		this->y += v.y;
 	}
 
+	__forceinline void operator+=( int v ) {
+		this->x += v;
+		this->y += v;
+	}
+
 	__forceinline void operator*=( float v ) {
 		this->x *= v;
 		this->y *= v;

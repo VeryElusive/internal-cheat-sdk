@@ -1,9 +1,11 @@
 #pragma once
 #include "../../havoc.h"
 #include "FW1FontWrapper/FW1FontWrapper.h"
+#include "../utils.h"
 
 #define MAINVP 0
 #define SAFE_RELEASE(p) if (p) { p->Release(); p = nullptr; } 
+#define PI 3.141592654f
 
 struct Vertex;
 struct Batch;
@@ -80,11 +82,22 @@ namespace Render {
 	bool PrepareMethodTable( );
 
 	// wrappers
-	void FilledRect( Vector2D pos, Vector2D size, Color col );
+	void Line( Vector2D pos, Vector2D pos2, Color col );
+	void Rect( Vector2D pos, Vector2D size, Color col );
+	void RectFilled( Vector2D pos, Vector2D size, Color col );
+	void Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal );
+	void Circle( Vector2D pos, float radius, const Color& color );
+	void CircleFilled( Vector2D pos, float radius, const Color& color );
+	void Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint32_t flags, float fontSize, const std::string& fontFamily );
+	void Text( const Vector2D& pos, const std::wstring& text, const Color& color, std::uint32_t flags, float fontSize, const std::wstring& fontFamily );
+	// keep radius an even number
+	void RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col );
+	void RoundedRect( Vector2D pos, Vector2D size, Color col );
 
 	// adding points
 	template <std::size_t N>
 	void AddVertices( Vertex( &vertexArr )[ N ], D3D11_PRIMITIVE_TOPOLOGY topology );
+	void AddVertices( Vertex vertexArr[ ], int size, D3D11_PRIMITIVE_TOPOLOGY topology );
 	void AddVertex( Vertex& vertex, D3D11_PRIMITIVE_TOPOLOGY topology );
 }
 

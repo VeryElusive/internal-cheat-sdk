@@ -84,6 +84,8 @@ enum FW1_TEXT_FLAG {
 	
 	/// <summary>A text-layout will be run through DirectWrite and new fonts will be prepared, but no actual drawing will take place, and no additional glyphs will be cached.</summary>
 	FW1_ANALYZEONLY = 0x8000,
+
+	FW1_SHADOW = 0x10000,
 	
 	/// <summary>Don't use.</summary>
 	FW1_UNUSED = 0xffffffff

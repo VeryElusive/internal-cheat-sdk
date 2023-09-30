@@ -14,6 +14,11 @@ public:
 		b = ( ( hex ) & 0xFF ) / 255;
 	};
 
+	uint32_t ToUInt32( ) const {
+		return ( static_cast< uint32_t >( a ) << 24 ) | ( static_cast< uint32_t >( b ) << 16 ) | ( static_cast< uint32_t >( g ) << 8 ) | static_cast< uint32_t >( r );
+	}
+
+
 	int ToHex( ) {
 		return ( ( r & 0xff ) << 16 ) + ( ( g & 0xff ) << 8 ) + ( b & 0xff );
 	}

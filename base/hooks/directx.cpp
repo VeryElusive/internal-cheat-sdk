@@ -7,7 +7,11 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 	if ( !Render::Init( pSwapChain ) )
 		;// what else we gotta do ?
 
-	Render::FilledRect( { 100, 100 }, { 100,100 }, Color( 255,255,255 ) );
+	Render::RectFilled( { 300, 100 }, { 100,100 }, Color( 255,255,255 ) );
+	Render::RoundedRectFilled( { 500, 100 }, { 100,100 }, 10, Color( 0, 255, 0 ) );
+	Render::Gradient( { 700, 100 }, { 100,100 }, Color( 255,0,0 ), Color( 0, 0, 255 ), false );
+
+	Render::drawText( { 300, 400 }, L"Wreakin' havoc", Color( 255, 0, 0 ), FW1_SHADOW, 24, L"tahoma" );
 	Render::Render( );
 		
 	return og( pSwapChain, SyncInterval, Flags );
