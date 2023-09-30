@@ -20,7 +20,7 @@ void CMenuItem::ComboFocus( ) {
 
 		Menu::LerpToCol( element.m_cColor, value == i ? ( i & 1 ? ACCENT2 : ACCENT ) : hovered ? HOVERED_ELEMENT : DIM_ELEMENT );
 
-		Fonts::Menu.Render( Menu::m_pFocusItem.m_vecDrawPos + Vector2D( PADDING, PADDING + 15 * i ), MAX_ALPHA( element.m_cColor ), element.m_szName, LEFT );
+		Render::Text( Menu::m_pFocusItem.m_vecDrawPos + Vector2D( PADDING, PADDING + 15 * i ), element.m_szName, MAX_ALPHA( element.m_cColor ), 0 FONT_MENU );
 
 		if ( hovered && Input::Pressed( VK_LBUTTON ) && !Menu::m_pFocusItem.m_bFrameAfterFocus && !Menu::m_pFocusItem.m_bFadeOut )
 			value = i;
@@ -45,7 +45,7 @@ void CMenuItem::Combo( ) {
 
 	const auto size{ Vector2D( ( Menu::m_vecSize.x - BAR_SIZE - MARGIN * 3 ) / 2 - PADDING * 4, ITEM_HEIGHT * 1.5f ) };
 
-	Fonts::Menu.Render( Menu::m_vecDrawPos, Color( 255, 255, 255 ), m_szName, LEFT );
+	Render::Text( Menu::m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
 	Menu::m_vecDrawPos.y += 16;
 	const auto hovered{ Input::Hovered( Menu::m_vecDrawPos, size ) };
 
@@ -54,7 +54,7 @@ void CMenuItem::Combo( ) {
 	Render::RectFilled( Menu::m_vecDrawPos + Vector2D( 1, 1 ), size - Vector2D( 2, 2 ), OUTLINE_DARK );
 
 	const auto& element{ args.m_pArguments[ value ] };
-	Fonts::Menu.Render( Menu::m_vecDrawPos + Vector2D{ PADDING, 2 }, Color( 255, 255, 255 ), element.m_szName, LEFT );
+	Render::Text( Menu::m_vecDrawPos + Vector2D{ PADDING, 2 }, element.m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
 
 	if ( hovered && Input::Pressed( VK_LBUTTON ) && !Menu::m_pFocusItem.m_pItem )
 		Menu::m_pFocusItem.Update( this );

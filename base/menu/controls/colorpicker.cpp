@@ -115,7 +115,7 @@ void CMenuItem::ColorPickerFocus( ) {
 			}
 		}
 
-		Render::Gradient( alphaDrawPos, { 150, 20 }, Color( 0, 0, 0, 0 ), value.Alpha( 255 * Menu::m_pFocusItem.m_flFocusAnim ), false );
+		Render::Gradient( alphaDrawPos, { 150, 20 }, Color( 0, 0, 0, 0 ), value.Alpha( 255 * Menu::m_pFocusItem.m_flFocusAnim ), true );
 
 		Render::RectFilled( Vector2D{ alphaDrawPos.x + ( value.a / 255.f ) * 150.f, alphaDrawPos.y - 1 }, Vector2D{ 3, 22 }, MAX_ALPHA( OUTLINE_DARK ) );
 		Render::Line( Vector2D{ alphaDrawPos.x + ( value.a / 255.f ) * 150.f + 2, alphaDrawPos.y }, Vector2D{ alphaDrawPos.x + ( value.a / 255.f ) * 150.f + 2, alphaDrawPos.y + 20 }, MAX_ALPHA( SELECTED_ELEMENT ) );
@@ -129,9 +129,9 @@ void CMenuItem::ColorPickerFocus( ) {
 	Render::RectFilled( Vector2D{ hueDrawPos.x, alphaDrawPos.y }, Vector2D{ 20, 20 }, MAX_ALPHA( ( *reinterpret_cast< Color* >( m_pValue ) ) ) );
 
 	// actual picker
-	Render::Gradient( actualDrawPos, { 150, 150 }, Color( 1.f, 1.f, 1.f, Menu::m_pFocusItem.m_flFocusAnim ), MAX_ALPHA( hsv2rgb( args.m_flHue, 1.f, 1.f ) ), false );
+	Render::Gradient( actualDrawPos, { 150, 150 }, Color( 1.f, 1.f, 1.f, Menu::m_pFocusItem.m_flFocusAnim ), MAX_ALPHA( hsv2rgb( args.m_flHue, 1.f, 1.f ) ), true );
 
-	Render::Gradient( Menu::m_pFocusItem.m_vecDrawPos + 10, { 150, 150 }, Color( 0, 0, 0, 0 ), Color( 0.f, 0.f, 0.f, Menu::m_pFocusItem.m_flFocusAnim ), true );
+	Render::Gradient( Menu::m_pFocusItem.m_vecDrawPos + 10, { 150, 150 }, Color( 0, 0, 0, 0 ), Color( 0.f, 0.f, 0.f, Menu::m_pFocusItem.m_flFocusAnim ), false );
 
 	// controls
 	if ( Input::Hovered( hueDrawPos, Vector2D( 20.f, 150.f ) ) && Input::Pressed( VK_LBUTTON ) && !Menu::m_pFocusItem.m_bFrameAfterFocus && !( args.m_bSelectingAlpha || args.m_bSelectingSat ) )

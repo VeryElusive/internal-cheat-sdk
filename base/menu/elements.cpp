@@ -81,41 +81,22 @@ void Menu::RenderElements( ) {
 	const auto maxSize{ Menu::m_vecSize.y - 80 };
 	const auto sizeDenom{ ( maxSize / 5 ) };
 
+
 	auto& activeTab{ m_cTabs[ m_iSelectedTab ] };
 
 	const auto backupSubtab{ activeTab.m_pSelectedSubtab };
 
-	if ( !activeTab.m_pSelectedSubtab && activeTab.m_vecSubtabs.size( ) )
+	if ( !activeTab.m_pSelectedSubtab )
 		activeTab.m_pSelectedSubtab = &activeTab.m_vecSubtabs.front( );
 
-	const auto tabSize{ Fonts::Tabs.GetTextSize( ( "A" ) ) };
-
-	// subtabs lay underneath during anim
-	if ( activeTab.m_vecSubtabs.size( ) ) {
-		int i{ };
-		for ( auto& subtab : activeTab.m_vecSubtabs ) {
-			const auto textSize{ Fonts::Menu.GetTextSize( subtab.m_szName ) };
-
-			const auto pos{ Menu::m_vecPos + Vector2D( Math::Lerp( activeTab.m_flAnimation, BAR_SIZE / 2 + 10, BAR_SIZE - 10 ), tabSize.y / 2 - ( activeTab.m_vecSubtabs.size( ) * 16 ) / 2.f + 80 + sizeDenom * m_iSelectedTab + i * 16 ) };
-
-			const auto hovered{ Input::Hovered( pos - Vector2D( textSize.x, 0 ), Vector2D( textSize.x, 16 ) ) };
-			if ( hovered && Input::Pressed( VK_LBUTTON ) )
-				activeTab.m_pSelectedSubtab = &subtab;
-
-			LerpToCol( subtab.m_cColor, activeTab.m_pSelectedSubtab == &subtab ? ( m_iSelectedTab % 2 ? ( i % 2 == 0 ? ACCENT2 : ACCENT ) : ( i % 2 == 0 ? ACCENT : ACCENT2 ) ) : hovered ? HOVERED_ELEMENT : DIM_ELEMENT );
-
-			subtab.m_cColor.a = 255 * activeTab.m_flAnimation;
-			Fonts::Menu.Render( pos, subtab.m_cColor, subtab.m_szName, RIGHT );
-			i++;
-		}
-	}
+	const auto tabSize{ Render::GetTextSize( ( "A" ), FONT_TABS ) };
 
 	// tabs
 	{
 		for ( int i{ }; i < 5; ++i ) {
-			const auto pos{ Menu::m_vecPos + Vector2D( static_cast<int>( Math::Lerp( m_cTabs[ i ].m_flAnimation, static_cast<float>( BAR_SIZE / 2 ), static_cast< float >( tabSize.x / 2 + 10 ) ) ), 100 + sizeDenom * i ) };
+			const auto pos{ Menu::m_vecPos + Vector2D( Math::Lerp( m_cTabs[ i ].m_flAnimation, static_cast< float >( BAR_SIZE / 2 ), tabSize.x / 2 + 10 ), 60 + sizeDenom * i ) };
 
-			const auto hovered{ Input::Hovered( pos - Vector2D( tabSize.x / 2 + BAR_SIZE / 2, tabSize.y - 5 ),  Vector2D{ BAR_SIZE, tabSize.y } ) };
+			const auto hovered{ Input::Hovered( pos - Vector2D( tabSize.x / 2 + BAR_SIZE / 2, 0 ),  Vector2D{BAR_SIZE, tabSize.y } ) };
 			if ( hovered && ( Input::Pressed( VK_LBUTTON ) || Input::Pressed( VK_RBUTTON ) || Input::Pressed( VK_MBUTTON ) ) ) {
 				m_iSelectedTab = i;
 				if ( Input::Pressed( VK_RBUTTON ) && m_cTabs[ i ].m_vecSubtabs.size( ) > 1 )
@@ -126,7 +107,7 @@ void Menu::RenderElements( ) {
 					m_cTabs[ i ].m_pSelectedSubtab = &m_cTabs[ i ].m_vecSubtabs.front( );
 			}
 
-			LerpToCol( m_cTabs[ i ].m_cColor, m_iSelectedTab == i ? ( i % 2 == 0 ? ACCENT : ACCENT2 ) : hovered ? HOVERED_ELEMENT : DIM_ELEMENT );
+			LerpToCol( m_cTabs[ i ].m_cColor, m_iSelectedTab == i ? ( i % 2 == 0 ? ACCENT : ACCENT2 ) : hovered ? Color( 120, 120, 120 ) : Color( 90, 90, 90 ) );
 
 			if ( m_iSelectedTab == i )
 				m_cTabs[ i ].m_flAnimation = Math::Interpolate( m_cTabs[ i ].m_flAnimation, 1.f, ANIMATION_SPEED );
@@ -138,11 +119,45 @@ void Menu::RenderElements( ) {
 			else if ( m_cTabs[ i ].m_flAnimation >= 0.995f )
 				m_cTabs[ i ].m_flAnimation = 1.f;
 
-			Fonts::Tabs.Render( pos, m_cTabs[ i ].m_cColor, m_cTabs[ i ].m_szName, CENTERED );
+			Render::Text( pos, m_cTabs[ i ].m_szName, m_cTabs[ i ].m_cColor, FW1_CENTER, FONT_TABS );
 		}
 	}
 
 	auto& newActiveTab = m_cTabs[ m_iSelectedTab ];
+
+	if ( newActiveTab.m_vecSubtabs.size( ) ) {
+		int i{ };
+		const char* longest{ };
+		for ( auto& subtab : newActiveTab.m_vecSubtabs ) {
+			if ( !longest || strlen( subtab.m_szName ) > strlen( longest ) )
+				longest = subtab.m_szName;
+		}
+
+
+		if ( longest ) {
+			// yikes... but i had to to make it more bold
+			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
+		}
+
+		for ( auto& subtab : newActiveTab.m_vecSubtabs ) {
+			if ( !longest || strlen( subtab.m_szName ) > strlen( longest ) )
+				longest = subtab.m_szName;
+
+			const auto textSize{ Render::GetTextSize( subtab.m_szName, 13.f, "Tahoma" ) };
+
+			const auto pos{ Menu::m_vecPos + Vector2D( Math::Lerp( newActiveTab.m_flAnimation, BAR_SIZE / 2 + 10, BAR_SIZE - 10 ), tabSize.y / 2 - ( newActiveTab.m_vecSubtabs.size( ) * 16 ) / 2.f + 60 + sizeDenom * m_iSelectedTab + i * 16 ) };
+
+			const auto hovered{ Input::Hovered( pos - Vector2D( textSize.x, 0 ), Vector2D( textSize.x, 16 ) ) };
+			if ( hovered && Input::Pressed( VK_LBUTTON ) && activeTab.m_szName == newActiveTab.m_szName )
+				newActiveTab.m_pSelectedSubtab = &subtab;
+
+			LerpToCol( subtab.m_cColor, newActiveTab.m_pSelectedSubtab == &subtab ? ( m_iSelectedTab % 2 ? ( i % 2 == 0 ? ACCENT2 : ACCENT ) : ( i % 2 == 0 ? ACCENT : ACCENT2 ) ) : hovered ? HOVERED_ELEMENT : DIM_ELEMENT );
+
+			Render::Text( pos, subtab.m_szName, subtab.m_cColor.Alpha( newActiveTab.m_flAnimation * 255 ), FW1_RIGHT FONT_MENU );
+			i++;
+		}
+	}
+
 
 	m_vecDrawPos = m_vecPos + Vector2D( BAR_SIZE + MARGIN, MARGIN );
 
@@ -159,7 +174,7 @@ void Menu::RenderElements( ) {
 		}
 	}
 
-	Render::RectFilled( m_vecPos + Vector2D{ BAR_SIZE + 1, MARGIN - 5 }, m_vecSize - Vector2D{ BAR_SIZE + MARGIN, MARGIN * 2 - 7 }, BACKGROUND.Alpha( Menu::m_pFocusItem.m_flFocusAnim * 0.7f * 255.f ) );
+	Render::RoundedRectFilled( m_vecPos + Vector2D{ BAR_SIZE + MARGIN, MARGIN }, m_vecSize - Vector2D{ BAR_SIZE + MARGIN, MARGIN }, 5, BACKGROUND.Alpha( Menu::m_pFocusItem.m_flFocusAnim * 0.7f * 255.f ) );
 
 	if ( Menu::m_pFocusItem.m_pItem ) {
 		auto& element{ *Menu::m_pFocusItem.m_pItem };

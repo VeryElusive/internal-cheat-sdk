@@ -11,12 +11,12 @@ void CMenuItem::TextInputFocus( ) {
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos, size, OUTLINE_LIGHT );
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos + 1, size - Vector2D( 2, 2 ), OUTLINE_DARK );
 
-	Fonts::Menu.Render( Menu::m_pFocusItem.m_vecDrawPos + Vector2D{ PADDING, 4 }, Color( 1.f, 1.f, 1.f ), value.c_str( ) );
+	Render::Text( Menu::m_pFocusItem.m_vecDrawPos + Vector2D{ PADDING, 4 }, value, Color( 255, 255, 255 ), 0 FONT_MENU );
 
-	const auto textSize{ Fonts::Menu.GetTextSize( value.c_str( ) ) };
+	const auto textSize{ Render::GetTextSize( value.c_str( ), 13, "Tahoma" ) };
 
-	const auto second{ static_cast< int >( ctx.m_flTime ) };
-	this->m_cColor = Color( 1.f, 1.f, 1.f, second & 1 ? ctx.m_flTime - second : 1.f - ( ctx.m_flTime - second ) );
+	const auto second{ static_cast< int >( 1 ) }; // TODO: replace with realtime
+	this->m_cColor = Color( 1.f, 1.f, 1.f, second & 1 ? 1 - second : 1.f - ( 1 - second ) );
 	Render::Line( Menu::m_pFocusItem.m_vecDrawPos + Vector2D{ PADDING + textSize.x, 4 }, Menu::m_pFocusItem.m_vecDrawPos + Vector2D{ PADDING + textSize.x, size.y - 4 }, this->m_cColor );
 
 
@@ -68,7 +68,7 @@ void CMenuItem::TextInput( ) {
 	Render::RectFilled( Menu::m_vecDrawPos, size, OUTLINE_LIGHT );
 	Render::RectFilled( Menu::m_vecDrawPos + 1, size - Vector2D( 2, 2 ), OUTLINE_DARK );
 
-	Fonts::Menu.Render( Menu::m_vecDrawPos + Vector2D{ PADDING, 4 }, Color( 1.f, 1.f, 1.f ), value.c_str( ) );
+	Render::Text( Menu::m_vecDrawPos + Vector2D{ PADDING, 4 }, value, Color( 255, 255, 255 ), 0 FONT_MENU );
 
 	Menu::m_vecDrawPos.y += ITEM_HEIGHT * 2.f + PADDING;
 }

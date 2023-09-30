@@ -16,6 +16,8 @@
 #include "sdk/vector.h"
 #include "sdk/player.h"
 
+#include "utils/math.h"
+
 struct Context_t {
 };
 

@@ -4,10 +4,11 @@ void Menu::Render( ) {
 	if ( !m_bOpened )
 		m_pFocusItem.m_pItem = nullptr;
 
+	// TODO: replace with frametime
 	if ( m_flAlpha >= 0 && !m_bOpened )
-		m_flAlpha -= 5.f * ctx.m_flElapsed;
+		m_flAlpha -= 5.f * 0.01f;
 	else if ( m_flAlpha <= 1 && m_bOpened )
-		m_flAlpha += 5.f * ctx.m_flElapsed;
+		m_flAlpha += 5.f * 0.01f;
 
 	m_flAlpha = std::clamp( m_flAlpha, 0.f, 1.f );
 
@@ -30,9 +31,9 @@ void Menu::Render( ) {
 	Render::RectFilled( m_vecPos + Vector2D{ 2, 2 }, barSize, OUTLINE_DARK );
 	Render::Rect( m_vecPos + Vector2D{ 3, 3 }, barSize - Vector2D{ 2, 2 },  OUTLINE_LIGHT );
 
-	Fonts::Menu.Render( m_vecPos + Vector2D( BAR_SIZE / 2, 20 ), ACCENT, "HAVOC", CENTERED );
-	Fonts::Menu.Render( m_vecPos + Vector2D( m_vecSize.x - 120, m_vecSize.y - MARGIN + 2 ), DIM_ELEMENT, "Developed by", RIGHT );
-	Fonts::Menu.Render( m_vecPos + Vector2D( m_vecSize.x - 115, m_vecSize.y - MARGIN + 2 ), ACCENT, "Artie", LEFT );
+	Render::Text( m_vecPos + Vector2D( BAR_SIZE / 2, 20 ), "HAVOC", ACCENT, FW1_CENTER FONT_MENU );
+	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 120, m_vecSize.y - MARGIN + 2 ), "Developed by", DIM_ELEMENT, FW1_RIGHT FONT_MENU );
+	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 115, m_vecSize.y - MARGIN + 2 ), "Artie", ACCENT, FW1_RIGHT FONT_MENU );
 
 	RenderElements( );
 

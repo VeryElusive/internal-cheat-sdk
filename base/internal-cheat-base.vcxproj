@@ -30,6 +30,17 @@
     <ClCompile Include="dependencies\minhook\trampoline.c" />
     <ClCompile Include="hooks\directx.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu\controls\button.cpp" />
+    <ClCompile Include="menu\controls\checkbox.cpp" />
+    <ClCompile Include="menu\controls\colorpicker.cpp" />
+    <ClCompile Include="menu\controls\combo.cpp" />
+    <ClCompile Include="menu\controls\group.cpp" />
+    <ClCompile Include="menu\controls\listbox.cpp" />
+    <ClCompile Include="menu\controls\multicombo.cpp" />
+    <ClCompile Include="menu\controls\slider.cpp" />
+    <ClCompile Include="menu\controls\textinput.cpp" />
+    <ClCompile Include="menu\elements.cpp" />
+    <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.cpp" />
     <ClCompile Include="utils\render\FW1FontWrapper\CFW1ColorRGBAInterface.cpp" />
     <ClCompile Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.cpp" />
@@ -73,11 +84,16 @@
     <ClInclude Include="dependencies\minhook\hde\table64.h" />
     <ClInclude Include="dependencies\minhook\minhook.h" />
     <ClInclude Include="dependencies\minhook\trampoline.h" />
+    <ClInclude Include="menu\abuse.h" />
+    <ClInclude Include="menu\controls\argument_types.h" />
+    <ClInclude Include="menu\controls\containers.h" />
+    <ClInclude Include="menu\menu.h" />
     <ClInclude Include="sdk\color.h" />
     <ClInclude Include="sdk\gun.h" />
     <ClInclude Include="sdk\math.h" />
     <ClInclude Include="sdk\player.h" />
     <ClInclude Include="sdk\vector.h" />
+    <ClInclude Include="utils\math.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\CFW1Factory.h" />
@@ -95,6 +111,7 @@
     <ClInclude Include="utils\render\FW1FontWrapper\FW1FontWrapper.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\FW1Precompiled.h" />
     <ClInclude Include="utils\render\render.h" />
+    <ClInclude Include="utils\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

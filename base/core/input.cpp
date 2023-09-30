@@ -20,7 +20,6 @@ void Input::Update( ) {
 }
 
 bool Input::Hovered( Vector2D pos, Vector2D size ) {
-	pos.y += 10;
 	return ( m_vecMousePos > pos && m_vecMousePos < pos + size );
 }
 

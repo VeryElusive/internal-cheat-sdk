@@ -1,5 +1,5 @@
 #pragma once
-#include "../utils/render.h"
+#include "../utils/render/render.h"
 #include "../core/input.h"
 #include "controls/containers.h"
 #include <memory>
@@ -25,7 +25,8 @@
 #define PADDING 8
 #define ITEM_HEIGHT 12
 
-#define ANIMATION_SPEED 10 * ctx.m_flElapsed
+// TODO: replace with frametime.
+#define ANIMATION_SPEED 10 * 0.01
 
 //inline HCURSOR CursorArrow;
 //inline HCURSOR CursorResize;

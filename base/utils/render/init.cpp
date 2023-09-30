@@ -1,15 +1,5 @@
 #include "render.h"
 
-// TODO: do dll unloading: 
-/*safeRelease(vertexShader);
-    safeRelease(pixelShader);
-    safeRelease(vertexBuffer);
-    safeRelease(screenProjectionBuffer);
-    safeRelease(inputLayout);
-    safeRelease(blendState);
-    safeRelease(fontWrapper);
-    safeRelease(fontFactory);*/
-
 BOOL CALLBACK EnumWindowsCallback( HWND hWnd, LPARAM lParam ) {
 	HandleData& data = *( HandleData* ) lParam;
 	DWORD pid = 0;
@@ -61,6 +51,17 @@ bool DeleteWindow( ) {
 		return false;
 	}
 	return true;
+}
+
+void Render::Unload( ) {
+	SAFE_RELEASE( vertexShader );
+	SAFE_RELEASE( pixelShader );
+	SAFE_RELEASE( vertexBuffer );
+	SAFE_RELEASE( screenProjectionBuffer );
+	SAFE_RELEASE( inputLayout );
+	SAFE_RELEASE( blendState );
+	SAFE_RELEASE( fontWrapper );
+	SAFE_RELEASE( fontFactory );
 }
 
 bool Render::PrepareMethodTable( ) {

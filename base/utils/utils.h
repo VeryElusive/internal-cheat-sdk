@@ -2,7 +2,7 @@
 #include <string>
 
 namespace Utils {
-    std::wstring StringToWideString( const std::string& str ) {
+    __forceinline std::wstring StringToWideString( const std::string& str ) {
         std::wstring wstr;
         wstr.reserve( str.size( ) );
 

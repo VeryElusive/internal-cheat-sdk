@@ -30,7 +30,7 @@ void CMenuItem::Button( ) {
 	}
 
 	if ( args.m_flTimer )
-		args.m_flTimer -= ctx.m_flElapsed;
+		args.m_flTimer -= 0.01f;//TODO: replace with frametime
 
 	args.m_flTimer = std::max( args.m_flTimer, 0.f );
 
@@ -42,7 +42,7 @@ void CMenuItem::Button( ) {
 	if ( args.m_flTimer )
 		Render::Line( Menu::m_vecDrawPos + Vector2D{ 3, size.y - 1 }, Menu::m_vecDrawPos + Vector2D{ ( size.x - 3 ) * ( args.m_flTimer / 3.f ), size.y - 1 }, ACCENT.Alpha( ( args.m_flTimer / 3.f ) * 255.f ) );
 
-	Fonts::Menu.Render( Menu::m_vecDrawPos + ( size / 2.f ) - Vector2D{ 0, 8 }, Color( 1.f, 1.f, 1.f ), args.m_flTimer ? "Are you sure?" : m_szName, CENTERED );
+	Render::Text( Menu::m_vecDrawPos + ( size / 2.f ) - Vector2D{ 0, 8 }, args.m_flTimer ? "Are you sure?" : m_szName, Color( 1.f, 1.f, 1.f ), FW1_CENTER FONT_MENU );
 
 	Menu::m_vecDrawPos.y += ITEM_HEIGHT * 2.f + PADDING;
 }

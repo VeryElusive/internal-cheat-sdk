@@ -7,6 +7,10 @@
 #define SAFE_RELEASE(p) if (p) { p->Release(); p = nullptr; } 
 #define PI 3.141592654f
 
+// font settings
+#define FONT_TABS 55.f, "test2"
+#define FONT_MENU | FW1_ALIASED | FW1_SHADOW, 13.f, "Tahoma"
+
 struct Vertex;
 struct Batch;
 
@@ -78,6 +82,7 @@ namespace Render {
 	inline DirectX::XMMATRIX mOrtho;
 	
 	bool Init( IDXGISwapChain* pSwapchain );
+	void Unload( );
 	void Render( );
 	bool PrepareMethodTable( );
 
@@ -90,6 +95,8 @@ namespace Render {
 	void CircleFilled( Vector2D pos, float radius, const Color& color );
 	void Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint32_t flags, float fontSize, const std::string& fontFamily );
 	void Text( const Vector2D& pos, const std::wstring& text, const Color& color, std::uint32_t flags, float fontSize, const std::wstring& fontFamily );
+	Vector2D GetTextSize( const std::string& text, float fontSize, const std::string& fontFamily );
+	Vector2D GetTextSize( const std::wstring& text, float fontSize, const std::wstring& fontFamily );
 	// keep radius an even number
 	void RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col );
 	void RoundedRect( Vector2D pos, Vector2D size, Color col );

@@ -22,8 +22,7 @@ void Render::Render( ) {
 
     // begin rendering
 
-    if ( std::size( renderList->vertices ) > 0 )
-    {
+    if ( std::size( renderList->vertices ) > 0 ) {
         D3D11_MAPPED_SUBRESOURCE mappedResource;
         immediateContext->Map( vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
         {
@@ -33,16 +32,15 @@ void Render::Render( ) {
     }
 
     std::size_t pos = 0;
+    fontWrapper->Flush( immediateContext );
 
-    for ( const auto& batch : renderList->batches )
-    {
+    for ( const auto& batch : renderList->batches ) {
         immediateContext->IASetPrimitiveTopology( batch.topology );
         immediateContext->Draw( static_cast< UINT >( batch.count ), static_cast< UINT >( pos ) );
 
         pos += batch.count;
     }
 
-    fontWrapper->Flush( immediateContext );
     fontWrapper->DrawGeometry( immediateContext, renderList->textGeometry, nullptr, nullptr, FW1_RESTORESTATE );
 
     // end
@@ -116,22 +114,27 @@ void Render::Circle( Vector2D pos, float radius, const Color& color ) {
     AddVertices( v, D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP );
 }
 
+Vector2D Render::GetTextSize( const std::string& text, float fontSize, const std::string& fontFamily ) {
+    const auto wText{ Utils::StringToWideString( text ) };
+    const auto wFontFamily{ Utils::StringToWideString( fontFamily ) };
+
+    return GetTextSize( wText, fontSize, wFontFamily );
+}
+
+Vector2D Render::GetTextSize( const std::wstring& text, float fontSize, const std::wstring& fontFamily ) {
+    FW1_RECTF nullRect = { 0.f, 0.f, 0.f, 0.f };
+    FW1_RECTF rect = fontWrapper->MeasureString( text.c_str( ), fontFamily.c_str( ),
+        fontSize, &nullRect, FW1_NOWORDWRAP );
+    return{ rect.Right, rect.Bottom };
+}
+
+// TODO: make this threadsafe.
+// TODO: make this progressive, can be done at same time as threadsafe by making its own queue system.
 void Render::Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint32_t flags, float fontSize, const std::string& fontFamily ) {
     const auto wText{ Utils::StringToWideString( text ) };
     const auto wFontFamily{ Utils::StringToWideString( fontFamily ) };
 
-    if ( flags & FW1_SHADOW ) {
-        std::uint32_t shadowColor = Color( 25, 25, 25, 216 * ( color.a / 255 ) ).ToUInt32( );
-        FW1_RECTF shadowRect = { pos.x + 1.0f, pos.y + 1.0f, pos.x + 1.0f, pos.y + 1.0f };
-
-        fontWrapper->AnalyzeString( nullptr, wText.c_str( ), wFontFamily.c_str( ), fontSize, &shadowRect, shadowColor, flags | FW1_NOFLUSH | FW1_NOWORDWRAP, renderList->textGeometry );
-    }
-
-    std::uint32_t transformedColor = color.ToUInt32( );
-    FW1_RECTF rect = { pos.x, pos.y, pos.x, pos.y };
-
-    fontWrapper->AnalyzeString( nullptr, wText.c_str( ),
-        wFontFamily.c_str( ), fontSize, &rect, transformedColor, flags | FW1_NOFLUSH | FW1_NOWORDWRAP, renderList->textGeometry );
+    Text( pos, wText, color, flags, fontSize, wFontFamily );
 }
 
 void Render::Text( const Vector2D& pos, const std::wstring& text, const Color& color, std::uint32_t flags, float fontSize, const std::wstring& fontFamily ) {
@@ -147,6 +150,8 @@ void Render::Text( const Vector2D& pos, const std::wstring& text, const Color& c
 
     fontWrapper->AnalyzeString( nullptr, text.c_str( ),
         fontFamily.c_str( ), fontSize, &rect, transformedColor, flags | FW1_NOFLUSH | FW1_NOWORDWRAP, renderList->textGeometry );
+
+    renderList->batches.emplace_back( 0xFADED, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP );
 }
 
 // TODO: at some point make this properly.
