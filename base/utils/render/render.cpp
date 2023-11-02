@@ -3,6 +3,7 @@
 #include "../xorstr.h"
 
 #include "../../pch.h"
+#include "../../dependencies/imgui/imstb_truetype.h"
 
 #define GET_DRAWLIST const auto drawlist{ ImGui::GetBackgroundDrawList( ) }; if ( drawlist ) drawlist
 
@@ -79,8 +80,10 @@ void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool 
 void Render::Init( ) {
     ImGuiIO& io{ ImGui::GetIO( ) };
 
-    Fonts.Menu = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Tahoma.ttf" ), 12.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
-    Fonts.Tabs = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\test2.ttf" ), 40.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+    Fonts.Menu = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Tahoma.ttf" ), 13.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+    Fonts.Tabs = Fonts.Menu;// io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\test2.ttf" ), 40.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+
+    //io.Fonts->Build( );
 }
 
 void Render::Unload( ) {

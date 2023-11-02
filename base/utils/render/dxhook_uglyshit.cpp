@@ -39,10 +39,10 @@ bool InitWindow( ) {
 	WindowClass.hCursor = NULL;
 	WindowClass.hbrBackground = NULL;
 	WindowClass.lpszMenuName = NULL;
-	WindowClass.lpszClassName = "";
+	WindowClass.lpszClassName = "b";
 	WindowClass.hIconSm = NULL;
 	RegisterClassEx( &WindowClass );
-	WindowHwnd = CreateWindow( WindowClass.lpszClassName, "", WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, NULL, NULL, WindowClass.hInstance, NULL );
+	WindowHwnd = CreateWindow( WindowClass.lpszClassName, "a", WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, NULL, NULL, WindowClass.hInstance, NULL );
 	if ( WindowHwnd == NULL ) {
 		return false;
 	}

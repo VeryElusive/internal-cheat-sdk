@@ -34,9 +34,13 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 
 			ImGui_ImplWin32_Init( hwnd );
 			ImGui_ImplDX11_Init( device, context );
+
+			Render::Init( );
+
 			ImGui_ImplDX11_CreateDeviceObjects( );
 			ImGui::GetIO( ).ImeWindowHandle = hwnd;
-			//Process::WndProc = ( WNDPROC ) SetWindowLongPtr( Process::Hwnd, GWLP_WNDPROC, ( __int3264 ) ( LONG_PTR ) WndProc );
+
+
 			init = true;
 		}
 	}
@@ -46,7 +50,10 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 	ImGui::NewFrame( );
 	//ImGui::GetIO( ).MouseDrawCursor = var::showMenu;
 
-	Render::RectFilled( { 300, 300 }, { 100, 100 }, Color( 42, 230, 180 ) );
+	Input::Update( );
+	Menu::Render( );
+
+	Render::RectFilled( { 300, 300 }, { 100, 800 }, Color( 42, 230, 180 ) );
 
 	ImGui::EndFrame( );
 	ImGui::Render( );

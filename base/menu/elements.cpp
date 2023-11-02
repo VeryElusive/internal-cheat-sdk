@@ -81,7 +81,6 @@ void Menu::RenderElements( ) {
 	const auto maxSize{ Menu::m_vecSize.y - 80 };
 	const auto sizeDenom{ ( maxSize / 5 ) };
 
-
 	auto& activeTab{ m_cTabs[ m_iSelectedTab ] };
 
 	const auto backupSubtab{ activeTab.m_pSelectedSubtab };
