@@ -23,6 +23,13 @@
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\memory.cpp" />
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="dependencies\minhook\buffer.c" />
     <ClCompile Include="dependencies\minhook\hde\hde32.c" />
     <ClCompile Include="dependencies\minhook\hde\hde64.c" />
@@ -41,38 +48,22 @@
     <ClCompile Include="menu\controls\textinput.cpp" />
     <ClCompile Include="menu\elements.cpp" />
     <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1ColorRGBAInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTargetInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1Factory.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1FactoryInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1FontWrapper.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1FontWrapperInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphAtlas.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphAtlasInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphProvider.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphProviderInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphRenderStates.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphRenderStatesInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphSheet.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphSheetInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphVertexDrawer.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1GlyphVertexDrawerInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1StateSaver.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextGeometry.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextGeometryInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextRenderer.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\CFW1TextRendererInterface.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\FW1FontWrapper.cpp" />
-    <ClCompile Include="utils\render\FW1FontWrapper\FW1Precompiled.cpp" />
-    <ClCompile Include="utils\render\init.cpp" />
+    <ClCompile Include="utils\render\dxhook_uglyshit.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\config.h" />
     <ClInclude Include="core\displacement.h" />
     <ClInclude Include="core\input.h" />
+    <ClInclude Include="dependencies\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="dependencies\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="dependencies\imgui\imconfig.h" />
+    <ClInclude Include="dependencies\imgui\imgui.h" />
+    <ClInclude Include="dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="havoc.h" />
     <ClInclude Include="core\hooks.h" />
     <ClInclude Include="core\memory.h" />
@@ -94,25 +85,12 @@
     <ClInclude Include="sdk\player.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />
-    <ClInclude Include="utils\render\fonts\fonts.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1Factory.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1FontWrapper.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphAtlas.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphProvider.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphRenderStates.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphSheet.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1GlyphVertexDrawer.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1Object.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1StateSaver.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1TextGeometry.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\CFW1TextRenderer.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\FW1CompileSettings.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\FW1FontWrapper.h" />
-    <ClInclude Include="utils\render\FW1FontWrapper\FW1Precompiled.h" />
     <ClInclude Include="utils\render\render.h" />
     <ClInclude Include="utils\utils.h" />
+    <ClInclude Include="utils\xorstr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dependencies\imgui\LICENSE.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -234,7 +212,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dependencies\FW1FontWrapper.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
@@ -292,7 +270,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dependencies\FW1FontWrapper.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

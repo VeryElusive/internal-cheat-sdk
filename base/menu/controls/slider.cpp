@@ -15,7 +15,7 @@ void CMenuItem::SliderFloatFocus( ) {
 
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos + 2, Vector2D( std::max( std::ceil( ( size.x - 4 ) * sliderRatio ), 8.f ), size.y - 4 ), this->m_cColor );
 
-	Render::Text( Menu::m_pFocusItem.m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), FW1_CENTER FONT_MENU );
+	Render::Text( Menu::m_pFocusItem.m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), TEXT_CENTER, 13, Render::Fonts.Menu );
 }
 
 void CMenuItem::SliderFloat( ) {
@@ -32,7 +32,7 @@ void CMenuItem::SliderFloat( ) {
 
 	value = std::clamp( value, args.m_flMin, args.m_flMax );
 
-	Render::Text( Menu::m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
+	Render::Text( Menu::m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0, 13, Render::Fonts.Menu );
 	Menu::m_vecDrawPos.y += 16;
 	const auto hovered{ Input::Hovered( Menu::m_vecDrawPos, size ) };
 
@@ -61,7 +61,7 @@ void CMenuItem::SliderFloat( ) {
 
 		Render::RectFilled( Menu::m_vecDrawPos + 2, Vector2D( std::max( std::ceil( ( size.x - 4 ) * sliderRatio ), 8.f ), size.y - 4 ), this->m_cColor );
 
-		Render::Text( Menu::m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), FW1_CENTER FONT_MENU );
+		Render::Text( Menu::m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), TEXT_CENTER, 13, Render::Fonts.Menu );
 	}
 
 	Menu::m_vecDrawPos.y += ITEM_HEIGHT + PADDING;
@@ -81,7 +81,7 @@ void CMenuItem::SliderIntFocus( ) {
 
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos + 2, Vector2D( std::max( std::ceil( ( size.x - 4 ) * sliderRatio ), 8.f ), size.y - 4 ), this->m_cColor );
 
-	Render::Text( Menu::m_pFocusItem.m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), FW1_CENTER FONT_MENU );
+	Render::Text( Menu::m_pFocusItem.m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), TEXT_CENTER, 13, Render::Fonts.Menu );
 }
 
 void CMenuItem::SliderInt( ) {
@@ -98,7 +98,7 @@ void CMenuItem::SliderInt( ) {
 
 	value = std::clamp<int>( value, args.m_flMin, args.m_flMax );
 
-	Render::Text( Menu::m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
+	Render::Text( Menu::m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0, 13, Render::Fonts.Menu );
 	Menu::m_vecDrawPos.y += 16;
 	const auto hovered{ Input::Hovered( Menu::m_vecDrawPos, size ) };
 
@@ -127,7 +127,7 @@ void CMenuItem::SliderInt( ) {
 
 		Render::RectFilled( Menu::m_vecDrawPos + 2, Vector2D( std::max( std::ceil( ( size.x - 4 ) * sliderRatio ), 8.f ), size.y - 4 ), this->m_cColor );
 
-		Render::Text( Menu::m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), FW1_CENTER FONT_MENU );
+		Render::Text( Menu::m_vecDrawPos + Vector2D( size.x / 2, -1 ), std::to_string( static_cast< int >( value ) ), Color( 255, 255, 255 ), TEXT_CENTER, 13, Render::Fonts.Menu );
 	}
 
 	Menu::m_vecDrawPos.y += ITEM_HEIGHT + PADDING;

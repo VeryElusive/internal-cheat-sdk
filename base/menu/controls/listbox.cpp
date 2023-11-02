@@ -52,7 +52,7 @@ void CMenuItem::Listbox( ) {
 		else
 			element.m_cColor = value == i ? ( i & 1 ? ACCENT2 : ACCENT ) : hovered ? HOVERED_ELEMENT : DIM_ELEMENT;
 
-		Render::Text( pos, element.m_szName, element.m_cColor, 0 FONT_MENU );
+		Render::Text( pos, element.m_szName, element.m_cColor, 0, 13, Render::Fonts.Menu );
 
 		if ( wholeHovered && hovered && Input::Pressed( VK_LBUTTON ) && !Menu::m_pFocusItem.m_pItem && !Menu::m_pFocusItem.m_bFrameAfterFocus )
 			value = i;

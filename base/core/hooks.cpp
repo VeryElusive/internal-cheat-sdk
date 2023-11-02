@@ -11,4 +11,5 @@ void Hooks::Init( ) {
 		return;
 
 	INIT_HOOK( Present, Render::MethodsTable[ 8 ] );
+	//INIT_HOOK( ResizeBuffers, Render::MethodsTable[ 13 ] );
 }

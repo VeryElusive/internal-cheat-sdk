@@ -1,294 +1,92 @@
 #include "render.h"
 #include "../../menu/menu.h"
+#include "../xorstr.h"
 
-void Render::Render( ) {
+#include "../../pch.h"
 
-    immediateContext->OMSetRenderTargets( 1, &RenderTargetView, NULL );
-
-    immediateContext->VSSetShader( vertexShader, nullptr, 0 );
-    immediateContext->PSSetShader( pixelShader, nullptr, 0 );
-
-    immediateContext->OMSetBlendState( blendState, nullptr, 0xffffffff );
-
-    immediateContext->VSSetConstantBuffers( 0, 1, &screenProjectionBuffer );
-
-    immediateContext->IASetInputLayout( inputLayout );
-
-    UINT stride = sizeof( Vertex );
-    UINT offset = 0;
-    immediateContext->IASetVertexBuffers( 0, 1, &vertexBuffer, &stride, &offset );
-
-    fontWrapper->DrawString( immediateContext, L"", 0.0f, 0.0f, 0.0f, 0xff000000, FW1_RESTORESTATE | FW1_NOFLUSH );
-    Text( { 0, 0 }, "", Color( 0, 0, 0 ), 0, 0, "Tahoma" );
-
-    // begin rendering
-
-    if ( std::size( renderList->vertices ) > 0 ) {
-        D3D11_MAPPED_SUBRESOURCE mappedResource;
-        immediateContext->Map( vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
-        {
-            std::memcpy( mappedResource.pData, renderList->vertices.data( ), sizeof( Vertex ) * std::size( renderList->vertices ) );
-        }
-        immediateContext->Unmap( vertexBuffer, 0 );
-    }
-
-    std::size_t pos = 0;
-    
-    for ( const auto& batch : renderList->batches ) {
-        immediateContext->IASetPrimitiveTopology( batch.topology );
-        immediateContext->Draw( static_cast< UINT >( batch.count ), static_cast< UINT >( pos ) );
-
-        pos += batch.count;
-    }
-
-    fontWrapper->Flush( immediateContext );
-    fontWrapper->DrawGeometry( immediateContext, renderList->textGeometry, nullptr, nullptr, 0 );
-
-    // end
-    // TODO: move to top of visuals.
-    renderList->clear( );
-}
+#define GET_DRAWLIST const auto drawlist{ ImGui::GetBackgroundDrawList( ) }; if ( drawlist ) drawlist
 
 void Render::Line( Vector2D pos, Vector2D pos2, Color col ) {
-    Vertex v[ ]
-    {
-        { pos.x, pos.y, 0.0f, col },
-        { pos2.x, pos2.y, 0.0f, col }
-    };
-
-    AddVertices( v, D3D11_PRIMITIVE_TOPOLOGY_LINELIST );
+    // drawlist allows for thickness!!!
+    GET_DRAWLIST->AddLine( { pos.x, pos.y }, { pos2.x, pos2.y }, col.ToUInt32( ) );
 }
 
 // we can do stroke thickness if we just draw rect filled instead of lines
 void Render::Rect( Vector2D pos, Vector2D size, Color col ) {
-    Line( pos, { pos.x + size.x, pos.y }, col );
-    Line( { pos.x + size.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col );
-    Line( { pos.x + size.x, pos.y + size.y }, { pos.x, pos.y + size.y }, col );
-    Line( { pos.x, pos.y + size.y }, pos, col );
+    GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
 }
 
-void Render::CircleFilled( Vector2D pos, float radius, const Color& color ) {
-    const int segments = 36; // Increase the number of segments for a smoother circle
-    Vertex v[ segments + 2 ]; // Add 2 vertices for the center point and last point
+void Render::RectFilled( Vector2D pos, Vector2D size, Color col ) {
+    GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
+}
 
-    // Calculate the center point
-    v[ 0 ] = Vertex{ pos.x, pos.y, 0.f, color };
+// if you ever need to use this and it's fucked, the last param of AddCircle/AddCircleFilled is segments and is defaulted to 0
+void Render::CircleFilled( Vector2D pos, float radius, const Color& col ) {
+    GET_DRAWLIST->AddCircleFilled( { pos.x, pos.y }, radius, col.ToUInt32( ) );
+}
 
-    for ( int i = 1; i <= segments + 1; i++ ) {
-        float theta = 2.f * PI * static_cast< float >( i - 1 ) / static_cast< float >( segments );
+void Render::Circle( Vector2D pos, float radius, const Color& col ) {
+    GET_DRAWLIST->AddCircle( { pos.x, pos.y }, radius, col.ToUInt32( ) );
+}
 
-        v[ i ] = Vertex{
-            pos.x + radius * std::cos( theta ),
-            pos.y + radius * std::sin( theta ),
-            0.f, color
-        };
+Vector2D Render::GetTextSize( const std::string& text, float fontSize, const ImFont* font ) {
+    const auto ret{ font->CalcTextSizeA( fontSize, INT_MAX, 0.f, text.c_str( ) ) };
+    return { ret.x, ret.y };
+}
+
+void Render::Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint8_t flags, float fontSize, const ImFont* font ) {
+    const auto drawlist{ ImGui::GetBackgroundDrawList( ) };
+
+    // set font texture
+    drawlist->PushTextureID( font->ContainerAtlas->TexID );
+
+    const ImU32 colOutlinePacked{ Color( 10u, 10u, 10u, color.a ).ToUInt32( ) };
+
+    ImVec2 recastPos{ pos.x, pos.y };
+
+    if ( flags & TEXT_RIGHT )
+        recastPos.x -= GetTextSize( text, fontSize, font ).x;
+
+    if ( flags & TEXT_CENTER )
+        recastPos.x -= GetTextSize( text, fontSize, font ).x / 2;
+
+    if ( flags & TEXT_DROPSHADOW )
+        drawlist->AddText( font, fontSize, recastPos + ImVec2( 1.f, -1.f ), colOutlinePacked, text.c_str( ) );
+    else if ( flags & TEXT_OUTLINE ) {
+        drawlist->AddText( font, fontSize, recastPos + ImVec2( 1.f, -1.f ), colOutlinePacked, text.c_str( ) );
+        drawlist->AddText( font, fontSize, recastPos + ImVec2( -1.f, 1.f ), colOutlinePacked, text.c_str( ) );
     }
 
-    // Create triangles to fill the circle
-    std::vector<Vertex> triangles;
-    for ( int i = 1; i <= segments; i++ ) {
-        triangles.push_back( v[ 0 ] );
-        triangles.push_back( v[ i ] );
-        triangles.push_back( v[ i + 1 ] );
-    }
-
-    // Pass the triangles to your rendering function
-    AddVertices( triangles.data( ), triangles.size( ), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-}
-
-void Render::Circle( Vector2D pos, float radius, const Color& color ) {
-    const int segments = 24;
-
-    Vertex v[ segments + 1 ];
-
-    for ( int i = 0; i <= segments; i++ )
-    {
-        float theta = 2.f * PI * static_cast< float >( i ) / static_cast< float >( segments );
-
-        v[ i ] = Vertex{
-            pos.x + radius * std::cos( theta ),
-            pos.y + radius * std::sin( theta ),
-            0.f, color
-        };
-    }
-
-    AddVertices( v, D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP );
-}
-
-Vector2D Render::GetTextSize( const std::string& text, float fontSize, const std::string& fontFamily ) {
-    const auto wText{ Utils::StringToWideString( text ) };
-    const auto wFontFamily{ Utils::StringToWideString( fontFamily ) };
-
-    return GetTextSize( wText, fontSize, wFontFamily );
-}
-
-Vector2D Render::GetTextSize( const std::wstring& text, float fontSize, const std::wstring& fontFamily ) {
-    FW1_RECTF nullRect = { 0.f, 0.f, 0.f, 0.f };
-    FW1_RECTF rect = fontWrapper->MeasureString( text.c_str( ), fontFamily.c_str( ),
-        fontSize, &nullRect, FW1_NOWORDWRAP );
-    return{ rect.Right, rect.Bottom };
-}
-
-// TODO: instead of creating a new vertex buffer, we must add these text vertices INSIDE your main vertex buffer.
-void Render::Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint32_t flags, float fontSize, const std::string& fontFamily ) {
-    const auto wText{ Utils::StringToWideString( text ) };
-    const auto wFontFamily{ Utils::StringToWideString( fontFamily ) };
-
-    Text( pos, wText, color, flags, fontSize, wFontFamily );
-}
-
-void Render::Text( const Vector2D& pos, const std::wstring& text, const Color& color, std::uint32_t flags, float fontSize, const std::wstring& fontFamily ) {
-    if ( flags & FW1_SHADOW ) {
-        std::uint32_t shadowColor = Color( 25, 25, 25, 216 * ( color.a / 255 ) ).ToUInt32( );
-        FW1_RECTF shadowRect = { pos.x + 1.0f, pos.y + 1.0f, pos.x + 1.0f, pos.y + 1.0f };
-
-        fontWrapper->AnalyzeString( nullptr, text.c_str( ), fontFamily.c_str( ), fontSize, &shadowRect, shadowColor, flags | FW1_NOFLUSH | FW1_NOWORDWRAP, renderList->textGeometry );
-    }
-
-    std::uint32_t transformedColor = color.ToUInt32( );
-    FW1_RECTF rect = { pos.x, pos.y, pos.x, pos.y };
-
-    fontWrapper->AnalyzeString( nullptr, text.c_str( ),
-        fontFamily.c_str( ), fontSize, &rect, transformedColor, flags | FW1_NOFLUSH | FW1_NOWORDWRAP, renderList->textGeometry );
-
-    //renderList->batches.emplace_back( 0xFADED, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP );
+    drawlist->AddText( font, fontSize, recastPos, color.ToUInt32( ), text.c_str( ) );
+    drawlist->PopTextureID( );
 }
 
 // TODO: at some point make this properly.
 void Render::RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col ) {
-    // Ensure cornerRadius is within a valid range
-    radius = std::min<int>( radius, std::min( size.x, size.y ) * 0.5f );
-
-    // Draw the central rectangle
-    RectFilled( pos + Vector2D( radius, 0 ), size - Vector2D( radius * 2, 0 ), col );
-    RectFilled( pos + Vector2D( 0, radius ), size - Vector2D( 0, radius * 2 ), col );
-
-    // Draw the top-left corner
-    CircleFilled( pos + Vector2D( radius, radius ), radius, col );
-
-    // Draw the top-right corner
-    CircleFilled( pos + Vector2D( size.x - radius, radius ), radius, col );
-
-    // Draw the bottom-left corner
-    CircleFilled( pos + Vector2D( radius, size.y - radius ), radius, col );
-
-    // Draw the bottom-right corner
-    CircleFilled( pos + Vector2D( size.x - radius, size.y - radius ), radius, col );
+    GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
 }
 
 
 void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal ) {
-    Vertex v[ ]
-    {
-        { pos.x,			pos.y,				0.f, col },
-        { pos.x + size.x,	pos.y,				0.f, horizontal ? col2 : col },
-        { pos.x,			pos.y + size.y,	    0.f, horizontal ? col : col2 },
-
-        { pos.x + size.x,	pos.y,				0.f, horizontal ? col2 : col },
-        { pos.x + size.x,	pos.y + size.y,	    0.f, col2 },
-        { pos.x,			pos.y + size.y,	    0.f, horizontal ? col : col2 }
-    };
-
-    AddVertices( v, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+    GET_DRAWLIST->AddRectFilledMultiColor( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, 
+        col.ToUInt32( ), 
+        horizontal ? col2.ToUInt32( ) : col.ToUInt32( ),
+        col2.ToUInt32( ),
+        horizontal ? col.ToUInt32( ) : col2.ToUInt32( ) );
 }
 
-void Render::RectFilled( Vector2D pos, Vector2D size, Color col ) {
-    Vertex v[ ]
-    {
-        { pos.x,			pos.y,				0.f, col },
-        { pos.x + size.x,	pos.y,				0.f, col },
-        { pos.x,			pos.y + size.y,	0.f, col },
 
-        { pos.x + size.x,	pos.y,				0.f, col },
-        { pos.x + size.x,	pos.y + size.y,	0.f, col },
-        { pos.x,			pos.y + size.y,	0.f, col }
-    };
+void Render::Init( ) {
+    ImGuiIO& io{ ImGui::GetIO( ) };
 
-    AddVertices( v, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+    Fonts.Menu = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Tahoma.ttf" ), 12.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+    Fonts.Tabs = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\test2.ttf" ), 40.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
 }
 
-void Render::AddVertex( Vertex& vertex, D3D11_PRIMITIVE_TOPOLOGY topology ) {
-#ifdef DEBUG
-    assert( topology != D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP
-        && "addVertex >Use addVertices to draw line/triangle strips!" );
-    assert( topology != D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ
-        && "addVertex >Use addVertices to draw line/triangle strips!" );
-    assert( topology != D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP
-        && "addVertex >Use addVertices to draw line/triangle strips!" );
-    assert( topology != D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ
-        && "addVertex >Use addVertices to draw line/triangle strips!" );
-#endif // DEBUG
+void Render::Unload( ) {
+    ImGui_ImplDX11_Shutdown( );
+    ImGui_ImplWin32_Shutdown( );
 
-    // TODO: error logging?
-    if ( std::size( renderList->vertices ) >= maxVertices )
-        return;
-
-    if ( std::empty( renderList->batches ) || renderList->batches.back( ).topology != topology )
-        renderList->batches.emplace_back( 0, topology );
-
-    renderList->batches.back( ).count += 1;
-    renderList->vertices.push_back( vertex );
-}
-
-template <std::size_t N>
-void Render::AddVertices( Vertex( &vertexArr )[ N ], D3D11_PRIMITIVE_TOPOLOGY topology ) {
-    AddVertices( vertexArr, N, topology );
-}
-
-void Render::AddVertices( std::vector< FW1_GLYPHVERTEX > vertices, D3D11_PRIMITIVE_TOPOLOGY topology ) {
-    const auto& size{ vertices.size( ) };
-    // TODO: error log ?
-    if ( std::size( renderList->vertices ) + size >= maxVertices )
-        return;
-
-    if ( std::empty( renderList->batches ) || renderList->batches.back( ).topology != topology )
-        renderList->batches.emplace_back( 0, topology );
-
-    renderList->batches.back( ).count += size;
-
-    renderList->vertices.resize( std::size( renderList->vertices ) + size );
-    std::memcpy( &renderList->vertices[ std::size( renderList->vertices ) - size ], &vertices[ 0 ], size * sizeof( Vertex ) );
-
-    switch ( topology )
-    {
-    case D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP:
-    case D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ:
-    case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
-    case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ:
-    {
-        Vertex seperator{};
-        AddVertex( seperator, D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED );
-        break;
-    }
-    default:
-        break;
-    }
-}
-void Render::AddVertices( Vertex vertexArr[ ], int size, D3D11_PRIMITIVE_TOPOLOGY topology ) {
-    // TODO: error log ?
-    if ( std::size( renderList->vertices ) + size >= maxVertices )
-        return;
-
-    if ( std::empty( renderList->batches ) || renderList->batches.back( ).topology != topology )
-        renderList->batches.emplace_back( 0, topology );
-
-    renderList->batches.back( ).count += size;
-
-    renderList->vertices.resize( std::size( renderList->vertices ) + size );
-    std::memcpy( &renderList->vertices[ std::size( renderList->vertices ) - size ], &vertexArr[ 0 ], size * sizeof( Vertex ) );
-
-    switch ( topology )
-    {
-    case D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP:
-    case D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ:
-    case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
-    case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ:
-    {
-        Vertex seperator{};
-        AddVertex( seperator, D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED );
-        break;
-    }
-    default:
-        break;
-    }
+    // destroy imgui context
+    ImGui::DestroyContext( );
 }

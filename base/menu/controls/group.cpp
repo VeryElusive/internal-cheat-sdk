@@ -64,10 +64,10 @@ void CMenuGroup::Render( int groupNum, std::vector < CMenuGroup >& groups ) {
 	//Render::Gradient( Menu::m_vecDrawPos.x + 2, Menu::m_vecDrawPos.y + 2, size.x - 4, PADDING * 2, GROUP, GROUP.Set<COLOR_A>( 0.f ), false );
 	//Render::Gradient( Menu::m_vecDrawPos.x + 2, Menu::m_vecDrawPos.y + size.y - PADDING * 2 - 1, size.x - 4 - 1, PADDING * 2, GROUP.Set<COLOR_A>( 0.f ), GROUP, false );
 
-	const auto textX{ Render::GetTextSize( m_szName, 13.f, "Tahoma" ).x + ( PADDING * 2 ) };
+	const auto textX{ Render::GetTextSize( m_szName, 13, Render::Fonts.Menu ).x + ( PADDING * 2 ) };
 	Render::RectFilled( Menu::m_vecDrawPos + Vector2D{ PADDING, -1.f }, { textX, 4.f, }, GROUP );
 
-	Render::Text( Menu::m_vecDrawPos + Vector2D{ ( PADDING * 2 ), -4 }, m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
+	Render::Text( Menu::m_vecDrawPos + Vector2D{ ( PADDING * 2 ), -4 }, m_szName, Color( 255, 255, 255 ), 0, 13, Render::Fonts.Menu );
 
 	// new line
 	if ( groupNum == 2 && groupCount > 2 )

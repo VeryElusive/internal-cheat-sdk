@@ -89,7 +89,7 @@ void Menu::RenderElements( ) {
 	if ( !activeTab.m_pSelectedSubtab )
 		activeTab.m_pSelectedSubtab = &activeTab.m_vecSubtabs.front( );
 
-	const auto tabSize{ Render::GetTextSize( ( "A" ), FONT_TABS ) };
+	const auto tabSize{ Render::GetTextSize( ( "A" ), 30, Render::Fonts.Tabs ) };
 
 	// tabs
 	{
@@ -119,7 +119,7 @@ void Menu::RenderElements( ) {
 			else if ( m_cTabs[ i ].m_flAnimation >= 0.995f )
 				m_cTabs[ i ].m_flAnimation = 1.f;
 
-			Render::Text( pos, m_cTabs[ i ].m_szName, m_cTabs[ i ].m_cColor, FW1_CENTER, FONT_TABS );
+			Render::Text( pos, m_cTabs[ i ].m_szName, m_cTabs[ i ].m_cColor, TEXT_CENTER | TEXT_DROPSHADOW, 30, Render::Fonts.Tabs );
 		}
 	}
 
@@ -144,7 +144,7 @@ void Menu::RenderElements( ) {
 			if ( !longest || strlen( subtab.m_szName ) > strlen( longest ) )
 				longest = subtab.m_szName;
 
-			const auto textSize{ Render::GetTextSize( subtab.m_szName, 13.f, "Tahoma" ) };
+			const auto textSize{ Render::GetTextSize( subtab.m_szName, 13.f, Render::Fonts.Menu ) };
 
 			const auto pos{ Menu::m_vecPos + Vector2D( Math::Lerp( newActiveTab.m_flAnimation, BAR_SIZE / 2 + 10, BAR_SIZE - 10 ), tabSize.y / 2 - ( newActiveTab.m_vecSubtabs.size( ) * 16 ) / 2.f + 60 + sizeDenom * m_iSelectedTab + i * 16 ) };
 
@@ -154,7 +154,7 @@ void Menu::RenderElements( ) {
 
 			LerpToCol( subtab.m_cColor, newActiveTab.m_pSelectedSubtab == &subtab ? ( m_iSelectedTab % 2 ? ( i % 2 == 0 ? ACCENT2 : ACCENT ) : ( i % 2 == 0 ? ACCENT : ACCENT2 ) ) : hovered ? HOVERED_ELEMENT : DIM_ELEMENT );
 
-			Render::Text( pos, subtab.m_szName, subtab.m_cColor.Alpha( newActiveTab.m_flAnimation * 255 ), FW1_RIGHT FONT_MENU );
+			Render::Text( pos, subtab.m_szName, subtab.m_cColor.Alpha( newActiveTab.m_flAnimation * 255 ), TEXT_DROPSHADOW | TEXT_RIGHT, 13.f, Render::Fonts.Menu );
 			i++;
 		}
 	}

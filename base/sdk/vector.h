@@ -93,12 +93,12 @@ struct Vector2D {
 
 	Vector2D( ) {};
 
-	constexpr Vector2D( int x, int y ) : x( x ), y( y ) {};
-	constexpr Vector2D( float x, float y ) : x( static_cast<int>( x ) ), y( static_cast< int >( y ) ) {};
-	constexpr Vector2D( int x, float y ) : x( static_cast<int>( x ) ), y( static_cast< int >( y ) ) {};
-	constexpr Vector2D( float x, int y ) : x( static_cast<int>( x ) ), y( static_cast< int >( y ) ) {};
-	constexpr Vector2D( long x, long y ) : x( static_cast<int>( x ) ), y( static_cast< int >( y ) ) {};
-	constexpr Vector2D( short x, short y ) : x( static_cast<int>( x ) ), y( static_cast< int >( y ) ) {};
+	constexpr Vector2D( int x, int y ) : x( static_cast< float >( x ) ), y( static_cast< float >( y ) ) {};
+	constexpr Vector2D( float x, float y ) : x( x ), y( y ) {};
+	constexpr Vector2D( int x, float y ) : x( static_cast< float >( x ) ), y( y ) {};
+	constexpr Vector2D( float x, int y ) : x( x ), y( static_cast< float >( y ) ) {};
+	constexpr Vector2D( long x, long y ) : x( static_cast< float >( x ) ), y( static_cast< float >( y ) ) {};
+	constexpr Vector2D( short x, short y ) : x( static_cast< float >( x ) ), y( static_cast< float >( y ) ) {};
 };
 
 struct Vector4D {
