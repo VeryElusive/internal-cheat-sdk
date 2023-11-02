@@ -8,7 +8,6 @@ void CMenuItem::SliderFloatFocus( ) {
 	const auto size{ Vector2D( ( Menu::m_vecSize.x - BAR_SIZE - MARGIN * ( args.m_iMaxGroups + 1 ) ) / args.m_iMaxGroups - PADDING * 4, ITEM_HEIGHT ) };
 
 	const auto sliderRatio{ Menu::mapNumber( args.m_flValue, args.m_flMin, args.m_flMax, 0.f, 1.f ) };
-	Render::Text( Menu::m_pFocusItem.m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
 
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos - Vector2D( 1, 1 ), size + 2, OUTLINE_DARK );
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos, size, OUTLINE_LIGHT );
@@ -75,7 +74,6 @@ void CMenuItem::SliderIntFocus( ) {
 	const auto size{ Vector2D( ( Menu::m_vecSize.x - BAR_SIZE - MARGIN * ( args.m_iMaxGroups + 1 ) ) / args.m_iMaxGroups - PADDING * 4, ITEM_HEIGHT ) };
 
 	const auto sliderRatio{ Menu::mapNumber( args.m_flValue, args.m_flMin, args.m_flMax, 0.f, 1.f ) };
-	Render::Text( Menu::m_pFocusItem.m_vecDrawPos, m_szName, Color( 255, 255, 255 ), 0 FONT_MENU );
 
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos - Vector2D( 1, 1 ), size + 2, OUTLINE_DARK );
 	Render::RectFilled( Menu::m_pFocusItem.m_vecDrawPos, size, OUTLINE_LIGHT );

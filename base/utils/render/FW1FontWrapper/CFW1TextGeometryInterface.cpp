@@ -4,6 +4,7 @@
 
 #include "CFW1TextGeometry.h"
 
+#include "../render.h"
 
 namespace FW1FontWrapper {
 
@@ -35,13 +36,15 @@ void STDMETHODCALLTYPE CFW1TextGeometry::Clear() {
 // Add a vertex
 void STDMETHODCALLTYPE CFW1TextGeometry::AddGlyphVertex(const FW1_GLYPHVERTEX *pVertex) {
 	m_vertices.push_back(*pVertex);
+
+	// TODO: finish this
+	//Render::AddVertex( *reinterpret_cast<Vertex*>( pVertex ), D3D11_PRIMITIVE_TOPOLOGY_POINTLIST );
 	
 	UINT sheetIndex = pVertex->GlyphIndex >> 16;
 	m_maxSheetIndex = std::max(m_maxSheetIndex, sheetIndex);
 	
 	m_sorted = false;
 }
-
 
 // Get current glyph vertices
 FW1_VERTEXDATA STDMETHODCALLTYPE CFW1TextGeometry::GetGlyphVerticesTemp() {

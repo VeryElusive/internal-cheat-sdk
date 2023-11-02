@@ -137,6 +137,7 @@ void Menu::RenderElements( ) {
 		if ( longest ) {
 			// yikes... but i had to to make it more bold
 			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
+			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
 		}
 
 		for ( auto& subtab : newActiveTab.m_vecSubtabs ) {

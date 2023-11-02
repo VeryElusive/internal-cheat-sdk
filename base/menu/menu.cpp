@@ -19,21 +19,21 @@ void Menu::Render( ) {
 
 	m_bRendering = true;
 
-	Render::Rect( m_vecPos - Vector2D{ 1, 1 }, m_vecSize, ACCENT );
-	Render::Rect( m_vecPos + Vector2D{ 1, 1 }, m_vecSize, ACCENT2 );
+	Render::RoundedRectFilled( m_vecPos - Vector2D{ 1, 1 }, m_vecSize, 5, ACCENT );
+	Render::RoundedRectFilled( m_vecPos + Vector2D{ 1, 1 }, m_vecSize, 5, ACCENT2 );
 
-	Render::RectFilled( m_vecPos, m_vecSize,  BACKGROUND );
-	Render::Rect( m_vecPos, m_vecSize,  OUTLINE_DARK );
-	Render::Rect( m_vecPos + Vector2D{ 1,1 }, m_vecSize - Vector2D{ 2, 2 },  OUTLINE_LIGHT );
+	Render::RoundedRectFilled( m_vecPos, m_vecSize, 5, OUTLINE_DARK );
+	Render::RoundedRectFilled( m_vecPos + Vector2D{ 1,1 }, m_vecSize - Vector2D{ 2, 2 }, 5, OUTLINE_LIGHT );
+	Render::RoundedRectFilled( m_vecPos + 2, m_vecSize - 4, 5, BACKGROUND );
 
 	const auto barSize{ Vector2D{ BAR_SIZE, m_vecSize.y - 4 } };
 
-	Render::RectFilled( m_vecPos + Vector2D{ 2, 2 }, barSize, OUTLINE_DARK );
-	Render::Rect( m_vecPos + Vector2D{ 3, 3 }, barSize - Vector2D{ 2, 2 },  OUTLINE_LIGHT );
+	Render::RoundedRectFilled( m_vecPos + 1, barSize + 1, 5, OUTLINE_LIGHT );
+	Render::RoundedRectFilled( m_vecPos + 2, barSize - 1, 5, OUTLINE_DARK );
 
-	Render::Text( m_vecPos + Vector2D( BAR_SIZE / 2, 20 ), "HAVOC", ACCENT, FW1_CENTER FONT_MENU );
-	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 120, m_vecSize.y - MARGIN + 2 ), "Developed by", DIM_ELEMENT, FW1_RIGHT FONT_MENU );
-	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 115, m_vecSize.y - MARGIN + 2 ), "Artie", ACCENT, FW1_RIGHT FONT_MENU );
+	Render::Text( m_vecPos + Vector2D( BAR_SIZE / 2, 20 ), "Havoc", ACCENT, FW1_CENTER FONT_MENU );
+	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 125, m_vecSize.y - MARGIN + 2 ), "Developed by", DIM_ELEMENT, FW1_RIGHT FONT_MENU );
+	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 56, m_vecSize.y - MARGIN + 2 ), "Artie", ACCENT, FW1_RIGHT FONT_MENU );
 
 	RenderElements( );
 

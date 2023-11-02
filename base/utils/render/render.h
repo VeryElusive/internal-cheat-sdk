@@ -9,7 +9,7 @@
 
 // font settings
 #define FONT_TABS 55.f, "test2"
-#define FONT_MENU | FW1_ALIASED | FW1_SHADOW, 13.f, "Tahoma"
+#define FONT_MENU | FW1_IMMEDIATECALL | FW1_ALIASED | FW1_SHADOW, 13.f, "Tahoma"
 
 struct Vertex;
 struct Batch;
@@ -105,6 +105,7 @@ namespace Render {
 	template <std::size_t N>
 	void AddVertices( Vertex( &vertexArr )[ N ], D3D11_PRIMITIVE_TOPOLOGY topology );
 	void AddVertices( Vertex vertexArr[ ], int size, D3D11_PRIMITIVE_TOPOLOGY topology );
+	void AddVertices( FW1_GLYPHVERTEX vertices[ ], int size, D3D11_PRIMITIVE_TOPOLOGY topology );
 	void AddVertex( Vertex& vertex, D3D11_PRIMITIVE_TOPOLOGY topology );
 }
 

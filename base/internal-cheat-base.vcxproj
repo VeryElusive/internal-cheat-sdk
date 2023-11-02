@@ -94,6 +94,7 @@
     <ClInclude Include="sdk\player.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />
+    <ClInclude Include="utils\render\fonts\fonts.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\CFW1ColorRGBA.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\CFW1DWriteRenderTarget.h" />
     <ClInclude Include="utils\render\FW1FontWrapper\CFW1Factory.h" />

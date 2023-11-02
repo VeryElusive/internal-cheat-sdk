@@ -30,7 +30,6 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD dwReason, LPVOID lpReserved ) {
 		// no need for DLL_THREAD_ATTACH and DLL_THREAD_DETACH calls
 		DisableThreadLibraryCalls( hModule );
 
-		// once the cheat is uninjected we want to close the windows handle for our cheat process.
 		if ( const auto thread{ CreateThread( nullptr, 0U, LPTHREAD_START_ROUTINE( Entry ), hModule, 0UL, nullptr ) }; thread )
 			CloseHandle( thread );
 

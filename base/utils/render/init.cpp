@@ -61,7 +61,6 @@ void Render::Unload( ) {
 	SAFE_RELEASE( inputLayout );
 	SAFE_RELEASE( blendState );
 	SAFE_RELEASE( fontWrapper );
-	SAFE_RELEASE( fontFactory );
 }
 
 bool Render::PrepareMethodTable( ) {
@@ -167,7 +166,7 @@ bool Render::Init( IDXGISwapChain* pSwapchain ) {
 	renderList = std::make_unique<RenderList>( fontFactory, maxVertices );
 
 	fontFactory->CreateFontWrapper( direct3DDevice, L"Tahoma", &fontWrapper );
-
+	fontFactory->Release( );
 
 	D3DCompile( shader, sizeof( shader ), nullptr, nullptr, nullptr, "VS", "vs_4_0", 0, 0, &vsBlob, nullptr );
 	D3DCompile( shader, sizeof( shader ), nullptr, nullptr, nullptr, "PS", "ps_4_0", 0, 0, &psBlob, nullptr );

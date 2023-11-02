@@ -20,7 +20,7 @@
 #define SELECTED_ELEMENT Color( 200, 200, 200 )
 
 // other menu stuff
-#define BAR_SIZE 110
+#define BAR_SIZE 90
 #define MARGIN 20
 #define PADDING 8
 #define ITEM_HEIGHT 12
@@ -67,7 +67,7 @@ namespace Menu {
 
 	inline CMenuTab m_cTabs[ 5 ]{ };
 
-	inline Vector2D m_vecSize{ 800, 590 };
+	inline Vector2D m_vecSize{ 800, 650 };
 	inline Vector2D m_vecPos{ 500, 200 };
 
 	/* control stuff */

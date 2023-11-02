@@ -58,7 +58,7 @@ class CFW1StateSaver {
 		DXGI_FORMAT					m_indexFormat;
 		UINT						m_indexOffset;
 	
-	private:
+	public:
 		CFW1StateSaver(const CFW1StateSaver&);
 		CFW1StateSaver& operator=(const CFW1StateSaver&);
 };

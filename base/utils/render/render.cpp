@@ -1,7 +1,7 @@
 #include "render.h"
+#include "../../menu/menu.h"
 
 void Render::Render( ) {
-	// MAYBE NEED pContext->OMSetRenderTargets(1, &RenderTargetView, NULL);
 
     immediateContext->OMSetRenderTargets( 1, &RenderTargetView, NULL );
 
@@ -19,6 +19,7 @@ void Render::Render( ) {
     immediateContext->IASetVertexBuffers( 0, 1, &vertexBuffer, &stride, &offset );
 
     fontWrapper->DrawString( immediateContext, L"", 0.0f, 0.0f, 0.0f, 0xff000000, FW1_RESTORESTATE | FW1_NOFLUSH );
+    Text( { 0, 0 }, "", Color( 0, 0, 0 ), 0, 0, "Tahoma" );
 
     // begin rendering
 
@@ -32,8 +33,7 @@ void Render::Render( ) {
     }
 
     std::size_t pos = 0;
-    fontWrapper->Flush( immediateContext );
-
+    
     for ( const auto& batch : renderList->batches ) {
         immediateContext->IASetPrimitiveTopology( batch.topology );
         immediateContext->Draw( static_cast< UINT >( batch.count ), static_cast< UINT >( pos ) );
@@ -41,7 +41,8 @@ void Render::Render( ) {
         pos += batch.count;
     }
 
-    fontWrapper->DrawGeometry( immediateContext, renderList->textGeometry, nullptr, nullptr, FW1_RESTORESTATE );
+    fontWrapper->Flush( immediateContext );
+    fontWrapper->DrawGeometry( immediateContext, renderList->textGeometry, nullptr, nullptr, 0 );
 
     // end
     // TODO: move to top of visuals.
@@ -128,8 +129,7 @@ Vector2D Render::GetTextSize( const std::wstring& text, float fontSize, const st
     return{ rect.Right, rect.Bottom };
 }
 
-// TODO: make this threadsafe.
-// TODO: make this progressive, can be done at same time as threadsafe by making its own queue system.
+// TODO: instead of creating a new vertex buffer, we must add these text vertices INSIDE your main vertex buffer.
 void Render::Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint32_t flags, float fontSize, const std::string& fontFamily ) {
     const auto wText{ Utils::StringToWideString( text ) };
     const auto wFontFamily{ Utils::StringToWideString( fontFamily ) };
@@ -151,7 +151,7 @@ void Render::Text( const Vector2D& pos, const std::wstring& text, const Color& c
     fontWrapper->AnalyzeString( nullptr, text.c_str( ),
         fontFamily.c_str( ), fontSize, &rect, transformedColor, flags | FW1_NOFLUSH | FW1_NOWORDWRAP, renderList->textGeometry );
 
-    renderList->batches.emplace_back( 0xFADED, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP );
+    //renderList->batches.emplace_back( 0xFADED, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP );
 }
 
 // TODO: at some point make this properly.
@@ -175,6 +175,7 @@ void Render::RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color c
     // Draw the bottom-right corner
     CircleFilled( pos + Vector2D( size.x - radius, size.y - radius ), radius, col );
 }
+
 
 void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal ) {
     Vertex v[ ]
@@ -231,17 +232,22 @@ void Render::AddVertex( Vertex& vertex, D3D11_PRIMITIVE_TOPOLOGY topology ) {
 
 template <std::size_t N>
 void Render::AddVertices( Vertex( &vertexArr )[ N ], D3D11_PRIMITIVE_TOPOLOGY topology ) {
+    AddVertices( vertexArr, N, topology );
+}
+
+void Render::AddVertices( std::vector< FW1_GLYPHVERTEX > vertices, D3D11_PRIMITIVE_TOPOLOGY topology ) {
+    const auto& size{ vertices.size( ) };
     // TODO: error log ?
-    if ( std::size( renderList->vertices ) + N >= maxVertices )
+    if ( std::size( renderList->vertices ) + size >= maxVertices )
         return;
 
     if ( std::empty( renderList->batches ) || renderList->batches.back( ).topology != topology )
         renderList->batches.emplace_back( 0, topology );
 
-    renderList->batches.back( ).count += N;
+    renderList->batches.back( ).count += size;
 
-    renderList->vertices.resize( std::size( renderList->vertices ) + N );
-    std::memcpy( &renderList->vertices[ std::size( renderList->vertices ) - N ], &vertexArr[ 0 ], N * sizeof( Vertex ) );
+    renderList->vertices.resize( std::size( renderList->vertices ) + size );
+    std::memcpy( &renderList->vertices[ std::size( renderList->vertices ) - size ], &vertices[ 0 ], size * sizeof( Vertex ) );
 
     switch ( topology )
     {
@@ -258,7 +264,6 @@ void Render::AddVertices( Vertex( &vertexArr )[ N ], D3D11_PRIMITIVE_TOPOLOGY to
         break;
     }
 }
-
 void Render::AddVertices( Vertex vertexArr[ ], int size, D3D11_PRIMITIVE_TOPOLOGY topology ) {
     // TODO: error log ?
     if ( std::size( renderList->vertices ) + size >= maxVertices )
