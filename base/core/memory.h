@@ -2,6 +2,7 @@
 #include "../havoc.h"
 
 #define CLIENT_DLL _( L"client.dll" )
+#define ENGINE2_DLL _( L"engine2.dll" )
 
 
 #pragma region memory_definitions
@@ -82,6 +83,7 @@ namespace Memory {
 	std::uint8_t* FindPattern( const wchar_t* wszModuleName, const char* szBytePattern, const char* szByteMask );
 	std::uint8_t* FindPatternEx( const std::uint8_t* pRegionStart, const std::size_t nRegionSize, const std::uint8_t* arrByteBuffer, const std::size_t nByteCount, const char* szByteMask );
 	std::size_t BytesToPattern( const std::uint8_t* pByteBuffer, const std::size_t nByteCount, char* szOutBuffer );
+	void* GetExportAddress( const void* hModuleBase, const char* szProcedureName );
 
 	__forceinline std::uint8_t* ResolveRelativeAddress( std::uint8_t* nAddressBytes, std::uint32_t nRVAOffset, std::uint32_t nRIPOffset )
 	{
@@ -89,5 +91,11 @@ namespace Memory {
 		std::uint64_t nRIP = reinterpret_cast< std::uint64_t >( nAddressBytes ) + nRIPOffset;
 
 		return reinterpret_cast< std::uint8_t* >( nRVA + nRIP );
+	}
+
+	template <typename T, std::size_t nIndex, class CBaseClass, typename... Args_t>
+	__forceinline T CallVFunc( CBaseClass* thisptr, Args_t... argList ) {
+		using VirtualFn_t = T( __thiscall* )( const void*, decltype( argList )... );
+		return ( *reinterpret_cast< VirtualFn_t* const* >( reinterpret_cast< std::uintptr_t >( thisptr ) ) )[ nIndex ]( thisptr, argList... );
 	}
 }

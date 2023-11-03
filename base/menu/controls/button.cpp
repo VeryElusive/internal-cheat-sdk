@@ -1,6 +1,5 @@
 #include "../menu.h"
 
-// TODO: use lambdas for callbacks
 void CMenuItem::Button( ) {
 	if ( !m_fnShow( ) )
 		return;
@@ -12,7 +11,7 @@ void CMenuItem::Button( ) {
 
 	Menu::LerpToCol( this->m_cColor, hovered ? Input::Down( VK_LBUTTON ) ? OUTLINE_DARK : DIM_ELEMENT : BACKGROUND );
 
-	if ( hovered && Input::Pressed( VK_LBUTTON ) )
+	if ( hovered && Input::Pressed( VK_LBUTTON ) && !Menu::m_pFocusItem.m_bFrameAfterFocus && !Menu::m_pFocusItem.m_pItem )
 		args.m_bDown = true;
 
 	if ( args.m_bDown && Input::Released( VK_LBUTTON ) ) {

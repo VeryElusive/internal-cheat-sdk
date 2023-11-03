@@ -37,7 +37,7 @@ void Menu::Render( ) {
 	Render::RoundedRectFilled( m_vecPos + 2, barSize - 1, 5, OUTLINE_DARK );
 
 	Render::Text( m_vecPos + Vector2D( BAR_SIZE / 2, 20 ), "Havoc", ACCENT, TEXT_CENTER, 13, Render::Fonts.Menu );
-	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 125, m_vecSize.y - MARGIN + 2 ), "Developed by", DIM_ELEMENT, TEXT_RIGHT, 13, Render::Fonts.Menu );
+	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 85, m_vecSize.y - MARGIN + 2 ), "Developed by", DIM_ELEMENT, TEXT_RIGHT, 13, Render::Fonts.Menu );
 	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 56, m_vecSize.y - MARGIN + 2 ), "Artie", ACCENT, TEXT_RIGHT, 13, Render::Fonts.Menu );
 
 	RenderElements( );

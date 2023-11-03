@@ -12,6 +12,9 @@ void Entry( HMODULE hModule ) {
 	Menu::Register( );
 
 	Interfaces::Init( );
+
+	Displacement::Init( );
+
 	Hooks::Init( );
 
 	while ( !GetAsyncKeyState( VK_F11 ) )

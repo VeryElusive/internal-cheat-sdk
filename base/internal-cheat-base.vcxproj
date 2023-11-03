@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\config.cpp" />
+    <ClCompile Include="core\displacement.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
@@ -82,7 +83,9 @@
     <ClInclude Include="menu\controls\containers.h" />
     <ClInclude Include="menu\menu.h" />
     <ClInclude Include="sdk\color.h" />
+    <ClInclude Include="sdk\valve\entity_handle.h" />
     <ClInclude Include="sdk\valve\interfaces\CGlobalVarsBase.h" />
+    <ClInclude Include="sdk\valve\interfaces\IGameResourceService.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />
     <ClInclude Include="utils\render\render.h" />

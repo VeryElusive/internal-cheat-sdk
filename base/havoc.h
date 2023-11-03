@@ -11,9 +11,17 @@
 #include "sdk/vector.h"
 #include "sdk/color.h"
 
+class CCSPlayerController;
 
 struct Context_t {
 	float m_flFrameTime{ };
+
+	CCSPlayerController* m_pLocal{ };
+
+	void GetLocal( ) {
+		const int nIndex = Interfaces::Engine->GetLocalPlayer( );
+		m_pLocal = Interfaces::GameResourceService->m_pGameEntitySystem->Get<CCSPlayerController>( nIndex );
+	}
 };
 
 inline Context_t ctx;
