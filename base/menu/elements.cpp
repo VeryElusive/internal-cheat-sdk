@@ -88,7 +88,7 @@ void Menu::RenderElements( ) {
 	if ( !activeTab.m_pSelectedSubtab )
 		activeTab.m_pSelectedSubtab = &activeTab.m_vecSubtabs.front( );
 
-	const auto tabSize{ Render::GetTextSize( ( "A" ), 30, Render::Fonts.Tabs ) };
+	const auto tabSize{ Render::GetTextSize( ( "A" ), 50, Render::Fonts.Tabs ) };
 
 	// tabs
 	{
@@ -118,7 +118,7 @@ void Menu::RenderElements( ) {
 			else if ( m_cTabs[ i ].m_flAnimation >= 0.995f )
 				m_cTabs[ i ].m_flAnimation = 1.f;
 
-			Render::Text( pos, m_cTabs[ i ].m_szName, m_cTabs[ i ].m_cColor, TEXT_CENTER | TEXT_DROPSHADOW, 30, Render::Fonts.Tabs );
+			Render::Text( pos, m_cTabs[ i ].m_szName, m_cTabs[ i ].m_cColor, TEXT_CENTER | TEXT_DROPSHADOW, 50, Render::Fonts.Tabs );
 		}
 	}
 
@@ -135,6 +135,8 @@ void Menu::RenderElements( ) {
 
 		if ( longest ) {
 			// yikes... but i had to to make it more bold
+			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
+			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
 			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
 			Render::Gradient( Menu::m_vecPos + Vector2D{ 0, 60 + sizeDenom * m_iSelectedTab }, { BAR_SIZE, tabSize.y }, OUTLINE_DARK.Alpha( 0 ), OUTLINE_DARK.Alpha( newActiveTab.m_flAnimation * 255.f ), true );
 		}
@@ -174,7 +176,7 @@ void Menu::RenderElements( ) {
 		}
 	}
 
-	Render::RoundedRectFilled( m_vecPos + Vector2D{ BAR_SIZE + MARGIN, MARGIN }, m_vecSize - Vector2D{ BAR_SIZE + MARGIN, MARGIN }, 5, BACKGROUND.Alpha( Menu::m_pFocusItem.m_flFocusAnim * 0.7f * 255.f ) );
+	Render::RectFilled( m_vecPos + Vector2D{ BAR_SIZE + MARGIN, MARGIN - 2 }, m_vecSize - Vector2D{ BAR_SIZE + MARGIN, MARGIN - 2 }, BACKGROUND.Alpha( Menu::m_pFocusItem.m_flFocusAnim * 0.7f * 255.f ) );
 
 	if ( Menu::m_pFocusItem.m_pItem ) {
 		auto& element{ *Menu::m_pFocusItem.m_pItem };

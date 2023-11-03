@@ -1,24 +1,19 @@
 #pragma once
-#include <cstdint>
-#include <vector>
-#include <optional>
-#include <string_view>
-#include <Windows.h>
-#include <algorithm>
-#include <d3d11_1.h>
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <d3dcompiler.h>
+#include "pch.h"
+
+#include "utils/math.h"
+
+#include "core/interfaces.h"
 
 #include "core/config.h"
 #include "core/memory.h"
 
 #include "sdk/vector.h"
-#include "sdk/player.h"
+#include "sdk/color.h"
 
-#include "utils/math.h"
 
 struct Context_t {
+	float m_flFrameTime{ };
 };
 
 inline Context_t ctx;

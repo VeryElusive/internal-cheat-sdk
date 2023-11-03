@@ -38,11 +38,11 @@ namespace Render {
 	void Rect( Vector2D pos, Vector2D size, Color col );
 	void RectFilled( Vector2D pos, Vector2D size, Color col );
 	void Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal );
-	void Circle( Vector2D pos, float radius, const Color& color );
-	void CircleFilled( Vector2D pos, float radius, const Color& color );
-	void Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint8_t flags, float fontSize, const ImFont* font );
+	void Circle( Vector2D pos, float radius, Color color );
+	void CircleFilled( Vector2D pos, float radius, Color color );
+	void Text( const Vector2D& pos, const std::string& text, Color color, std::uint8_t flags, float fontSize, const ImFont* font );
 	Vector2D GetTextSize( const std::string& text, float fontSize, const ImFont* font );
 	// keep radius an even number
 	void RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col );
-	void RoundedRect( Vector2D pos, Vector2D size, Color col );
+	void RoundedRect( Vector2D pos, Vector2D size, int radius, Color col );
 }

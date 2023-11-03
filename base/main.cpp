@@ -1,5 +1,6 @@
 #include <thread>
 #include "core/hooks.h"
+#include "core/interfaces.h"
 #include "menu/menu.h"
 
 void Entry( HMODULE hModule ) {
@@ -10,6 +11,7 @@ void Entry( HMODULE hModule ) {
 
 	Menu::Register( );
 
+	Interfaces::Init( );
 	Hooks::Init( );
 
 	while ( !GetAsyncKeyState( VK_F11 ) )
@@ -21,6 +23,10 @@ void Entry( HMODULE hModule ) {
 	MH_RemoveHook( MH_ALL_HOOKS );
 
 	MH_Uninitialize( );
+
+	reinterpret_cast< WNDPROC >( SetWindowLongPtr( Hooks::hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::WndProc ) ) );
+
+	Render::Unload( );
 
 	FreeLibraryAndExitThread( hModule, EXIT_SUCCESS );
 }

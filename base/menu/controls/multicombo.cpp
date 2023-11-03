@@ -1,6 +1,6 @@
 #include "../menu.h"
 
-#define MAX_ALPHA( col ) col.Alpha( Menu::m_pFocusItem.m_flFocusAnim * 255 )
+#define MAX_ALPHA( col ) col.Alpha( static_cast< uint8_t >( Menu::m_pFocusItem.m_flFocusAnim * col.a ) )
 
 void CMenuItem::MultiComboFocus( ) {
 	auto& value{ *reinterpret_cast< int* >( m_pValue ) };

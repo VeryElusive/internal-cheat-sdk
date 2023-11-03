@@ -19,4 +19,12 @@
 
 #include "utils/xorstr.h"
 
+#include <cstdint>
+#include <vector>
+#include <optional>
+#include <string_view>
+#include <Windows.h>
+#include <algorithm>
+#include <d3d11_1.h>
+
 #endif //PCH_H

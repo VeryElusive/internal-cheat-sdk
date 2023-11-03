@@ -30,5 +30,9 @@ public:
 namespace Hooks {
 	NEW_HOOK( Present, HRESULT, APIENTRY ) IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags );
 
+	inline WNDPROC WndProc;
+	inline HWND hwnd;
+	LRESULT CALLBACK hkWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+
 	void Init( );
 }

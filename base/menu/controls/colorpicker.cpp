@@ -42,10 +42,10 @@ Color hsv2rgb( float hue, float sat, float val ) {
 		else if ( i == 5 ) { red = val; grn = p; blu = q; }
 	}
 
-	result.r = red * 255.f;
-	result.g = grn * 255.f;
-	result.b = blu * 255.f;
-	result.a = 255.f;
+	result.r = static_cast< uint8_t >( red * 255.f );
+	result.g = static_cast< uint8_t >( grn * 255.f );
+	result.b = static_cast< uint8_t >( blu * 255.f );
+	result.a = 255;
 
 	return result;
 }
@@ -67,8 +67,8 @@ hsv_t rgb2hsv( Color a ) {
 	}
 	else {
 		f = ( red == x ) ? grn - blu : ( ( grn == x ) ? blu - red : red - grn );
-		i = ( red == x ) ? 3 : ( ( grn == x ) ? 5 : 1 );
-		hue = fmod( ( i - f / ( val - x ) ) * 60, 360 );
+		i = ( red == x ) ? 3.f : ( ( grn == x ) ? 5.f : 1.f );
+		hue = fmod( ( i - f / ( val - x ) ) * 60.f, 360.f );
 		sat = ( ( val - x ) / val );
 	}
 	result.hue = hue;
@@ -78,7 +78,7 @@ hsv_t rgb2hsv( Color a ) {
 }
 
 
-#define MAX_ALPHA( col ) col.Alpha( Menu::m_pFocusItem.m_flFocusAnim * col.a )
+#define MAX_ALPHA( col ) col.Alpha( static_cast< uint8_t >( Menu::m_pFocusItem.m_flFocusAnim * col.a ) )
 void CMenuItem::ColorPickerFocus( ) {
 	auto& value{ *reinterpret_cast< Color* >( m_pValue ) };
 	auto& args{ *reinterpret_cast< ColorPickerArgs_t* >( m_pArgs ) };

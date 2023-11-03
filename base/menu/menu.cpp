@@ -1,14 +1,19 @@
 #include "menu.h"
 
 void Menu::Render( ) {
+	static float lastRealTime{ };
+	if ( lastRealTime )
+		ctx.m_flFrameTime = Interfaces::GlobalVars->m_flRealTime - lastRealTime;
+
+	lastRealTime = Interfaces::GlobalVars->m_flRealTime;
+
 	if ( !m_bOpened )
 		m_pFocusItem.m_pItem = nullptr;
 
-	// TODO: replace with frametime
 	if ( m_flAlpha >= 0 && !m_bOpened )
-		m_flAlpha -= 5.f * 0.01f;
+		m_flAlpha -= 5.f * ctx.m_flFrameTime;
 	else if ( m_flAlpha <= 1 && m_bOpened )
-		m_flAlpha += 5.f * 0.01f;
+		m_flAlpha += 5.f * ctx.m_flFrameTime;
 
 	m_flAlpha = std::clamp( m_flAlpha, 0.f, 1.f );
 

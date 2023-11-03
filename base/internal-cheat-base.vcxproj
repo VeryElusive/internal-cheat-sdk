@@ -22,6 +22,7 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\hooks.cpp" />
     <ClCompile Include="core\input.cpp" />
+    <ClCompile Include="core\interfaces.cpp" />
     <ClCompile Include="core\memory.cpp" />
     <ClCompile Include="dependencies\imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="dependencies\imgui\backends\imgui_impl_win32.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="core\config.h" />
     <ClInclude Include="core\displacement.h" />
     <ClInclude Include="core\input.h" />
+    <ClInclude Include="core\interfaces.h" />
     <ClInclude Include="dependencies\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="dependencies\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="dependencies\imgui\imconfig.h" />
@@ -80,9 +82,7 @@
     <ClInclude Include="menu\controls\containers.h" />
     <ClInclude Include="menu\menu.h" />
     <ClInclude Include="sdk\color.h" />
-    <ClInclude Include="sdk\gun.h" />
-    <ClInclude Include="sdk\math.h" />
-    <ClInclude Include="sdk\player.h" />
+    <ClInclude Include="sdk\valve\interfaces\CGlobalVarsBase.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />
     <ClInclude Include="utils\render\render.h" />
@@ -201,12 +201,12 @@
       <PreprocessorDefinitions>DEBUG_CONSOLE;NOMINMAX;WIN32;_DEBUG;CINNAMON_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>4244;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -254,8 +254,7 @@
       <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;CINNAMON_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -263,6 +262,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <DisableSpecificWarnings>4244;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

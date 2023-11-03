@@ -8,42 +8,54 @@
 #define GET_DRAWLIST const auto drawlist{ ImGui::GetBackgroundDrawList( ) }; if ( drawlist ) drawlist
 
 void Render::Line( Vector2D pos, Vector2D pos2, Color col ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     // drawlist allows for thickness!!!
     GET_DRAWLIST->AddLine( { pos.x, pos.y }, { pos2.x, pos2.y }, col.ToUInt32( ) );
 }
 
 // we can do stroke thickness if we just draw rect filled instead of lines
 void Render::Rect( Vector2D pos, Vector2D size, Color col ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
 }
 
 void Render::RectFilled( Vector2D pos, Vector2D size, Color col ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
 }
 
 // if you ever need to use this and it's fucked, the last param of AddCircle/AddCircleFilled is segments and is defaulted to 0
-void Render::CircleFilled( Vector2D pos, float radius, const Color& col ) {
+void Render::CircleFilled( Vector2D pos, float radius, Color col ) {
     GET_DRAWLIST->AddCircleFilled( { pos.x, pos.y }, radius, col.ToUInt32( ) );
 }
 
-void Render::Circle( Vector2D pos, float radius, const Color& col ) {
+void Render::Circle( Vector2D pos, float radius, Color col ) {
     GET_DRAWLIST->AddCircle( { pos.x, pos.y }, radius, col.ToUInt32( ) );
 }
 
 Vector2D Render::GetTextSize( const std::string& text, float fontSize, const ImFont* font ) {
-    const auto ret{ font->CalcTextSizeA( fontSize, INT_MAX, 0.f, text.c_str( ) ) };
+    const auto ret{ font->CalcTextSizeA( fontSize, FLT_MAX, 0.f, text.c_str( ) ) };
     return { ret.x, ret.y };
 }
 
-void Render::Text( const Vector2D& pos, const std::string& text, const Color& color, std::uint8_t flags, float fontSize, const ImFont* font ) {
+void Render::Text( const Vector2D& pos, const std::string& text, Color col, std::uint8_t flags, float fontSize, const ImFont* font ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     const auto drawlist{ ImGui::GetBackgroundDrawList( ) };
 
     // set font texture
     drawlist->PushTextureID( font->ContainerAtlas->TexID );
 
-    const ImU32 colOutlinePacked{ Color( 10u, 10u, 10u, color.a ).ToUInt32( ) };
+    const ImU32 colOutlinePacked{ Color( 10u, 10u, 10u, col.a ).ToUInt32( ) };
 
-    ImVec2 recastPos{ pos.x, pos.y };
+    ImVec2 recastPos{ pos.x, pos.y - 1 };
 
     if ( flags & TEXT_RIGHT )
         recastPos.x -= GetTextSize( text, fontSize, font ).x;
@@ -58,17 +70,29 @@ void Render::Text( const Vector2D& pos, const std::string& text, const Color& co
         drawlist->AddText( font, fontSize, recastPos + ImVec2( -1.f, 1.f ), colOutlinePacked, text.c_str( ) );
     }
 
-    drawlist->AddText( font, fontSize, recastPos, color.ToUInt32( ), text.c_str( ) );
+    drawlist->AddText( font, fontSize, recastPos, col.ToUInt32( ), text.c_str( ) );
     drawlist->PopTextureID( );
 }
 
-// TODO: at some point make this properly.
 void Render::RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
+}
+
+void Render::RoundedRect( Vector2D pos, Vector2D size, int radius, Color col ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
+    GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
 }
 
 
 void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal ) {
+    if ( Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     GET_DRAWLIST->AddRectFilledMultiColor( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, 
         col.ToUInt32( ), 
         horizontal ? col2.ToUInt32( ) : col.ToUInt32( ),
@@ -81,7 +105,7 @@ void Render::Init( ) {
     ImGuiIO& io{ ImGui::GetIO( ) };
 
     Fonts.Menu = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Tahoma.ttf" ), 13.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
-    Fonts.Tabs = Fonts.Menu;// io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\test2.ttf" ), 40.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+    Fonts.Tabs = io.Fonts->AddFontFromFileTTF( _( "C:\\test2.ttf" ), 50.f, nullptr, io.Fonts->GetGlyphRangesDefault( ) );
 
     //io.Fonts->Build( );
 }

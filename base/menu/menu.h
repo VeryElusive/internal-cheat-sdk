@@ -25,8 +25,7 @@
 #define PADDING 8
 #define ITEM_HEIGHT 12
 
-// TODO: replace with frametime.
-#define ANIMATION_SPEED 10 * 0.01
+#define ANIMATION_SPEED 10 * ctx.m_flFrameTime
 
 //inline HCURSOR CursorArrow;
 //inline HCURSOR CursorResize;
