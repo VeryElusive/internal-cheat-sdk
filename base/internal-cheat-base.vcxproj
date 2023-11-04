@@ -52,8 +52,10 @@
     <ClCompile Include="menu\controls\textinput.cpp" />
     <ClCompile Include="menu\elements.cpp" />
     <ClCompile Include="menu\menu.cpp" />
+    <ClCompile Include="sdk\utlmemory.cpp" />
     <ClCompile Include="utils\render\dxhook_uglyshit.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
+    <ClCompile Include="utils\schema.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\config.h" />
@@ -86,14 +88,22 @@
     <ClInclude Include="menu\controls\containers.h" />
     <ClInclude Include="menu\menu.h" />
     <ClInclude Include="sdk\color.h" />
+    <ClInclude Include="sdk\fnv1a.h" />
+    <ClInclude Include="macros.h" />
+    <ClInclude Include="sdk\utlhash.h" />
+    <ClInclude Include="sdk\utlmemory.h" />
+    <ClInclude Include="sdk\utlvector.h" />
     <ClInclude Include="sdk\valve\entity.h" />
     <ClInclude Include="sdk\valve\entity_handle.h" />
     <ClInclude Include="sdk\valve\interfaces\CGlobalVarsBase.h" />
     <ClInclude Include="sdk\valve\interfaces\iengineclient.h" />
     <ClInclude Include="sdk\valve\interfaces\IGameResourceService.h" />
+    <ClInclude Include="sdk\valve\interfaces\imemalloc.h" />
+    <ClInclude Include="sdk\valve\interfaces\ischemasystem.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />
     <ClInclude Include="utils\render\render.h" />
+    <ClInclude Include="utils\schema.h" />
     <ClInclude Include="utils\utils.h" />
     <ClInclude Include="utils\xorstr.h" />
   </ItemGroup>

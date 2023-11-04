@@ -4,8 +4,16 @@
 #include <cinttypes>
 #include "../utils/xorstr.h"
 
+#define MEM_PAD(SIZE)										\
+private:												\
+	char pad_0##__COUNTER__[SIZE]; \
+public:
+#pragma endregion
+
 #define CLIENT_DLL _( L"client.dll" )
 #define ENGINE2_DLL _( L"engine2.dll" )
+#define TIER0_DLL _( L"tier0.dll" )
+#define SCHEMASYSTEM_DLL _( L"schemasystem.dll" )
 
 
 #pragma region memory_definitions

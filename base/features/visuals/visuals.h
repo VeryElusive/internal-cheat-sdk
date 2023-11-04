@@ -7,7 +7,7 @@ public:
 	void Main( );
 
 private:
-	void HandlePlayer( CCSPlayerController* player );
+	void HandlePlayer( const CCSPlayerController* player );
 };
 
 namespace Features { inline CVisuals Visuals; };

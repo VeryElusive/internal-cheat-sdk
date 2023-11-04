@@ -86,7 +86,7 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 
 	ctx.GetLocal( );
 
-	//Features::Visuals.Main( );
+	Features::Visuals.Main( );
 
 	Input::Update( );
 	Menu::Render( );

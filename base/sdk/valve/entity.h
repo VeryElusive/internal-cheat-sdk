@@ -1,11 +1,14 @@
 #pragma once
 #include "entity_handle.h"
+#include "interfaces/ischemasystem.h"
 
 // wow... what the fuck...
 class CEntityInstance
 {
 public:
-	
+	void GetSchemaClassInfo( SchemaClassInfoData_t** pReturn ) const {
+		return Memory::CallVFunc<void, 34U>( this, pReturn );
+	}
 };
 
 class C_BaseEntity : public CEntityInstance

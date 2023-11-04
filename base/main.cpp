@@ -1,6 +1,7 @@
 #include <thread>
 #include "core/hooks.h"
 #include "core/interfaces.h"
+#include "utils/schema.h"
 #include "menu/menu.h"
 
 void Entry( HMODULE hModule ) {
@@ -12,6 +13,8 @@ void Entry( HMODULE hModule ) {
 	Menu::Register( );
 
 	Interfaces::Init( );
+
+	Schema::Setup( );
 
 	Displacement::Init( );
 

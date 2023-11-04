@@ -2,6 +2,8 @@
 #include "../sdk/valve/interfaces/CGlobalVarsBase.h"
 #include "../sdk/valve/interfaces/IGameResourceService.h"
 #include "../sdk/valve/interfaces/iengineclient.h"
+#include "../sdk/valve/interfaces/ischemasystem.h"
+#include "../sdk/valve/interfaces/imemalloc.h"
 
 
 namespace Interfaces {
@@ -10,4 +12,6 @@ namespace Interfaces {
 	inline IEngineClient* Engine{ };
 	inline CGlobalVarsBase* GlobalVars{ };
 	inline IGameResourceService* GameResourceService{ };
+	inline ISchemaSystem* SchemaSystem{ };
+	inline IMemAlloc* MemAlloc{ };
 }

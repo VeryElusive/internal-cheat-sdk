@@ -50,5 +50,17 @@ void Interfaces::Init( ) {
 	GameResourceService = Capture<IGameResourceService>	( pEngineRegisterList, _( "GameResourceServiceClientV001" ) );
 	Engine				= Capture<IEngineClient>		( pEngineRegisterList, _( "Source2EngineToClient001" ) );
 
+	const auto pSchemaSystemRegisterList = GetRegisterList( SCHEMASYSTEM_DLL );
+	if ( !pSchemaSystemRegisterList )
+		return;
+
+	SchemaSystem = Capture<ISchemaSystem>( pSchemaSystemRegisterList, _( "SchemaSystem_001" ) );
+
+	const auto pTier0Handle = Memory::GetModuleBaseHandle( TIER0_DLL );
+	if ( !pTier0Handle )
+		return;
+
+	MemAlloc = *reinterpret_cast< IMemAlloc** >( Memory::GetExportAddress( pTier0Handle, _( "g_pMemAlloc" ) ) );
+
 	GlobalVars = *reinterpret_cast< CGlobalVarsBase** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 89 0D ? ? ? ? 48 89 41" ) ), 0x3, 0x7 ) );
 }
