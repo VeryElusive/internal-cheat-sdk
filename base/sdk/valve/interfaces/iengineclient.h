@@ -1,4 +1,5 @@
 #pragma once
+#include "../../../core/memory.h"
 
 enum EClientFrameStage : int
 {
@@ -22,24 +23,20 @@ enum EClientFrameStage : int
 class IEngineClient
 {
 public:
-	int GetMaxClients( )
-	{
+	int GetMaxClients( ) {
 		return Memory::CallVFunc<int, 31U>( this );
 	}
 
-	bool IsInGame( )
-	{
+	bool IsInGame( ) {
 		return Memory::CallVFunc<bool, 32U>( this );
 	}
 
-	bool IsConnected( )
-	{
+	bool IsConnected( ) {
 		return Memory::CallVFunc<bool, 33U>( this );
 	}
 
 	// return CBaseHandle index
-	int GetLocalPlayer( )
-	{
+	int GetLocalPlayer( ) {
 		int nIndex = -1;
 
 		Memory::CallVFunc<void, 44U>( this, std::ref( nIndex ), 0 );

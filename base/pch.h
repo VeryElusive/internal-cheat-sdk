@@ -10,7 +10,6 @@
 // Windows Header Files
 #include <windows.h>
 #include <d3d11.h>
-#pragma comment(lib, "d3d11.lib")
 
 #include "dependencies/imgui/imgui.h"
 #include "dependencies/imgui/imgui_internal.h"

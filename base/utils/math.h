@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 
 namespace Math {
 	template <class T>

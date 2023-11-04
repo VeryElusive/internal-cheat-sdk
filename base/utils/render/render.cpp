@@ -2,8 +2,10 @@
 #include "../../menu/menu.h"
 #include "../xorstr.h"
 
-#include "../../pch.h"
 #include "../../dependencies/imgui/imstb_truetype.h"
+
+#include "../../dependencies/imgui/backends/imgui_impl_dx11.h"
+#include "../../dependencies/imgui/backends/imgui_impl_win32.h"
 
 #define GET_DRAWLIST const auto drawlist{ ImGui::GetBackgroundDrawList( ) }; if ( drawlist ) drawlist
 

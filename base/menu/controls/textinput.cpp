@@ -15,7 +15,7 @@ void CMenuItem::TextInputFocus( ) {
 
 	const auto textSize{ Render::GetTextSize( value.c_str( ), 13, Render::Fonts.Menu ) };
 
-	const auto second{ static_cast< int >( 1 ) }; // TODO: replace with realtime
+	const auto second{ static_cast< int >( Interfaces::GlobalVars->m_flRealTime ) };
 	this->m_cColor = Color( 1.f, 1.f, 1.f, second & 1 ? 1 - second : 1.f - ( 1 - second ) );
 	Render::Line( Menu::m_pFocusItem.m_vecDrawPos + Vector2D{ PADDING + textSize.x, 4 }, Menu::m_pFocusItem.m_vecDrawPos + Vector2D{ PADDING + textSize.x, size.y - 4 }, this->m_cColor );
 

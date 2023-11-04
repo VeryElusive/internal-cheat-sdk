@@ -1,8 +1,12 @@
 #include "../core/hooks.h"
 #include "../utils/render/render.h"
 #include "../menu/menu.h"
+#include "../features/visuals/visuals.h"
 
-#include "../pch.h"
+#include "../dependencies/imgui/imgui.h"
+#include "../dependencies/imgui/imgui_internal.h"
+#include "../dependencies/imgui/backends/imgui_impl_dx11.h"
+#include "../dependencies/imgui/backends/imgui_impl_win32.h"
 
 LRESULT CALLBACK Hooks::hkWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
 	if ( uMsg == WM_KEYDOWN && wParam == VK_INSERT )
@@ -79,6 +83,10 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 	ImGui_ImplWin32_NewFrame( );
 	ImGui::NewFrame( );
 	//ImGui::GetIO( ).MouseDrawCursor = var::showMenu;
+
+	ctx.GetLocal( );
+
+	//Features::Visuals.Main( );
 
 	Input::Update( );
 	Menu::Render( );

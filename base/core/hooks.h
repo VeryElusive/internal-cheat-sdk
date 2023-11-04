@@ -1,6 +1,7 @@
 #pragma once
 #include "../dependencies/minhook/minhook.h"
-#include "../havoc.h"
+
+#include <d3d11.h>
 
 class CHooked {
 public:

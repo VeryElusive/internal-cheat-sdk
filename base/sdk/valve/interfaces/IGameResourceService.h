@@ -32,9 +32,7 @@ public:
 
 private:
 	void* GetEntityByIndex( int nIndex ) {
-		//@ida: #STR: "(missing),", "(missing)", "Ent %3d: %s class %s name %s\n" | or find "cl_showents" cvar -> look for callback
-		//	do { pEntity = GetBaseEntityByIndex(g_pGameEntitySystem, nCurrentIndex); ... }
-		Displacement::GetBaseEntity( this, nIndex );
+		return Displacement::GetBaseEntity( this, nIndex );
 	}
 };
 

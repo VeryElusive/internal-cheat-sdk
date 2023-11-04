@@ -1,9 +1,13 @@
 #pragma once
 #include "../utils/render/render.h"
+#include "../utils/math.h"
 #include "../core/input.h"
 #include "controls/containers.h"
+#include "../core/config.h"
+
 #include <memory>
 #include <optional>
+#include <functional>
 
 // colors
 #define ACCENT2 Color( 182, 139, 252 )

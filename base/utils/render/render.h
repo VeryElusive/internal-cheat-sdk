@@ -5,6 +5,8 @@
 #include "../../dependencies/imgui/imgui.h"
 #include "../../dependencies/imgui/imgui_internal.h"
 
+#include <d3d11.h>
+
 #define MAINVP 0
 #define SAFE_RELEASE(p) if (p) { p->Release(); p = nullptr; } 
 #define PI 3.141592654f

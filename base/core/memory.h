@@ -1,5 +1,8 @@
 #pragma once
-#include "../havoc.h"
+#include <Windows.h>
+#include <cstddef>
+#include <cinttypes>
+#include "../utils/xorstr.h"
 
 #define CLIENT_DLL _( L"client.dll" )
 #define ENGINE2_DLL _( L"engine2.dll" )

@@ -1,4 +1,5 @@
 #include "interfaces.h"
+#include "memory.h"
 #include "../utils/utils.h"
 
 using InstantiateInterfaceFn_t = void* ( * )( );
@@ -15,9 +16,7 @@ T* Capture( const CInterfaceRegister* pModuleRegister, const char* szInterfaceNa
 {
 	for ( const CInterfaceRegister* pRegister = pModuleRegister; pRegister != nullptr; pRegister = pRegister->pNext )
 	{
-		if ( const std::size_t nInterfaceNameLength = strlen( szInterfaceName );
-			// found needed interface
-			strcmp( szInterfaceName, pRegister->szName ) == 0 ) )
+		if (strcmp( szInterfaceName, pRegister->szName ) == 0 )
 		{
 			// capture our interface
 			void* pInterface = pRegister->fnCreate( );
