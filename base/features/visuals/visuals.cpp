@@ -9,7 +9,7 @@ void CVisuals::Main( ) {
 
 	// replace with highestentity (in m_pGameEntitySystem) when we do other entity visuals
 	for ( int i{ 1 }; i < Interfaces::Engine->GetMaxClients( ); ++i ) {
-		const C_BaseEntity* ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
+		C_BaseEntity* ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
 		if ( !ent )
 			return;
 

@@ -2,13 +2,29 @@
 #include "entity_handle.h"
 #include "interfaces/ischemasystem.h"
 
+#define VAR_AT_OFFSET( type, name, offset ) __forceinline CBaseHandle& m_hPawn( ) { \
+		return *reinterpret_cast< CBaseHandle* >( ( reinterpret_cast< std::uintptr_t >( this ) + m_hPawn_OFFSET ) ); \
+	} \
+
+#define SCHEMA( type, name ) VAR_AT_OFFSET( type, name, name##_OFFSET )
+
+#define DEF_OFFSET( name ) static uint32_t name##_OFFSET;
+
 // wow... what the fuck...
 class CEntityInstance
 {
 public:
-	void GetSchemaClassInfo( SchemaClassInfoData_t** pReturn ) const {
+	void GetSchemaClassInfo( SchemaClassInfoData_t** pReturn ) {
 		return Memory::CallVFunc<void, 34U>( this, pReturn );
 	}
+
+	SCHEMA( CBaseHandle, m_hPawn )
+
+private:
+	DEF_OFFSET( m_hPawn )
+
+public:
+	static void Initialise( );
 };
 
 class C_BaseEntity : public CEntityInstance

@@ -53,6 +53,7 @@
     <ClCompile Include="menu\elements.cpp" />
     <ClCompile Include="menu\menu.cpp" />
     <ClCompile Include="sdk\utlmemory.cpp" />
+    <ClCompile Include="sdk\valve\class_offsets.cpp" />
     <ClCompile Include="utils\render\dxhook_uglyshit.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
     <ClCompile Include="utils\schema.cpp" />

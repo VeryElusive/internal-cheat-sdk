@@ -1,0 +1,20 @@
+﻿  render.cpp
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\color.h(10,68): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\color.h(10,86): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\color.h(10,106): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\color.h(10,125): warning C4244: 'initializing': conversion from 'float' to 'uint8_t', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(96,40): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(96,48): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(97,44): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(97,72): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(98,42): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(98,70): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(99,42): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(99,70): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(100,42): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(100,70): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(101,44): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\sdk\vector.h(101,72): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\utils\render\render.cpp(90,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\base\utils\render\render.cpp(91,15): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  assault-cube.vcxproj -> C:\Users\Admin\Documents\GitHub\MINE\internal-cheat-sdk\x64\Debug\base.dll
