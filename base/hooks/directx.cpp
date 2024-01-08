@@ -1,4 +1,5 @@
 #include "../core/hooks.h"
+#include "../core/input.h"
 #include "../utils/render/render.h"
 #include "../menu/menu.h"
 #include "../features/visuals/visuals.h"

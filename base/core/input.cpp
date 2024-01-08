@@ -1,5 +1,4 @@
-#include "input.h"
-#include "../havoc.h"
+/*#include "input.h"
 
 void Input::Update( ) {
 	// TODO:
@@ -35,3 +34,4 @@ bool Input::Pressed( int key ) {
 bool Input::Released( int key ) {
 	return !m_bState[ key ] && m_bPrevState[ key ];
 }
+*/

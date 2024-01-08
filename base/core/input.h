@@ -1,5 +1,5 @@
 #pragma once
-#include "../sdk/vector.h"
+#include "../havoc.h"
 
 namespace Input {
 	inline bool m_bState[ 256 ]{ };
@@ -9,10 +9,38 @@ namespace Input {
 	inline Vector2D m_vecMousePos{ };
 	inline Vector2D m_vecMouseDelta{ };
 
-	void Update( );
+	inline void Update( ) {
+		// TODO:
+		//if ( GetForegroundWindow( ) != ctx.hwnd )
+		//	return;
 
-	bool Hovered( Vector2D pos, Vector2D size );
-	bool Down( int key );
-	bool Pressed( int key );
-	bool Released( int key );
+		for ( int i{ }; i < 256; ++i ) {
+			m_bPrevState[ i ] = m_bState[ i ];
+			m_bState[ i ] = GetAsyncKeyState( i );
+		}
+
+		POINT mouse{ };
+		GetCursorPos( &mouse );
+		//ScreenToClient( hwnd, &mouse );
+
+		m_vecMouseDelta = m_vecMousePos - ( Vector2D( mouse.x, mouse.y ) );
+
+		m_vecMousePos = Vector2D( mouse.x, mouse.y );
+	}
+
+	inline bool Hovered( Vector2D pos, Vector2D size ) {
+		return ( m_vecMousePos > pos && m_vecMousePos < pos + size );
+	}
+
+	inline bool Down( int key ) {
+		return m_bState[ key ] && m_bPrevState[ key ];
+	}
+
+	inline bool Pressed( int key ) {
+		return m_bState[ key ] && !m_bPrevState[ key ];
+	}
+
+	inline bool Released( int key ) {
+		return !m_bState[ key ] && m_bPrevState[ key ];
+	}
 }
