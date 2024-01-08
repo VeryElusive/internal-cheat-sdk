@@ -1,21 +1,27 @@
 #pragma once
 #include "core/interfaces.h"
 
-#include "sdk/vector.h"
+#include "sdk/matrix.h"
 #include "sdk/color.h"
 
+class C_CSPlayerPawn;
 class CCSPlayerController;
 
 struct PlayerEntry_t {
 	struct Vis {
-
+		float m_flAlpha{ };
+		float m_flDormancyFade{ };
 	}; Vis Visuals;
 
 	struct Anim {
 
 	}; Anim Animations;
 
-	CCSPlayerController* m_pPlayer{ };
+	C_CSPlayerPawn* m_pPawn{ };
+
+	void Reset( C_CSPlayerPawn* pawn ) {
+		m_pPawn = pawn;
+	}
 };
 
 struct Context_t {
@@ -23,11 +29,17 @@ struct Context_t {
 
 	CCSPlayerController* m_pLocal{ };
 
+	ViewMatrix_t m_matViewMatrix{ };
+
+	Vector m_vecViewAngles{ };
+
+	bool m_bUnloading{ };
+
 	PlayerEntry_t PlayerEntries[ 64 ]{ };
 
 	void GetLocal( ) {
-		const int nIndex = Interfaces::Engine->GetLocalPlayer( );
-		m_pLocal = Interfaces::GameResourceService->m_pGameEntitySystem->Get<CCSPlayerController>( nIndex );
+		const int index{ Interfaces::Engine->GetLocalPlayer( ) };
+		m_pLocal = Interfaces::GameResourceService->m_pGameEntitySystem->Get<CCSPlayerController>( index );
 	}
 };
 

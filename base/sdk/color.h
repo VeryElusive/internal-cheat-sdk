@@ -29,5 +29,15 @@ public:
 		return colCopy;
 	}
 
+	// skips alpha
+	__forceinline Color Lerp( Color to, float strength ) {
+		return Color(
+			static_cast< int >( ( to.r - r ) * strength ) + r,
+			static_cast< int >( ( to.g - g ) * strength ) + g,
+			static_cast< int >( ( to.b - b ) * strength ) + b//,
+			//static_cast< int >( ( to.a - a ) * strength ) + a
+		);
+	}
+
 	uint8_t r{ }, g{ }, b{ }, a{ 255 };
 };

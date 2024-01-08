@@ -35,6 +35,8 @@ namespace Render {
 	void Unload( );
 	bool PrepareMethodTable( );
 
+	bool WorldToScreen( const Vector& world, Vector2D& screen );
+
 	// wrappers
 	void Line( Vector2D pos, Vector2D pos2, Color col );
 	void Rect( Vector2D pos, Vector2D size, Color col );

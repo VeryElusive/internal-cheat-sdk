@@ -13,15 +13,24 @@ void CVisuals::Main( ) {
 		if ( !ent )
 			return;
 
-		SchemaClassInfoData_t* pClassInfo = nullptr;
-		ent->GetSchemaClassInfo( &pClassInfo );
-		if ( pClassInfo == nullptr )
+		SchemaClassInfoData_t* classInfo{ };
+		ent->GetSchemaClassInfo( &classInfo );
+		if ( !classInfo )
 			continue;
 
-		const auto uHashedName{ FNV1A::Hash( pClassInfo->szNname ) };
+		PlayerEntry_t& entry{ ctx.PlayerEntries[ i ] };
+
+		const auto uHashedName{ FNV1A::Hash( classInfo->szNname ) };
 
 		if ( uHashedName == FNV1A::HashConst( "CCSPlayerController" ) ) {
-			Features::Visuals.HandlePlayer( static_cast< const CCSPlayerController*>( ent ) );
+			C_CSPlayerPawn* pawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( static_cast< CCSPlayerController* >( ent )->m_hPawn( ) ) };
+			if ( !pawn )
+				continue;
+
+			if ( entry.m_pPawn != pawn )
+				entry.Reset( pawn );
+
+			Features::Visuals.HandlePlayer( entry );
 		}
 
 		//if ( );

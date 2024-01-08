@@ -22,14 +22,85 @@ struct Vector {
 	float DistTo( const Vector& vecEnd ) const {
 		return ( *this - vecEnd ).Length( );
 	}
+
+	Vector operator+( const Vector& vecAdd ) const {
+		return Vector( this->x + vecAdd.x, this->y + vecAdd.y, this->z + vecAdd.z );
+	}
+
 	Vector operator-( const Vector& vecSubtract ) const {
 		return Vector( this->x - vecSubtract.x, this->y - vecSubtract.y, this->z - vecSubtract.z );
 	}
 
+	Vector operator*( const Vector& vecMultiply ) const {
+		return Vector( this->x * vecMultiply.x, this->y * vecMultiply.y, this->z * vecMultiply.z );
+	}
+
+	Vector operator/( const Vector& vecDivide ) const {
+		return Vector( this->x / vecDivide.x, this->y / vecDivide.y, this->z / vecDivide.z );
+	}
+
+	Vector operator+( const float flAdd ) const {
+		return Vector( this->x + flAdd, this->y + flAdd, this->z + flAdd );
+	}
+
+	Vector operator-( const float flSubtract ) const {
+		return Vector( this->x - flSubtract, this->y - flSubtract, this->z - flSubtract );
+	}
+
+	Vector operator*( const float flMultiply ) const {
+		return Vector( this->x * flMultiply, this->y * flMultiply, this->z * flMultiply );
+	}
+
+	Vector operator/( const float flDivide ) const {
+		return Vector( this->x / flDivide, this->y / flDivide, this->z / flDivide );
+	}
+
+	constexpr Vector& operator+=( const Vector& vecBase ) {
+		this->x += vecBase.x; this->y += vecBase.y; this->z += vecBase.z;
+		return *this;
+	}
+
+	constexpr Vector& operator-=( const Vector& vecBase ) {
+		this->x -= vecBase.x; this->y -= vecBase.y; this->z -= vecBase.z;
+		return *this;
+	}
+
+	constexpr Vector& operator*=( const Vector& vecBase ) {
+		this->x *= vecBase.x; this->y *= vecBase.y; this->z *= vecBase.z;
+		return *this;
+	}
+
+	constexpr Vector& operator/=( const Vector& vecBase ) {
+		this->x /= vecBase.x; this->y /= vecBase.y; this->z /= vecBase.z;
+		return *this;
+	}
+
+	constexpr Vector& operator+=( const float flAdd ) {
+		this->x += flAdd; this->y += flAdd; this->z += flAdd;
+		return *this;
+	}
+
+	constexpr Vector& operator-=( const float flSubtract ) {
+		this->x -= flSubtract; this->y -= flSubtract; this->z -= flSubtract;
+		return *this;
+	}
+
+	constexpr Vector& operator*=( const float flMultiply ) {
+		this->x *= flMultiply; this->y *= flMultiply; this->z *= flMultiply;
+		return *this;
+	}
+
+	constexpr Vector& operator/=( const float flDivide ) {
+		this->x /= flDivide; this->y /= flDivide; this->z /= flDivide;
+		return *this;
+	}
+
 	Vector( int x, int y, int z ) : x( static_cast< float >( x ) ), y( static_cast< float >( y ) ), z( static_cast< float >( z ) ) {};
 	Vector( float x, float y, float z ) : x( x ), y( y ), z( z ) {};
+	constexpr Vector( const float* arrVector ) : x( arrVector[ 0 ] ), y( arrVector[ 1 ] ), z( arrVector[ 2 ] ) { }
 };
 
+static inline Vector VecEmpty{ };
 
 struct Vector2D {
 	float x{ }, y{ };
@@ -102,6 +173,31 @@ struct Vector2D {
 };
 
 struct Vector4D {
-	int x{ }, y{ }, z{}, v{ };
+	float x{ }, y{ }, z{}, w{ };
 
 };
+struct alignas( 16 ) VectorAligned : Vector
+{
+	VectorAligned( ) = default;
+
+	explicit VectorAligned( const Vector& vecBase )
+	{
+		this->x = vecBase.x;
+		this->y = vecBase.y;
+		this->z = vecBase.z;
+		this->w = 0.f;
+	}
+
+	constexpr VectorAligned& operator=( const Vector& vecBase )
+	{
+		this->x = vecBase.x;
+		this->y = vecBase.y;
+		this->z = vecBase.z;
+		this->w = 0.f;
+		return *this;
+	}
+
+	float w = 0.f;
+};
+
+static_assert( alignof( VectorAligned ) == 16 );

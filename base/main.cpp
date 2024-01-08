@@ -3,6 +3,7 @@
 #include "core/interfaces.h"
 #include "utils/schema.h"
 #include "menu/menu.h"
+#include "sdk/valve/class_offsets.h"
 
 void Entry( HMODULE hModule ) {
 	//CursorArrow = LoadCursor( 0, IDC_ARROW );
@@ -18,10 +19,14 @@ void Entry( HMODULE hModule ) {
 
 	Displacement::Init( );
 
+	ClassOffsets::Initialise( );
+
 	Hooks::Init( );
 
 	while ( !GetAsyncKeyState( VK_F11 ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+
+	ctx.m_bUnloading = true;
 
 	Render::Unload( );
 
@@ -31,8 +36,6 @@ void Entry( HMODULE hModule ) {
 	MH_Uninitialize( );
 
 	reinterpret_cast< WNDPROC >( SetWindowLongPtr( Hooks::hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::WndProc ) ) );
-
-	Render::Unload( );
 
 	FreeLibraryAndExitThread( hModule, EXIT_SUCCESS );
 }

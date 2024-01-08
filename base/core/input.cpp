@@ -1,4 +1,5 @@
 #include "input.h"
+#include "../havoc.h"
 
 void Input::Update( ) {
 	// TODO:

@@ -79,17 +79,26 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 		}
 	}
 
+	if ( ctx.m_bUnloading )
+		return og( pSwapChain, SyncInterval, Flags );
+
 	ImGui_ImplDX11_NewFrame( );
 	ImGui_ImplWin32_NewFrame( );
+
+	// if i decide to move this to an in game hook, this must go before we draw.
 	ImGui::NewFrame( );
-	//ImGui::GetIO( ).MouseDrawCursor = var::showMenu;
+
+
+	ImGui::GetIO( ).MouseDrawCursor = Menu::m_bOpened;
 
 	ctx.GetLocal( );
 
-	Features::Visuals.Main( );
+	if ( Interfaces::GlobalVars ) {
+		Features::Visuals.Main( );
 
-	Input::Update( );
-	Menu::Render( );
+		Input::Update( );
+		Menu::Render( );
+	}
 
 	//Render::RectFilled( { 300, 300 }, { 100, 800 }, Color( 42, 230, 180 ) );
 

@@ -4,12 +4,6 @@
 #include <cinttypes>
 #include "../utils/xorstr.h"
 
-#define MEM_PAD(SIZE)										\
-private:												\
-	char pad_0##__COUNTER__[SIZE]; \
-public:
-#pragma endregion
-
 #define CLIENT_DLL _( L"client.dll" )
 #define ENGINE2_DLL _( L"engine2.dll" )
 #define TIER0_DLL _( L"tier0.dll" )
@@ -22,6 +16,15 @@ public:
 #define MEM_STACKALLOC(SIZE) _malloca(SIZE)
 #pragma warning(pop)
 #define MEM_STACKFREE(MEMORY) static_cast<void>(0)
+
+#define CONCAT_IMPL(LEFT, RIGHT) LEFT##RIGHT
+#define CONCAT(LEFT, RIGHT) CONCAT_IMPL(LEFT, RIGHT)
+
+#define MEM_PAD(SIZE)										\
+private:												\
+	char CONCAT( pad_0, __COUNTER__ )[SIZE]; \
+public:
+#pragma endregion
 
 struct UNICODE_STRING {
 	uint16_t	Length;
@@ -108,5 +111,10 @@ namespace Memory {
 	__forceinline T CallVFunc( CBaseClass* thisptr, Args_t... argList ) {
 		using VirtualFn_t = T( __thiscall* )( const void*, decltype( argList )... );
 		return ( *reinterpret_cast< VirtualFn_t* const* >( reinterpret_cast< std::uintptr_t >( thisptr ) ) )[ nIndex ]( thisptr, argList... );
+	}
+
+	template <typename T = void*>
+	__forceinline T GetVFunc( const void* thisptr, std::size_t nIndex ) {
+		return ( *static_cast< T* const* >( thisptr ) )[ nIndex ];
 	}
 }

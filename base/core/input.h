@@ -1,5 +1,5 @@
 #pragma once
-#include "../havoc.h"
+#include "../sdk/vector.h"
 
 namespace Input {
 	inline bool m_bState[ 256 ]{ };

@@ -1,5 +1,7 @@
 #pragma once
 #include "../dependencies/minhook/minhook.h"
+#include "../sdk/matrix.h"
+#include "../sdk/valve/interfaces/iviewrender.h"
 
 #include <d3d11.h>
 
@@ -30,6 +32,10 @@ public:
 
 namespace Hooks {
 	NEW_HOOK( Present, HRESULT, APIENTRY ) IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags );
+	NEW_HOOK( LevelInit, __int64*, __fastcall ) void* ecx, const char* szNewMap );
+	NEW_HOOK( LevelShutdown, __int64, __fastcall ) void* ecx );
+	NEW_HOOK( GetMatrixForView, ViewMatrix_t*, __fastcall ) void* pRenderGameSystem, IViewRender* pViewRender, ViewMatrix_t* pOutWorldToView, ViewMatrix_t* pOutViewToProjection, ViewMatrix_t* pOutWorldToProjection, ViewMatrix_t* pOutWorldToPixels );
+	NEW_HOOK( MouseInputEnabled, bool, __fastcall ) void* ecx );
 
 	inline WNDPROC WndProc;
 	inline HWND hwnd;

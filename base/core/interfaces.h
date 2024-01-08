@@ -4,6 +4,7 @@
 #include "../sdk/valve/interfaces/iengineclient.h"
 #include "../sdk/valve/interfaces/ischemasystem.h"
 #include "../sdk/valve/interfaces/imemalloc.h"
+#include "../sdk/valve/interfaces/iinput.h"
 
 
 namespace Interfaces {
@@ -14,4 +15,5 @@ namespace Interfaces {
 	inline IGameResourceService* GameResourceService{ };
 	inline ISchemaSystem* SchemaSystem{ };
 	inline IMemAlloc* MemAlloc{ };
+	inline IInput* Input{ };
 }

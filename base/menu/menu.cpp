@@ -1,6 +1,9 @@
 #include "menu.h"
 
 void Menu::Render( ) {
+	if ( !Interfaces::GlobalVars )
+		return;
+
 	static float lastRealTime{ };
 	if ( lastRealTime )
 		ctx.m_flFrameTime = Interfaces::GlobalVars->m_flRealTime - lastRealTime;

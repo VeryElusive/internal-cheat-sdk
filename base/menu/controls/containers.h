@@ -161,8 +161,8 @@ public:
 	std::vector < CMenuGroup > m_vecGroups{ };
 	Color m_cColor{ };
 
-	CMenuGroup* AddGroup( const char* name, float percent ) {
-		return &this->m_vecGroups.emplace_back( name, m_iMaxGroupsX, percent );
+	CMenuGroup* AddGroup( const char* name, float groupSizeAsPercent ) {
+		return &this->m_vecGroups.emplace_back( name, m_iMaxGroupsX, groupSizeAsPercent );
 	}
 };
 

@@ -10,7 +10,7 @@
 #define GET_DRAWLIST const auto drawlist{ ImGui::GetBackgroundDrawList( ) }; if ( drawlist ) drawlist
 
 void Render::Line( Vector2D pos, Vector2D pos2, Color col ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     // drawlist allows for thickness!!!
@@ -19,14 +19,14 @@ void Render::Line( Vector2D pos, Vector2D pos2, Color col ) {
 
 // we can do stroke thickness if we just draw rect filled instead of lines
 void Render::Rect( Vector2D pos, Vector2D size, Color col ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
 }
 
 void Render::RectFilled( Vector2D pos, Vector2D size, Color col ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
@@ -34,10 +34,16 @@ void Render::RectFilled( Vector2D pos, Vector2D size, Color col ) {
 
 // if you ever need to use this and it's fucked, the last param of AddCircle/AddCircleFilled is segments and is defaulted to 0
 void Render::CircleFilled( Vector2D pos, float radius, Color col ) {
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     GET_DRAWLIST->AddCircleFilled( { pos.x, pos.y }, radius, col.ToUInt32( ) );
 }
 
 void Render::Circle( Vector2D pos, float radius, Color col ) {
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
+        col = col.Alpha( col.a * Menu::m_flAlpha );
+
     GET_DRAWLIST->AddCircle( { pos.x, pos.y }, radius, col.ToUInt32( ) );
 }
 
@@ -47,7 +53,7 @@ Vector2D Render::GetTextSize( const std::string& text, float fontSize, const ImF
 }
 
 void Render::Text( const Vector2D& pos, const std::string& text, Color col, std::uint8_t flags, float fontSize, const ImFont* font ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     const auto drawlist{ ImGui::GetBackgroundDrawList( ) };
@@ -77,14 +83,14 @@ void Render::Text( const Vector2D& pos, const std::string& text, Color col, std:
 }
 
 void Render::RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
 }
 
 void Render::RoundedRect( Vector2D pos, Vector2D size, int radius, Color col ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
@@ -92,7 +98,7 @@ void Render::RoundedRect( Vector2D pos, Vector2D size, int radius, Color col ) {
 
 
 void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal ) {
-    if ( Menu::m_flAlpha < 1.f )
+    if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
     GET_DRAWLIST->AddRectFilledMultiColor( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, 
@@ -100,6 +106,26 @@ void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool 
         horizontal ? col2.ToUInt32( ) : col.ToUInt32( ),
         col2.ToUInt32( ),
         horizontal ? col.ToUInt32( ) : col2.ToUInt32( ) );
+}
+
+bool Render::WorldToScreen( const Vector& world, Vector2D& screen ) {
+    const float flWidth{ ctx.m_matViewMatrix[ 3 ][ 0 ] * world.x + ctx.m_matViewMatrix[ 3 ][ 1 ] * world.y + ctx.m_matViewMatrix[ 3 ][ 2 ] * world.z + ctx.m_matViewMatrix[ 3 ][ 3 ] };
+
+    // check is point can't fit on screen, because it's behind us
+    if ( flWidth < 0.001f )
+        return false;
+
+    // compute the scene coordinates of a point in 3D
+    const float flInverse = 1.0f / flWidth;
+    screen.x = ( ctx.m_matViewMatrix[ 0 ][ 0 ] * world.x + ctx.m_matViewMatrix[ 0 ][ 1 ] * world.y + ctx.m_matViewMatrix[ 0 ][ 2 ] * world.z + ctx.m_matViewMatrix[ 0 ][ 3 ] ) * flInverse;
+    screen.y = ( ctx.m_matViewMatrix[ 1 ][ 0 ] * world.x + ctx.m_matViewMatrix[ 1 ][ 1 ] * world.y + ctx.m_matViewMatrix[ 1 ][ 2 ] * world.z + ctx.m_matViewMatrix[ 1 ][ 3 ] ) * flInverse;
+
+    // screen transform
+    // get the screen position in pixels of given point
+    const ImVec2 vecDisplaySize{ ImGui::GetIO( ).DisplaySize };
+    screen.x = ( vecDisplaySize.x * 0.5f ) + ( screen.x * vecDisplaySize.x ) * 0.5f;
+    screen.y = ( vecDisplaySize.y * 0.5f ) - ( screen.y * vecDisplaySize.y ) * 0.5f;
+    return true;
 }
 
 

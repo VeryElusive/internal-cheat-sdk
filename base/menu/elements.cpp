@@ -12,7 +12,6 @@ void Menu::Register( ) {
 	{
 		auto generalGroup{ aimbot->AddGroup( "General", 1.f ) };
 		{
-			generalGroup->Register( ( "Enable" ), &Configs::m_cConfig.m_bAimbotEnable );
 			//generalGroup->Register( ( "Through walls" ), &Configs::m_cConfig.m_bAimbotThroughWalls );
 
 		}
@@ -22,21 +21,26 @@ void Menu::Register( ) {
 
 	auto antiaim{ &m_cTabs[ 0 ].m_vecSubtabs.emplace_back( "Anti-aim", 2 ) };
 
-	auto test{ &m_cTabs[ 1 ].m_vecSubtabs.emplace_back( "test", 2 ) };
+	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( _( "Enemy" ), 2 );
+	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( _( "Team" ), 2 );
+	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( _( "Local" ), 2 );
+	{
+		for ( int i{ }; i < 3; ++i ) {
+			auto subTab{ &m_cTabs[ 1 ].m_vecSubtabs.at( i ) };
+			auto ESPGroup{ subTab->AddGroup( "ESP", 1.f ) };
+
+			ESPGroup->Register( ( "Enable" ), &Configs::m_cConfig.m_bEnabled[ i ] );
+			ESPGroup->Register( ( "Box" ), &Configs::m_cConfig.m_bBox[ i ] );
+			ESPGroup->Register( &Configs::m_cConfig.m_colBox[ i ] );
+		}
+	}
+
 	auto test1{ &m_cTabs[ 2 ].m_vecSubtabs.emplace_back( "test", 2 ) };
 	auto test2{ &m_cTabs[ 3 ].m_vecSubtabs.emplace_back( "Elements", 2 ) };
 	{
 		auto generalGroup{ test2->AddGroup( "Elements", 1.f ) };
 		{
-			generalGroup->Register( ( "Checkbox" ), &Configs::m_cConfig.m_bAimbotEnable );
-			generalGroup->Register( &Configs::m_cConfig.m_cColorPickerTest );
-			generalGroup->Register( ( "Slider float" ), &Configs::m_cConfig.m_iAimbotSliderFloat, 0, 100 );
-			generalGroup->Register( ( "Slider int" ), &Configs::m_cConfig.m_iAimbotSlider, 0, 100 );
-			generalGroup->Register( ( "Combo" ), &Configs::m_cConfig.m_iAimbotCombo, 4, comboElements );
-			generalGroup->Register( ( "Multi combo" ), 5, multiComboElements );
-			generalGroup->Register( ( "Button" ), [ ] {
 
-				} );
 		}
 		auto otherGroup{ test2->AddGroup( "Other", 0.6f ) };
 		auto other2Group{ test2->AddGroup( "Other", 0.4f ) };

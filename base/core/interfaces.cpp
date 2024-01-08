@@ -62,5 +62,8 @@ void Interfaces::Init( ) {
 
 	MemAlloc = *reinterpret_cast< IMemAlloc** >( Memory::GetExportAddress( pTier0Handle, _( "g_pMemAlloc" ) ) );
 
+	// STRING XREF: "%s:  %f tick(%d) curtime(%f) OnSequenceCycleChanged: %s : %d=[%s]"
 	GlobalVars = *reinterpret_cast< CGlobalVarsBase** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 89 0D ? ? ? ? 48 89 41" ) ), 0x3, 0x7 ) );
+
+	Input = *reinterpret_cast< IInput** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 8B 0D ? ? ? ? 48 8B 01 FF 50 ? 8B DF" ) ), 0x3, 0x7 ) );
 }

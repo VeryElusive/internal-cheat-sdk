@@ -4,11 +4,19 @@
 #include <filesystem>
 
 struct Config_t {
-	bool m_bAimbotEnable{ };
-	bool m_bAimbotThroughWalls{ };
-	float m_iAimbotSliderFloat{ };
-	int m_iAimbotSlider{ };
-	int m_iAimbotCombo{ };
+#pragma region visuals
+
+#pragma region player ESP
+	bool m_bEnabled[ 3 ];
+	//bool m_bName[ 3 ];
+	//Color m_colName{ Color( 255, 255, 255 ) };
+
+	bool m_bBox[ 3 ];
+	Color m_colBox[ 3 ]{ Color( 255, 255, 255 ) };
+
+#pragma endregion player ESP
+
+#pragma endregion visuals
 
 	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };
 

@@ -55,7 +55,7 @@ void Configs::LoadCFG( std::string filePath ) {
 
 void Configs::Refresh( ) {
 	m_vecFileNames.clear( );
-	const auto filePath{ "C:\\Havoc-Assault-Cube\\Configs" };
+	const auto filePath{ "C:\\Havoc\\Configs" };
 
 	for ( const auto& it : std::filesystem::directory_iterator( filePath ) ) {
 		if ( it.path( ).filename( ).extension( ) == ".havoc" ) {
