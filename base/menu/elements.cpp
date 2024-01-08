@@ -21,17 +21,25 @@ void Menu::Register( ) {
 
 	auto antiaim{ &m_cTabs[ 0 ].m_vecSubtabs.emplace_back( "Anti-aim", 2 ) };
 
-	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( _( "Enemy" ), 2 );
-	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( _( "Team" ), 2 );
-	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( _( "Local" ), 2 );
+	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( ( "Enemy" ), 2 );
+	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( ( "Team" ), 2 );
+	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( ( "Local" ), 2 );
 	{
 		for ( int i{ }; i < 3; ++i ) {
 			auto subTab{ &m_cTabs[ 1 ].m_vecSubtabs.at( i ) };
 			auto ESPGroup{ subTab->AddGroup( "ESP", 1.f ) };
 
 			ESPGroup->Register( ( "Enable" ), &Configs::m_cConfig.m_bEnabled[ i ] );
+			ESPGroup->Register( ( "Name" ), &Configs::m_cConfig.m_bName[ i ] );
+			ESPGroup->Register( &Configs::m_cConfig.m_colName[ i ] );
+
 			ESPGroup->Register( ( "Box" ), &Configs::m_cConfig.m_bBox[ i ] );
 			ESPGroup->Register( &Configs::m_cConfig.m_colBox[ i ] );
+
+			ESPGroup->Register( ( "Health" ), &Configs::m_cConfig.m_bHealth[ i ] );
+			// TODO: make this conditional
+			ESPGroup->Register( ( "Health color override" ), &Configs::m_cConfig.m_bHealthOverride[ i ]/*, SHOW( Configs::m_cConfig.m_bHealth[ i ] )*/ );
+			ESPGroup->Register( &Configs::m_cConfig.m_colHealth[ i ] );
 		}
 	}
 

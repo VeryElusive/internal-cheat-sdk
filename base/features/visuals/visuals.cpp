@@ -23,14 +23,19 @@ void CVisuals::Main( ) {
 		const auto uHashedName{ FNV1A::Hash( classInfo->szNname ) };
 
 		if ( uHashedName == FNV1A::HashConst( "CCSPlayerController" ) ) {
-			C_CSPlayerPawn* pawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( static_cast< CCSPlayerController* >( ent )->m_hPawn( ) ) };
+			auto playerController{ static_cast< CCSPlayerController* >( ent ) };
+
+			C_CSPlayerPawn* pawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( playerController->m_hPawn( ) ) };
 			if ( !pawn )
 				continue;
 
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );
 
-			Features::Visuals.HandlePlayer( entry );
+			entry.m_pName = playerController->m_sSanitizedPlayerName( );
+
+			if ( playerController->m_bPawnIsAlive( ) )
+				Features::Visuals.HandlePlayer( entry );
 		}
 
 		//if ( );

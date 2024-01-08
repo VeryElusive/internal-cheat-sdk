@@ -28,6 +28,8 @@ private:
 	bool GetBBox( const C_CSPlayerPawn* pawn, BBox_t& bbox );
 
 	void DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
+	void DrawName( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
+	void DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
 };
 
 namespace Features { inline CVisuals Visuals; };

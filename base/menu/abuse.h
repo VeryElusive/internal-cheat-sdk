@@ -1,5 +1,7 @@
 #pragma once
 
+#define SHOW( cond ) [ ]( ) { return cond; }
+
 ComboElement_t comboElements[ ]{ "hello", "what's", "up", "guys" };
 
 MultiElement_t multiComboElements[ 5 ]{

@@ -9,6 +9,7 @@ class CCSPlayerController;
 
 struct PlayerEntry_t {
 	struct Vis {
+		int m_iHealth{ };
 		float m_flAlpha{ };
 		float m_flDormancyFade{ };
 	}; Vis Visuals;
@@ -16,6 +17,8 @@ struct PlayerEntry_t {
 	struct Anim {
 
 	}; Anim Animations;
+
+	const char* m_pName{ };
 
 	C_CSPlayerPawn* m_pPawn{ };
 

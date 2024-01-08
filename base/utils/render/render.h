@@ -25,6 +25,10 @@ namespace Render {
 	struct _Fonts {
 		ImFont* Menu{ };
 		ImFont* Tabs{ };
+
+		ImFont* NameESP{ };
+		ImFont* HealthESP{ };
+
 	}; inline _Fonts Fonts;
 
 	inline void** MethodsTable = NULL;
@@ -44,7 +48,7 @@ namespace Render {
 	void Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal );
 	void Circle( Vector2D pos, float radius, Color color );
 	void CircleFilled( Vector2D pos, float radius, Color color );
-	void Text( const Vector2D& pos, const std::string& text, Color color, std::uint8_t flags, float fontSize, const ImFont* font );
+	void Text( Vector2D pos, const std::string& text, Color color, std::uint8_t flags, float fontSize, const ImFont* font );
 	Vector2D GetTextSize( const std::string& text, float fontSize, const ImFont* font );
 	// keep radius an even number
 	void RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color col );

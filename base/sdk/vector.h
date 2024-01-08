@@ -162,6 +162,11 @@ struct Vector2D {
 		this->y *= v;
 	}
 
+	void Floor( ) {
+		x = std::floor( x );
+		y = std::floor( y );
+	}
+
 	Vector2D( ) {};
 
 	constexpr Vector2D( int x, int y ) : x( static_cast< float >( x ) ), y( static_cast< float >( y ) ) {};

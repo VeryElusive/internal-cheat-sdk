@@ -91,6 +91,14 @@ void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
 	if ( !Configs::m_cConfig.m_bEnabled[ type ] )
 		return;
 
+	// reset stored health
+	if ( entry.Visuals.m_iHealth < std::min( entry.m_pPawn->m_iHealth( ), 100 ) )
+		entry.Visuals.m_iHealth = std::min( entry.m_pPawn->m_iHealth( ), 100 );
+
+	// animation
+	if ( entry.Visuals.m_iHealth > entry.m_pPawn->m_iHealth( ) )
+		entry.Visuals.m_iHealth -= 6.f * ctx.m_flFrameTime * ( entry.Visuals.m_iHealth - entry.m_pPawn->m_iHealth( ) );
+
 	if ( entry.m_pPawn->Dormant( ) ) {
 		entry.Visuals.m_flAlpha -= ctx.m_flFrameTime / 5.f;
 		entry.Visuals.m_flDormancyFade += ctx.m_flFrameTime;
@@ -100,23 +108,71 @@ void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
 		entry.Visuals.m_flDormancyFade -= ctx.m_flFrameTime * 2.f;
 	}
 
+	entry.Visuals.m_flAlpha = std::clamp<float>( entry.Visuals.m_flAlpha, 0.f, 1.f );
+	entry.Visuals.m_flDormancyFade = std::clamp<float>( entry.Visuals.m_flDormancyFade, 0.f, 1.f );
+
 	BBox_t bbox;
 	if ( !GetBBox( entry.m_pPawn, bbox ) )
 		return;
 
 	if ( Configs::m_cConfig.m_bBox[ type ] )
 		DrawBox( entry, type, bbox );
+
+	if ( Configs::m_cConfig.m_bName[ type ] )
+		DrawName( entry, type, bbox );
+
+	if ( Configs::m_cConfig.m_bHealth[ type ] )
+		DrawHealth( entry, type, bbox );
 }
 
 void CVisuals::DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
 	Color col{ Configs::m_cConfig.m_colBox[ type ] };
 	col.a *= entry.Visuals.m_flAlpha;
 
-	col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
+	if ( entry.Visuals.m_flDormancyFade )
+		col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
 
-	const auto outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
+	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
 	
 	Render::Rect( bbox.Position( ) + 1, bbox.Size( ) - 2, outline );
 	Render::Rect( bbox.Position( ), bbox.Size( ), col );
 	Render::Rect( bbox.Position( ) - 1, bbox.Size( ) + 2, outline );
+}
+
+void CVisuals::DrawName( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+	Color col{ Configs::m_cConfig.m_colName[ type ] };
+	col.a *= entry.Visuals.m_flAlpha;
+
+	if ( entry.Visuals.m_flDormancyFade )
+		col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
+
+	Render::Text( { bbox.x + bbox.w / 2, bbox.y - 13 }, entry.m_pName, col, TEXT_CENTER | TEXT_DROPSHADOW, 13, Render::Fonts.NameESP );
+}
+
+void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+	Color col{ Configs::m_cConfig.m_colHealth[ type ] };
+
+	if ( !Configs::m_cConfig.m_bHealthOverride[ type ] ) {
+		const int green{ static_cast< int >( static_cast< float >( std::min( entry.Visuals.m_iHealth, 100 ) ) * 2.55f ) };
+		const int red{ 255 - green };
+		col = Color( red, green, 0 );
+	}
+
+	col.a *= entry.Visuals.m_flAlpha;
+
+	if ( entry.Visuals.m_flDormancyFade )
+		col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
+
+	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
+
+	const int bar_height{ static_cast< int >( static_cast< float >( entry.Visuals.m_iHealth ) * static_cast< float >( bbox.h ) / 100.0f ) };
+	const float offset{ bbox.h - bar_height };
+
+	Render::RectFilled( { bbox.x - 6, bbox.y - 1 }, { 4, bbox.h + 2 }, outline.Alpha( outline.a * 0.5f ) );
+	Render::RectFilled( { bbox.x - 5, bbox.y + offset }, { 2, bar_height }, col );
+
+	Render::Rect( { bbox.x - 6, bbox.y - 1 }, { 4, bbox.h + 2 }, outline );
+
+	if ( entry.Visuals.m_iHealth <= 92 )
+		Render::Text( { bbox.x - 5, bbox.y + offset - 3 }, std::to_string( entry.Visuals.m_iHealth ).c_str( ), Color( 255, 255, 255, ( int ) col.a ), TEXT_CENTER | TEXT_OUTLINE, 8, Render::Fonts.NameESP );
 }

@@ -13,6 +13,9 @@ void Render::Line( Vector2D pos, Vector2D pos2, Color col ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
+    pos.Floor( );
+    pos2.Floor( );
+
     // drawlist allows for thickness!!!
     GET_DRAWLIST->AddLine( { pos.x, pos.y }, { pos2.x, pos2.y }, col.ToUInt32( ) );
 }
@@ -22,12 +25,18 @@ void Render::Rect( Vector2D pos, Vector2D size, Color col ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
+    pos.Floor( );
+    size.Floor( );
+
     GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
 }
 
 void Render::RectFilled( Vector2D pos, Vector2D size, Color col ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
+
+    pos.Floor( );
+    size.Floor( );
 
     GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ) );
 }
@@ -37,12 +46,16 @@ void Render::CircleFilled( Vector2D pos, float radius, Color col ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
+    pos.Floor( );
+
     GET_DRAWLIST->AddCircleFilled( { pos.x, pos.y }, radius, col.ToUInt32( ) );
 }
 
 void Render::Circle( Vector2D pos, float radius, Color col ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
+
+    pos.Floor( );
 
     GET_DRAWLIST->AddCircle( { pos.x, pos.y }, radius, col.ToUInt32( ) );
 }
@@ -52,9 +65,11 @@ Vector2D Render::GetTextSize( const std::string& text, float fontSize, const ImF
     return { ret.x, ret.y };
 }
 
-void Render::Text( const Vector2D& pos, const std::string& text, Color col, std::uint8_t flags, float fontSize, const ImFont* font ) {
+void Render::Text( Vector2D pos, const std::string& text, Color col, std::uint8_t flags, float fontSize, const ImFont* font ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
+
+    pos.Floor( );
 
     const auto drawlist{ ImGui::GetBackgroundDrawList( ) };
 
@@ -72,7 +87,7 @@ void Render::Text( const Vector2D& pos, const std::string& text, Color col, std:
         recastPos.x -= GetTextSize( text, fontSize, font ).x / 2;
 
     if ( flags & TEXT_DROPSHADOW )
-        drawlist->AddText( font, fontSize, recastPos + ImVec2( 1.f, -1.f ), colOutlinePacked, text.c_str( ) );
+        drawlist->AddText( font, fontSize, recastPos + ImVec2( 1.f, 1.f ), colOutlinePacked, text.c_str( ) );
     else if ( flags & TEXT_OUTLINE ) {
         drawlist->AddText( font, fontSize, recastPos + ImVec2( 1.f, -1.f ), colOutlinePacked, text.c_str( ) );
         drawlist->AddText( font, fontSize, recastPos + ImVec2( -1.f, 1.f ), colOutlinePacked, text.c_str( ) );
@@ -86,12 +101,18 @@ void Render::RoundedRectFilled( Vector2D pos, Vector2D size, int radius, Color c
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
 
+    pos.Floor( );
+    size.Floor( );
+
     GET_DRAWLIST->AddRectFilled( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
 }
 
 void Render::RoundedRect( Vector2D pos, Vector2D size, int radius, Color col ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
+
+    pos.Floor( );
+    size.Floor( );
 
     GET_DRAWLIST->AddRect( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, col.ToUInt32( ), radius );
 }
@@ -100,6 +121,9 @@ void Render::RoundedRect( Vector2D pos, Vector2D size, int radius, Color col ) {
 void Render::Gradient( Vector2D pos, Vector2D size, Color col, Color col2, bool horizontal ) {
     if ( Menu::m_bRendering && Menu::m_flAlpha < 1.f )
         col = col.Alpha( col.a * Menu::m_flAlpha );
+
+    pos.Floor( );
+    size.Floor( );
 
     GET_DRAWLIST->AddRectFilledMultiColor( { pos.x, pos.y }, { pos.x + size.x, pos.y + size.y }, 
         col.ToUInt32( ), 
@@ -134,6 +158,9 @@ void Render::Init( ) {
 
     Fonts.Menu = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Tahoma.ttf" ), 13.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
     Fonts.Tabs = io.Fonts->AddFontFromFileTTF( _( "C:\\test2.ttf" ), 50.f, nullptr, io.Fonts->GetGlyphRangesDefault( ) );
+
+    Fonts.NameESP = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Verdana.ttf" ), 12.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+    Fonts.HealthESP = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Small Fonts.ttf" ), 8.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
 
     //io.Fonts->Build( );
 }

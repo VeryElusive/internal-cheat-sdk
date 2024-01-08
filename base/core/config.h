@@ -8,11 +8,15 @@ struct Config_t {
 
 #pragma region player ESP
 	bool m_bEnabled[ 3 ];
-	//bool m_bName[ 3 ];
-	//Color m_colName{ Color( 255, 255, 255 ) };
+	bool m_bName[ 3 ];
+	Color m_colName[ 3 ]{ Color( 255, 255, 255 ) };
 
 	bool m_bBox[ 3 ];
 	Color m_colBox[ 3 ]{ Color( 255, 255, 255 ) };
+
+	bool m_bHealth[ 3 ];
+	bool m_bHealthOverride[ 3 ];
+	Color m_colHealth[ 3 ]{ Color( 115, 155, 255 ) };
 
 #pragma endregion player ESP
 

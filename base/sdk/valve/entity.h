@@ -47,6 +47,7 @@ public:
 	SCHEMA( CGameSceneNode*, m_pGameSceneNode );
 	SCHEMA( CCollisionProperty*, m_pCollision );
 	SCHEMA( std::uint8_t, m_iTeamNum );
+	SCHEMA( int, m_iHealth );
 
 	__forceinline bool Dormant( ) {
 		if ( this->m_pGameSceneNode( ) )
@@ -104,5 +105,9 @@ public:
 class CCSPlayerController : public CBasePlayerController
 {
 public:
+	SCHEMA( bool, m_bPawnIsAlive );
+	SCHEMA( const char*, m_sSanitizedPlayerName );
 
+public:
+	static void Initialise( );
 };

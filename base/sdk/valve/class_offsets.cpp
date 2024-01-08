@@ -13,11 +13,17 @@ void ClassOffsets::Initialise( ) {
 	CGameSceneNode::Initialise( );
 	CCollisionProperty::Initialise( );
 	C_BaseEntity::Initialise( );
+	CCSPlayerController::Initialise( );
 }
 
 
 void CBasePlayerController::Initialise( ) {
 	INIT_SCHEMA( CBasePlayerController, m_hPawn );
+}
+
+void CCSPlayerController::Initialise( ) {
+	INIT_SCHEMA( CCSPlayerController, m_bPawnIsAlive );
+	INIT_SCHEMA( CCSPlayerController, m_sSanitizedPlayerName );
 }
 
 void CGameSceneNode::Initialise( ) {
@@ -35,4 +41,5 @@ void C_BaseEntity::Initialise( ) {
 	INIT_SCHEMA( C_BaseEntity, m_pGameSceneNode );
 	INIT_SCHEMA( C_BaseEntity, m_pCollision );
 	INIT_SCHEMA( C_BaseEntity, m_iTeamNum );
+	INIT_SCHEMA( C_BaseEntity, m_iHealth );
 }
