@@ -83,7 +83,11 @@ public:
 class C_CSPlayerPawnBase : public C_BasePlayerPawn
 {
 public:
+	// todo: make this its own class
+	SCHEMA( void*, m_pClippingWeapon );
 
+public:
+	static void Initialise( );
 };
 
 class C_CSPlayerPawn : public C_CSPlayerPawnBase
@@ -107,6 +111,15 @@ class CCSPlayerController : public CBasePlayerController
 public:
 	SCHEMA( bool, m_bPawnIsAlive );
 	SCHEMA( const char*, m_sSanitizedPlayerName );
+
+public:
+	static void Initialise( );
+};
+
+class CCSWeaponBaseVData
+{
+public:
+	SCHEMA( const char*, m_szName );
 
 public:
 	static void Initialise( );

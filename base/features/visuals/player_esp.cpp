@@ -123,6 +123,9 @@ void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
 
 	if ( Configs::m_cConfig.m_bHealth[ type ] )
 		DrawHealth( entry, type, bbox );
+
+	if ( Configs::m_cConfig.m_iWeapon[ type ] )
+		DrawWeapon( entry, type, bbox );
 }
 
 void CVisuals::DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
@@ -175,4 +178,14 @@ void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_
 
 	if ( entry.Visuals.m_iHealth <= 92 )
 		Render::Text( { bbox.x - 5, bbox.y + offset - 3 }, std::to_string( entry.Visuals.m_iHealth ).c_str( ), Color( 255, 255, 255, ( int ) col.a ), TEXT_CENTER | TEXT_OUTLINE, 8, Render::Fonts.NameESP );
+}
+
+void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+	const auto weaponData{ reinterpret_cast< CCSWeaponBaseVData* >( reinterpret_cast< std::uintptr_t >( entry.m_pPawn->m_pClippingWeapon( ) ) + 0x360 ) };
+	const auto name{ weaponData->m_szName( ) };
+
+	if ( !weaponData || !name )
+		return;
+
+	Render::Text( { bbox.x - 5, bbox.y - 20 }, name, Color( 255, 255, 255 ), TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
 }

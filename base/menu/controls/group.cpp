@@ -107,6 +107,7 @@ void CMenuItem::RenderFocus( ) {
 	case TEXT_INPUT:
 		TextInputFocus( );
 		break;
+		break;
 	default:
 		break;
 	}
@@ -117,19 +118,19 @@ void CMenuItem::Render( ) {
 	case CHECKBOX:
 		Checkbox( );
 		break;
-		case SLIDER_FLOAT:
+	case SLIDER_FLOAT:
 		SliderFloat( );
 		break;
 	case SLIDER_INT:
 		SliderInt( );
 		break;
-		case COMBO:
+	case COMBO:
 		Combo( );
 		break;
 	case MULTI_COMBO:
 		MultiCombo( );
 		break;
-		case COLOR_PICKER:
+	case COLOR_PICKER:
 		ColorPicker( );
 		break;
 	case BUTTON:
@@ -138,9 +139,11 @@ void CMenuItem::Render( ) {
 	case LIST_BOX:
 		Listbox( );
 		break;
-		case TEXT_INPUT:
+	case TEXT_INPUT:
 		TextInput( );
 		break;
+	case LABEL:
+		Label( );
 	default:
 		break;
 	}

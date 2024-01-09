@@ -42,28 +42,36 @@ static const CInterfaceRegister* GetRegisterList( const wchar_t* wszModuleName )
 	return *reinterpret_cast< CInterfaceRegister** >( Memory::ResolveRelativeAddress( pCreateInterface, 0x3, 0x7 ) );
 }
 
-void Interfaces::Init( ) {
+bool Interfaces::Init( ) {
+	ENTER_REGION( "Interfaces" );
+
 	const auto pEngineRegisterList = GetRegisterList( ENGINE2_DLL );
-	if ( !pEngineRegisterList )
-		return;
+	CHECK_AND_FAIL( pEngineRegisterList );
 
 	GameResourceService = Capture<IGameResourceService>	( pEngineRegisterList, _( "GameResourceServiceClientV001" ) );
+	CHECK_AND_FAIL( GameResourceService );
+
 	Engine				= Capture<IEngineClient>		( pEngineRegisterList, _( "Source2EngineToClient001" ) );
+	CHECK_AND_FAIL( Engine );
 
 	const auto pSchemaSystemRegisterList = GetRegisterList( SCHEMASYSTEM_DLL );
-	if ( !pSchemaSystemRegisterList )
-		return;
+	CHECK_AND_FAIL( pSchemaSystemRegisterList );
 
 	SchemaSystem = Capture<ISchemaSystem>( pSchemaSystemRegisterList, _( "SchemaSystem_001" ) );
+	CHECK_AND_FAIL( SchemaSystem );
 
 	const auto pTier0Handle = Memory::GetModuleBaseHandle( TIER0_DLL );
-	if ( !pTier0Handle )
-		return;
+	CHECK_AND_FAIL( pTier0Handle );
 
 	MemAlloc = *reinterpret_cast< IMemAlloc** >( Memory::GetExportAddress( pTier0Handle, _( "g_pMemAlloc" ) ) );
+	CHECK_AND_FAIL( MemAlloc );
 
 	// STRING XREF: "%s:  %f tick(%d) curtime(%f) OnSequenceCycleChanged: %s : %d=[%s]"
 	GlobalVars = *reinterpret_cast< CGlobalVarsBase** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 89 0D ? ? ? ? 48 89 41" ) ), 0x3, 0x7 ) );
+	CHECK_AND_FAIL( GlobalVars );
 
 	Input = *reinterpret_cast< IInput** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 8B 0D ? ? ? ? 48 8B 01 FF 50 ? 8B DF" ) ), 0x3, 0x7 ) );
+	CHECK_AND_FAIL( Input );
+
+	return true;
 }

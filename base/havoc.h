@@ -4,6 +4,8 @@
 #include "sdk/matrix.h"
 #include "sdk/color.h"
 
+#define CHECK_AND_FAIL( check ) if ( !check ) { printf( #check " failed!\n"); return false; }
+
 class C_CSPlayerPawn;
 class CCSPlayerController;
 

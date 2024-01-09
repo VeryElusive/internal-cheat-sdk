@@ -40,6 +40,12 @@ void Menu::Register( ) {
 			// TODO: make this conditional
 			ESPGroup->Register( ( "Health color override" ), &Configs::m_cConfig.m_bHealthOverride[ i ]/*, SHOW( Configs::m_cConfig.m_bHealth[ i ] )*/ );
 			ESPGroup->Register( &Configs::m_cConfig.m_colHealth[ i ] );
+
+			ESPGroup->Register( ( "Weapon" ), &Configs::m_cConfig.m_iWeapon[ i ], 3, WeaponTypes );
+			ESPGroup->Register( ( "Weapon color" ) );
+			ESPGroup->Register( &Configs::m_cConfig.m_colWeapon[ i ] );
+
+
 		}
 	}
 

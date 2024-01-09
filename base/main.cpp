@@ -11,9 +11,18 @@ void Entry( HMODULE hModule ) {
 	_MM_SET_FLUSH_ZERO_MODE( _MM_FLUSH_ZERO_ON );
 	_MM_SET_DENORMALS_ZERO_MODE( _MM_DENORMALS_ZERO_ON );
 
+#ifdef _DEBUG
+	AllocConsole( );
+	FILE* file;
+	freopen_s( &file, "CONIN$", "r", stdin );
+	freopen_s( &file, "CONOUT$", "w", stdout );
+	freopen_s( &file, "CONOUT$", "w", stderr );
+#endif
+
 	Menu::Register( );
 
-	Interfaces::Init( );
+	if ( !Interfaces::Init( ) ) 
+		return;
 
 	Schema::Setup( );
 
@@ -22,6 +31,10 @@ void Entry( HMODULE hModule ) {
 	ClassOffsets::Initialise( );
 
 	Hooks::Init( );
+
+#ifdef _DEBUG
+	printf( "\nDeployed havoc.\n" );
+#endif
 
 	while ( !GetAsyncKeyState( VK_F11 ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
@@ -36,6 +49,8 @@ void Entry( HMODULE hModule ) {
 	MH_Uninitialize( );
 
 	reinterpret_cast< WNDPROC >( SetWindowLongPtr( Hooks::hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::WndProc ) ) );
+
+	FreeConsole( );
 
 	FreeLibraryAndExitThread( hModule, EXIT_SUCCESS );
 }

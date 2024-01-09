@@ -6,9 +6,8 @@
 #include "../sdk/valve/interfaces/imemalloc.h"
 #include "../sdk/valve/interfaces/iinput.h"
 
-
 namespace Interfaces {
-	void Init( );
+	bool Init( );
 
 	inline IEngineClient* Engine{ };
 	inline CGlobalVarsBase* GlobalVars{ };
