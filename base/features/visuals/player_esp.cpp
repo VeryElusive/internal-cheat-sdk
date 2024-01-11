@@ -125,15 +125,12 @@ void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
 		DrawHealth( entry, type, bbox );
 
 	if ( Configs::m_cConfig.m_iWeapon[ type ] )
-		DrawWeapon( entry, type, bbox );
+		DrawWeapon( entry, type, bbox, DrawAmmo( entry, type, bbox ) );
 }
 
 void CVisuals::DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
 	Color col{ Configs::m_cConfig.m_colBox[ type ] };
-	col.a *= entry.Visuals.m_flAlpha;
-
-	if ( entry.Visuals.m_flDormancyFade )
-		col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
+	entry.Visuals.ApplyDormancy( col );
 
 	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
 	
@@ -144,10 +141,7 @@ void CVisuals::DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& 
 
 void CVisuals::DrawName( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
 	Color col{ Configs::m_cConfig.m_colName[ type ] };
-	col.a *= entry.Visuals.m_flAlpha;
-
-	if ( entry.Visuals.m_flDormancyFade )
-		col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
+	entry.Visuals.ApplyDormancy( col );
 
 	Render::Text( { bbox.x + bbox.w / 2, bbox.y - 13 }, entry.m_pName, col, TEXT_CENTER | TEXT_DROPSHADOW, 13, Render::Fonts.NameESP );
 }
@@ -161,10 +155,7 @@ void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_
 		col = Color( red, green, 0 );
 	}
 
-	col.a *= entry.Visuals.m_flAlpha;
-
-	if ( entry.Visuals.m_flDormancyFade )
-		col = col.Lerp( DormantCol.Alpha( col.a * 0.4f ), entry.Visuals.m_flDormancyFade );
+	entry.Visuals.ApplyDormancy( col );
 
 	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
 
@@ -180,7 +171,41 @@ void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_
 		Render::Text( { bbox.x - 5, bbox.y + offset - 3 }, std::to_string( entry.Visuals.m_iHealth ).c_str( ), Color( 255, 255, 255, ( int ) col.a ), TEXT_CENTER | TEXT_OUTLINE, 8, Render::Fonts.NameESP );
 }
 
-void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+bool CVisuals::DrawAmmo( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+	if ( !Configs::m_cConfig.m_bAmmo[ type ] )
+		return false;
+
+	const auto weapon{ entry.m_pPawn->m_pClippingWeapon( ) };
+	if ( !weapon )
+		return false;
+
+	Color col{ Configs::m_cConfig.m_colAmmo[ type ] };
+	entry.Visuals.ApplyDormancy( col );
+
+	const auto weaponData{ weapon->m_pWeaponData( ) };
+	if ( !weaponData )
+		return false;
+
+	const auto ammo{ weapon->m_iClip1( ) };
+	const auto maxClip{ weaponData->m_iMaxClip1( ) };
+	if ( !maxClip )
+		return false;
+
+	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
+
+	// outline
+	Render::RectFilled( { bbox.x - 1, bbox.y + bbox.h + 2 }, { bbox.w + 2, 4 }, outline.Alpha( outline.a * .5f ) );
+
+	// color
+	if ( ammo )
+		Render::RectFilled( { bbox.x, bbox.y + bbox.h + 3 }, { std::min( bbox.w, ammo * bbox.w / maxClip ), 2 }, col );
+
+	Render::Rect( { bbox.x - 1, bbox.y + bbox.h + 2 }, { bbox.w + 2, 4 }, outline );
+
+	return true;
+}
+
+void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox, const bool didAmmoBar ) {
 	const auto weapon{ entry.m_pPawn->m_pClippingWeapon( ) };
 	if ( !weapon )
 		return;
@@ -192,6 +217,9 @@ void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_
 	if ( !identity->m_designerName( ) )
 		return;
 
+	Color col{ Configs::m_cConfig.m_colWeapon[ type ] };
+	entry.Visuals.ApplyDormancy( col );
+
 	std::string name{ identity->m_designerName( ) };
 	size_t pos = 0;
 	while ( ( pos = name.find( "weapon_", pos ) ) != std::string::npos )
@@ -202,5 +230,9 @@ void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_
 	for ( auto& n : name )
 		n = std::toupper( n );
 
-	Render::Text( { bbox.x - 5, bbox.y - 20 }, name.c_str( ), Color( 255, 255, 255 ), TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
+	int append{ 2 };
+	if ( didAmmoBar )
+		append += 6;
+
+	Render::Text( { bbox.x + bbox.w / 2, bbox.y + bbox.h + append }, name.c_str( ), col, TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
 }

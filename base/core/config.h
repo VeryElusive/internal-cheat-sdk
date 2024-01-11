@@ -14,6 +14,9 @@ struct Config_t {
 	bool m_bBox[ 3 ];
 	Color m_colBox[ 3 ]{ Color( 255, 255, 255 ) };
 
+	bool m_bAmmo[ 3 ];
+	Color m_colAmmo[ 3 ]{ Color( 182, 139, 252 ) };
+
 	bool m_bHealth[ 3 ];
 	bool m_bHealthOverride[ 3 ];
 	Color m_colHealth[ 3 ] = { Color( 115, 155, 255 ) };

@@ -9,8 +9,6 @@ enum ESP_TYPE {
 	LOCAL
 };
 
-inline const Color DormantCol{ Color( 200, 200, 200 ) };
-
 struct BBox_t {
 	float x{ }, y{ }, w{}, h{ };
 
@@ -30,7 +28,8 @@ private:
 	void DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
 	void DrawName( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
 	void DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
-	void DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
+	bool DrawAmmo( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox );
+	void DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox, const bool didAmmoBar );
 };
 
 namespace Features { inline CVisuals Visuals; };

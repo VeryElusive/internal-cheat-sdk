@@ -12,6 +12,13 @@ struct PlayerEntry_t {
 		int m_iHealth{ };
 		float m_flAlpha{ };
 		float m_flDormancyFade{ };
+
+		inline void ApplyDormancy( Color& col ) const {
+			col.a *= this->m_flAlpha;
+
+			if ( this->m_flDormancyFade )
+				col = col.Lerp( Color( 200, 200, 200, static_cast< int >( col.a * 0.4f ) ), this->m_flDormancyFade );
+		}
 	}; Vis Visuals;
 
 	struct Anim {
