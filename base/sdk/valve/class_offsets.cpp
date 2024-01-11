@@ -22,10 +22,16 @@ void ClassOffsets::Initialise( ) {
 	CCSPlayerController::Initialise( );
 	C_CSPlayerPawnBase::Initialise( );
 	CCSWeaponBaseVData::Initialise( );
+	C_BasePlayerPawn::Initialise( );
+	CPlayer_WeaponServices::Initialise( );
+	C_AttributeContainer::Initialise( );
+	C_EconEntity::Initialise( );
+	C_EconItemView::Initialise( );
+	CEntityInstance::Initialise( );
+	CEntityIdentity::Initialise( );
+	C_BasePlayerWeapon::Initialise( );
 
 	// other
-
-
 }
 
 
@@ -63,3 +69,38 @@ void C_CSPlayerPawnBase::Initialise( ) {
 void CCSWeaponBaseVData::Initialise( ) {
 	INIT_SCHEMA( CCSWeaponBaseVData, m_szName );
 }
+
+void C_BasePlayerPawn::Initialise( ) {
+	INIT_SCHEMA( C_BasePlayerPawn, m_pWeaponServices );
+}
+
+void CPlayer_WeaponServices::Initialise( ) {
+	INIT_SCHEMA( CPlayer_WeaponServices, m_hActiveWeapon );
+}
+
+void C_AttributeContainer::Initialise( ) {
+	INIT_SCHEMA( C_AttributeContainer, m_Item );
+}
+
+void C_EconEntity::Initialise( ) {
+	INIT_SCHEMA( C_EconEntity, m_AttributeManager );
+}
+
+void C_EconItemView::Initialise( ) {
+	INIT_SCHEMA( C_EconItemView, m_iItemDefinitionIndex );
+}
+
+void CEntityInstance::Initialise( ) {
+	INIT_SCHEMA( CEntityInstance, m_pEntity );
+}
+
+void CEntityIdentity::Initialise( ) {
+	INIT_SCHEMA( CEntityIdentity, m_designerName );
+	INIT_SCHEMA( CEntityIdentity, m_flags );
+}
+
+void C_BasePlayerWeapon::Initialise( ) {
+	INIT_SCHEMA( C_BasePlayerWeapon, m_iClip1 );
+	INIT_SCHEMA( C_BasePlayerWeapon, m_iClip2 );
+}
+

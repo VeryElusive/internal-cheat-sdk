@@ -25,4 +25,5 @@ void Hooks::Init( ) {
 
 	INIT_HOOK( MouseInputEnabled, Memory::GetVFunc( Interfaces::Input, 12 ) );
 
+	INIT_HOOK( FrameStageNotify, Memory::GetVFunc( Interfaces::Client, 33 ) );
 }

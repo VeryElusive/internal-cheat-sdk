@@ -32,10 +32,11 @@ public:
 
 namespace Hooks {
 	NEW_HOOK( Present, HRESULT, APIENTRY ) IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags );
-	NEW_HOOK( LevelInit, __int64*, __fastcall ) void* ecx, const char* szNewMap );
-	NEW_HOOK( LevelShutdown, __int64, __fastcall ) void* ecx );
+	NEW_HOOK( LevelInit, __int64*, __fastcall ) void* rcx, const char* szNewMap );
+	NEW_HOOK( LevelShutdown, __int64, __fastcall ) void* rcx );
 	NEW_HOOK( GetMatrixForView, ViewMatrix_t*, __fastcall ) void* pRenderGameSystem, IViewRender* pViewRender, ViewMatrix_t* pOutWorldToView, ViewMatrix_t* pOutViewToProjection, ViewMatrix_t* pOutWorldToProjection, ViewMatrix_t* pOutWorldToPixels );
-	NEW_HOOK( MouseInputEnabled, bool, __fastcall ) void* ecx );
+	NEW_HOOK( MouseInputEnabled, bool, __fastcall ) void* rcx );
+	NEW_HOOK( FrameStageNotify, void, __fastcall ) void* rcx, int nFrameStage );
 
 	inline WNDPROC WndProc;
 	inline HWND hwnd;

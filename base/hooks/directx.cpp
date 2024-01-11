@@ -75,6 +75,10 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 				ImGui_ImplDX11_CreateDeviceObjects( );
 				ImGui::GetIO( ).ImeWindowHandle = hwnd;
 
+				ImGuiContext& g = *GImGui;
+				g.Style.AntiAliasedLines = false;
+				g.Style.AntiAliasedFill = false;
+
 				init = true;
 			}
 		}

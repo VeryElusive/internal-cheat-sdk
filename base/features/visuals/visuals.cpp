@@ -11,14 +11,12 @@ void CVisuals::Main( ) {
 	for ( int i{ 1 }; i < Interfaces::Engine->GetMaxClients( ); ++i ) {
 		C_BaseEntity* ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
 		if ( !ent )
-			return;
+			continue;
 
 		SchemaClassInfoData_t* classInfo{ };
 		ent->GetSchemaClassInfo( &classInfo );
 		if ( !classInfo )
 			continue;
-
-		PlayerEntry_t& entry{ ctx.PlayerEntries[ i ] };
 
 		const auto uHashedName{ FNV1A::Hash( classInfo->szNname ) };
 
@@ -28,6 +26,8 @@ void CVisuals::Main( ) {
 			C_CSPlayerPawn* pawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( playerController->m_hPawn( ) ) };
 			if ( !pawn )
 				continue;
+
+			PlayerEntry_t& entry{ ctx.PlayerEntries[ i ] };
 
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );

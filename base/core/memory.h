@@ -8,6 +8,7 @@
 #define ENGINE2_DLL _( L"engine2.dll" )
 #define TIER0_DLL _( L"tier0.dll" )
 #define SCHEMASYSTEM_DLL _( L"schemasystem.dll" )
+#define LOCALIZE_DLL _( L"localize.dll" )
 
 
 #pragma region memory_definitions

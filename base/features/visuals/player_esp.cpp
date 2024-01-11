@@ -181,11 +181,26 @@ void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_
 }
 
 void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
-	const auto weaponData{ reinterpret_cast< CCSWeaponBaseVData* >( reinterpret_cast< std::uintptr_t >( entry.m_pPawn->m_pClippingWeapon( ) ) + 0x360 ) };
-	const auto name{ weaponData->m_szName( ) };
-
-	if ( !weaponData || !name )
+	const auto weapon{ entry.m_pPawn->m_pClippingWeapon( ) };
+	if ( !weapon )
 		return;
 
-	Render::Text( { bbox.x - 5, bbox.y - 20 }, name, Color( 255, 255, 255 ), TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
+	const auto identity{ weapon->m_pEntity( ) };
+	if ( !identity )
+		return;
+
+	if ( !identity->m_designerName( ) )
+		return;
+
+	std::string name{ identity->m_designerName( ) };
+	size_t pos = 0;
+	while ( ( pos = name.find( "weapon_", pos ) ) != std::string::npos )
+		name.erase( pos, 7 );
+
+	std::replace( name.begin( ), name.end( ), '_', ' ' );
+
+	for ( auto& n : name )
+		n = std::toupper( n );
+
+	Render::Text( { bbox.x - 5, bbox.y - 20 }, name.c_str( ), Color( 255, 255, 255 ), TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
 }

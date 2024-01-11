@@ -39,6 +39,7 @@
     <ClCompile Include="dependencies\minhook\trampoline.c" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
+    <ClCompile Include="hooks\client.cpp" />
     <ClCompile Include="hooks\clientmode.cpp" />
     <ClCompile Include="hooks\directx.cpp" />
     <ClCompile Include="hooks\input.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="sdk\valve\interfaces\iengineclient.h" />
     <ClInclude Include="sdk\valve\interfaces\IGameResourceService.h" />
     <ClInclude Include="sdk\valve\interfaces\iinput.h" />
+    <ClInclude Include="sdk\valve\interfaces\ilocalize.h" />
     <ClInclude Include="sdk\valve\interfaces\imemalloc.h" />
     <ClInclude Include="sdk\valve\interfaces\ischemasystem.h" />
     <ClInclude Include="sdk\valve\interfaces\iviewrender.h" />

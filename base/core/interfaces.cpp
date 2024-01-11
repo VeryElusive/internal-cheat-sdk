@@ -51,8 +51,14 @@ bool Interfaces::Init( ) {
 	GameResourceService = Capture<IGameResourceService>	( pEngineRegisterList, _( "GameResourceServiceClientV001" ) );
 	CHECK_AND_FAIL( GameResourceService );
 
-	Engine				= Capture<IEngineClient>		( pEngineRegisterList, _( "Source2EngineToClient001" ) );
+	Engine = Capture<IEngineClient>		( pEngineRegisterList, _( "Source2EngineToClient001" ) );
 	CHECK_AND_FAIL( Engine );
+
+	const auto pClientRegister = GetRegisterList( CLIENT_DLL );
+	CHECK_AND_FAIL( pClientRegister );
+
+	Client = Capture<ISource2Client>( pClientRegister, _( "Source2Client002" ) );
+	CHECK_AND_FAIL( Client );
 
 	const auto pSchemaSystemRegisterList = GetRegisterList( SCHEMASYSTEM_DLL );
 	CHECK_AND_FAIL( pSchemaSystemRegisterList );
@@ -65,6 +71,12 @@ bool Interfaces::Init( ) {
 
 	MemAlloc = *reinterpret_cast< IMemAlloc** >( Memory::GetExportAddress( pTier0Handle, _( "g_pMemAlloc" ) ) );
 	CHECK_AND_FAIL( MemAlloc );
+
+	const auto pLocalizeList = GetRegisterList( LOCALIZE_DLL );
+	CHECK_AND_FAIL( pLocalizeList );
+
+	Localize = Capture<ILocalize>( pLocalizeList, _( "Localize_001" ) );
+	CHECK_AND_FAIL( Localize );
 
 	// STRING XREF: "%s:  %f tick(%d) curtime(%f) OnSequenceCycleChanged: %s : %d=[%s]"
 	GlobalVars = *reinterpret_cast< CGlobalVarsBase** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 89 0D ? ? ? ? 48 89 41" ) ), 0x3, 0x7 ) );
