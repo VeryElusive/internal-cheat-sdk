@@ -175,7 +175,11 @@ bool CVisuals::DrawAmmo( const PlayerEntry_t& entry, uint8_t type, const BBox_t&
 	if ( !Configs::m_cConfig.m_bAmmo[ type ] )
 		return false;
 
-	const auto weapon{ entry.m_pPawn->m_pClippingWeapon( ) };
+	const auto weaponServices{ entry.m_pPawn->m_pWeaponServices( ) };
+	if ( !weaponServices )
+		return false;
+
+	const auto weapon{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSWeaponBase>( weaponServices->m_hActiveWeapon( ) ) };
 	if ( !weapon )
 		return false;
 
@@ -206,7 +210,11 @@ bool CVisuals::DrawAmmo( const PlayerEntry_t& entry, uint8_t type, const BBox_t&
 }
 
 void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox, const bool didAmmoBar ) {
-	const auto weapon{ entry.m_pPawn->m_pClippingWeapon( ) };
+	const auto weaponServices{ entry.m_pPawn->m_pWeaponServices( ) };
+	if ( !weaponServices )
+		return;
+
+	const auto weapon{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSWeaponBase>( weaponServices->m_hActiveWeapon( ) ) };
 	if ( !weapon )
 		return;
 
