@@ -18,6 +18,18 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		}
 	}
 
+
+	if ( Configs::m_cConfig.m_bBugWalk ) {
+		if ( local->m_fFlags( ) & FL_ONGROUND ) {
+			cmd->m_cButtonStates.m_iHeld |= IN_JUMP;
+			cmd->m_cButtonStates.m_iToggle |= IN_JUMP;
+		}
+		else {
+			cmd->m_cButtonStates.m_iHeld &= ~IN_JUMP;
+			cmd->m_cButtonStates.m_iToggle &= ~IN_JUMP;
+		}
+	}
+
 	if ( Configs::m_cConfig.m_bAutoStrafer )
 		AutoStrafer( local, cmd );
 

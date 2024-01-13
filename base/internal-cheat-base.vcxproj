@@ -50,6 +50,7 @@
     <ClCompile Include="menu\controls\colorpicker.cpp" />
     <ClCompile Include="menu\controls\combo.cpp" />
     <ClCompile Include="menu\controls\group.cpp" />
+    <ClCompile Include="menu\controls\keybind.cpp" />
     <ClCompile Include="menu\controls\label.cpp" />
     <ClCompile Include="menu\controls\listbox.cpp" />
     <ClCompile Include="menu\controls\multicombo.cpp" />

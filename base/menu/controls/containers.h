@@ -36,6 +36,9 @@ public:
 		m_pArgs = new ButtonArgs_t( name, callback, width );
 	};
 
+	CMenuItem( Keybind_t* value, std::function<bool( )> show )
+		: m_pValue( value ), m_eItemType( KEY_BIND ), m_fnShow( show ) { };
+
 	CMenuItem( const char* name, bool fuck, std::function<bool( )> show )
 		: m_szName( name ), m_eItemType( LABEL ), m_fnShow( show ) {
 	};
@@ -90,6 +93,8 @@ private:
 	void SliderFloatFocus( );
 	void SliderInt( );
 	void SliderIntFocus( );
+	void Keybind( );
+	void KeybindFocus( );
 };
 
 class CMenuGroup {
@@ -127,6 +132,10 @@ public:
 
 	void Register( const char* name, bool fuck = true, std::function<bool( )> show = [ ]( ) {return true; } ) {
 		m_vecItems.emplace_back( name, fuck, show );
+	};
+
+	void Register( Keybind_t* value, std::function<bool( )> show = [ ]( ) {return true; } ) {
+		m_vecItems.emplace_back( value, show );
 	};
 
 	void Register( Color* value, bool alpha = true, std::function<bool( )> show = [ ]( ) {return true; } ) {

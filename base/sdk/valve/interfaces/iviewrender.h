@@ -1,6 +1,6 @@
 #pragma once
 #include "../../../sdk/matrix.h"
-
+#include "../../../core/memory.h"
 
 class IViewRender
 {

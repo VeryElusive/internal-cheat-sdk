@@ -1,7 +1,10 @@
 #pragma once
 #include "../sdk/color.h"
+#include "input.h"
 #include <thread>
 #include <filesystem>
+
+struct Keybind_t;
 
 struct Config_t {
 #pragma region visuals
@@ -9,20 +12,20 @@ struct Config_t {
 #pragma region player ESP
 	bool m_bEnabled[ 3 ];
 	bool m_bName[ 3 ];
-	Color m_colName[ 3 ] = { Color( 255, 255, 255 ) };
+	Color m_colName[ 3 ] = { Color( 255, 255, 255 ), Color( 255, 255, 255 ), Color( 255, 255, 255 ) };
 
 	bool m_bBox[ 3 ];
-	Color m_colBox[ 3 ]{ Color( 255, 255, 255 ) };
+	Color m_colBox[ 3 ]{ Color( 255, 255, 255 ), Color( 255, 255, 255 ), Color( 255, 255, 255 ) };
 
 	bool m_bAmmo[ 3 ];
-	Color m_colAmmo[ 3 ]{ Color( 182, 139, 252 ) };
+	Color m_colAmmo[ 3 ]{ Color( 182, 139, 252 ), Color( 182, 139, 252 ), Color( 182, 139, 252 ) };
 
 	bool m_bHealth[ 3 ];
 	bool m_bHealthOverride[ 3 ];
-	Color m_colHealth[ 3 ] = { Color( 115, 155, 255 ) };
+	Color m_colHealth[ 3 ] = { Color( 115, 155, 255 ), Color( 115, 155, 255 ), Color( 115, 155, 255 ) };
 
 	int m_iWeapon[ 3 ];
-	Color m_colWeapon[ 3 ] = { Color( 255, 255, 255 ) };
+	Color m_colWeapon[ 3 ] = { Color( 255, 255, 255 ), Color( 255, 255, 255 ), Color( 255, 255, 255 ) };
 
 #pragma endregion player ESP
 
@@ -31,7 +34,10 @@ struct Config_t {
 #pragma region misc
 	bool m_bBunnyhop{ };
 	bool m_bAutoStrafer{ };
-	int m_iAutoStraferSpeed{ };
+	int m_iAutoStraferSpeed{ 80 };
+	bool m_bBugWalk{ };
+	Keybind_t m_kBugWalk{ };
+
 #pragma endregion misc
 
 	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };
@@ -42,7 +48,7 @@ struct Config_t {
 namespace Configs {
 	inline std::vector<std::string> m_vecFileNames = { };
 	inline Config_t m_cConfig{ };
-	inline std::filesystem::path m_fsPath = "C:\\Havoc-Assault-Cube\\Configs\\";
+	inline std::filesystem::path m_fsPath = "C:\\Havoc\\Configs\\";
 
 	void SaveCFG( std::string filePath );
 

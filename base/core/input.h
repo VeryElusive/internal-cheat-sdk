@@ -1,6 +1,46 @@
 #pragma once
 #include "../havoc.h"
 
+enum EKeyMode {
+	AlwaysOn,
+	Toggle,
+	Hold,
+	Off
+};
+
+struct Keybind_t {
+	int m_iKey{ 0 };
+	bool m_bEnabled{ };
+	bool m_bPrevState{ };
+	int m_iMode{ EKeyMode::Hold };
+
+	void Resolve( ) {
+
+		switch ( this->m_iMode ) {
+		case EKeyMode::AlwaysOn:
+			this->m_bEnabled = true;
+			break;
+		case EKeyMode::Toggle: {
+			bool cock = false;
+			cock = GetAsyncKeyState( this->m_iKey );
+			if ( cock && !this->m_bPrevState )
+				this->m_bEnabled = !this->m_bEnabled;
+
+			this->m_bPrevState = cock;
+
+			this->m_bEnabled;
+			break;
+		}
+		case EKeyMode::Hold:
+			this->m_bEnabled = GetAsyncKeyState( this->m_iKey );
+			break;
+		case EKeyMode::Off:
+			this->m_bEnabled = !GetAsyncKeyState( this->m_iKey );
+			break;
+		}
+	}
+};
+
 namespace Input {
 	inline bool m_bState[ 256 ]{ };
 	inline bool m_bPrevState[ 256 ]{ };
