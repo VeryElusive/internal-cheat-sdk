@@ -60,6 +60,7 @@ void C_BaseEntity::Initialise( ) {
 	INIT_SCHEMA( C_BaseEntity, m_pCollision );
 	INIT_SCHEMA( C_BaseEntity, m_iTeamNum );
 	INIT_SCHEMA( C_BaseEntity, m_iHealth );
+	INIT_SCHEMA( C_BaseEntity, m_fFlags );
 }
 
 void C_CSPlayerPawnBase::Initialise( ) {

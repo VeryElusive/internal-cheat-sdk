@@ -4,7 +4,7 @@
 #include "../sdk/valve/interfaces/iengineclient.h"
 #include "../sdk/valve/interfaces/ischemasystem.h"
 #include "../sdk/valve/interfaces/imemalloc.h"
-#include "../sdk/valve/interfaces/iinput.h"
+#include "../sdk/valve/interfaces/ccsgoinput.h"
 #include "../sdk/valve/interfaces/ilocalize.h"
 
 class ISource2Client;
@@ -18,6 +18,6 @@ namespace Interfaces {
 	inline IGameResourceService* GameResourceService{ };
 	inline ISchemaSystem* SchemaSystem{ };
 	inline IMemAlloc* MemAlloc{ };
-	inline IInput* Input{ };
+	inline CCSGOInput* Input{ };
 	inline ILocalize* Localize{ };
 }

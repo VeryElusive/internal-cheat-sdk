@@ -14,4 +14,6 @@
 #define ENTER_REGION( region )
 #endif
 
+#define PRINT_PTR( ptr ) static bool once{ }; if ( !once ) { once = true; printf( "0x%p", ptr ); };
+
 #define CONCAT3(a, b, c) a ## b ## c

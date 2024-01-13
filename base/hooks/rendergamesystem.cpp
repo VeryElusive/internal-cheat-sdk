@@ -1,6 +1,8 @@
 #include "../havoc.h"
 #include "../core/hooks.h"
 
+// this is a really gay way to do it, but anyway. it works.
+// called from CViewRender::OnRenderStart
 ViewMatrix_t* __fastcall Hooks::hkGetMatrixForView( void* pRenderGameSystem, IViewRender* pViewRender, ViewMatrix_t* pOutWorldToView, ViewMatrix_t* pOutViewToProjection, ViewMatrix_t* pOutWorldToProjection, ViewMatrix_t* pOutWorldToPixels ) {
 	const auto og{ GetMatrixForView.Original<decltype( &hkGetMatrixForView )>( ) };
 

@@ -22,7 +22,6 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\displacement.cpp" />
     <ClCompile Include="core\hooks.cpp" />
-    <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\interfaces.cpp" />
     <ClCompile Include="core\memory.cpp" />
     <ClCompile Include="dependencies\imgui\backends\imgui_impl_dx11.cpp" />
@@ -37,6 +36,7 @@
     <ClCompile Include="dependencies\minhook\hde\hde64.c" />
     <ClCompile Include="dependencies\minhook\hook.c" />
     <ClCompile Include="dependencies\minhook\trampoline.c" />
+    <ClCompile Include="features\misc\movement.cpp" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
     <ClCompile Include="hooks\client.cpp" />
@@ -76,6 +76,8 @@
     <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="features\misc\misc.h" />
+    <ClInclude Include="features\misc\movement.h" />
     <ClInclude Include="features\visuals\visuals.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="havoc.h" />
@@ -108,7 +110,7 @@
     <ClInclude Include="sdk\valve\interfaces\CGlobalVarsBase.h" />
     <ClInclude Include="sdk\valve\interfaces\iengineclient.h" />
     <ClInclude Include="sdk\valve\interfaces\IGameResourceService.h" />
-    <ClInclude Include="sdk\valve\interfaces\iinput.h" />
+    <ClInclude Include="sdk\valve\interfaces\ccsgoinput.h" />
     <ClInclude Include="sdk\valve\interfaces\ilocalize.h" />
     <ClInclude Include="sdk\valve\interfaces\imemalloc.h" />
     <ClInclude Include="sdk\valve\interfaces\ischemasystem.h" />

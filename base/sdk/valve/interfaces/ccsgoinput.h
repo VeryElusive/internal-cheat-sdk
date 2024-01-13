@@ -4,18 +4,18 @@
 
 #define MULTIPLAYER_BACKUP 150
 
-class IInput
+class CCSGOInput
 {
 public:
-	void* pVtable;
+	void* m_pVtable;
 	MEM_PAD( 0x248 );
-	CUserCmd arrCommands[ MULTIPLAYER_BACKUP ];
+	CUserCmd m_arrCommands[ MULTIPLAYER_BACKUP ];
 	MEM_PAD( 0x1 );
-	bool bInThirdPerson;
+	bool m_bInThirdPerson;
 	MEM_PAD( 0x22 );
-	int32_t nSequenceNumber;
+	int32_t m_nSequenceNumber;
 
 	CUserCmd* GetUserCmd( ) {
-		return &arrCommands[ nSequenceNumber % MULTIPLAYER_BACKUP ];
+		return &m_arrCommands[ m_nSequenceNumber % MULTIPLAYER_BACKUP ];
 	}
 };

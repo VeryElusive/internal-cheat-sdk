@@ -28,6 +28,11 @@ struct Config_t {
 
 #pragma endregion visuals
 
+#pragma region misc
+	bool m_bBunnyhop{ };
+	bool m_bBugWalk{ };
+#pragma endregion misc
+
 	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };
 
 	bool m_bOptions[ 5 ]{ };

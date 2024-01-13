@@ -53,11 +53,12 @@ void Menu::Register( ) {
 	}
 
 	auto test1{ &m_cTabs[ 2 ].m_vecSubtabs.emplace_back( "test", 2 ) };
-	auto test2{ &m_cTabs[ 3 ].m_vecSubtabs.emplace_back( "Elements", 2 ) };
+	auto test2{ &m_cTabs[ 3 ].m_vecSubtabs.emplace_back( "Misc", 2 ) };
 	{
-		auto generalGroup{ test2->AddGroup( "Elements", 1.f ) };
+		auto movementGroup{ test2->AddGroup( "Movement", 1.f ) };
 		{
-
+			movementGroup->Register( ( "Bunnyhop" ), &Configs::m_cConfig.m_bBunnyhop );
+			movementGroup->Register( ( "Bug walk" ), &Configs::m_cConfig.m_bBugWalk );
 		}
 		auto otherGroup{ test2->AddGroup( "Other", 0.6f ) };
 		auto other2Group{ test2->AddGroup( "Other", 0.4f ) };

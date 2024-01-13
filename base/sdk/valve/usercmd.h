@@ -164,4 +164,69 @@ public:
 	CCSGOUserCmdPB cmd;
 	CInButtonState buttonStates;
 	char pad[ 48 ];
+
+	//nButtonState3 is a bait, always 0 VACCVACVACVACV
+	// TODO: figure out what each button state does.
+	void RemoveButton( uint8_t button ) {
+		this->buttonStates.nButtonState1 &= ~button;
+		this->buttonStates.nButtonState2 &= ~button;
+		if ( this->cmd.pBase ) {
+			this->cmd.pBase->pInButtonState->State1 &= ~button;
+			this->cmd.pBase->pInButtonState->State2 &= ~button;
+		}
+
+		bool found{ };
+
+		const auto base{ this->cmd.pBase };
+		if ( base ) {
+			const auto rep{ base->subtickMovesField.pRep };
+			if ( rep ) {
+				for ( int i{ }; i < base->subtickMovesField.nCurrentSize; ++i ) {
+					const auto entry{ rep->tElements[ i ] };
+					if ( entry->nButton == button )
+						found = entry->bPressed = false;
+				}
+
+				/*if ( !found ) {
+					base->subtickMovesField.nCurrentSize += 1;
+					const auto entry{ rep->tElements[ base->subtickMovesField.nCurrentSize - 1 ] };
+					entry->bPressed = false;
+					entry->flWhen = 0.01f;
+					entry->nButton = button;
+				}*/
+			}
+		}
+	}
+
+	void AddButton( uint8_t button ) {
+		this->buttonStates.nButtonState1 |= button;
+		this->buttonStates.nButtonState2 |= button;
+
+		if ( this->cmd.pBase ) {
+			this->cmd.pBase->pInButtonState->State1 |= button;
+			this->cmd.pBase->pInButtonState->State2 |= button;
+		}
+
+		bool found{ };
+
+		const auto base{ this->cmd.pBase };
+		if ( base ) {
+			const auto rep{ base->subtickMovesField.pRep };
+			if ( rep ) {
+				for ( int i{ }; i < base->subtickMovesField.nCurrentSize; ++i ) {
+					const auto entry{ rep->tElements[ i ] };
+					if ( entry->nButton == button )
+						found = entry->bPressed = true;
+				}
+
+				/*if ( !found ) {
+					base->subtickMovesField.nCurrentSize += 1;
+					const auto entry{ rep->tElements[ base->subtickMovesField.nCurrentSize - 1 ] };
+					entry->bPressed = true;
+					entry->flWhen = 0.01f;
+					entry->nButton = button;
+				}*/
+			}
+		}
+	}
 };

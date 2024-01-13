@@ -37,6 +37,7 @@ namespace Hooks {
 	NEW_HOOK( GetMatrixForView, ViewMatrix_t*, __fastcall ) void* pRenderGameSystem, IViewRender* pViewRender, ViewMatrix_t* pOutWorldToView, ViewMatrix_t* pOutViewToProjection, ViewMatrix_t* pOutWorldToProjection, ViewMatrix_t* pOutWorldToPixels );
 	NEW_HOOK( MouseInputEnabled, bool, __fastcall ) void* rcx );
 	NEW_HOOK( FrameStageNotify, void, __fastcall ) void* rcx, int nFrameStage );
+	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active );
 
 	inline WNDPROC WndProc;
 	inline HWND hwnd;
