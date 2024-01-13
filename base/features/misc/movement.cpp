@@ -1,47 +1,108 @@
 #include "movement.h"
 #include "../../core/config.h"
+#include "../../utils/math.h"
 
 void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
-	const auto oldButtons{ cmd->buttonStates.nButtonState1 };
-	const auto oldButtons2{ cmd->buttonStates.nButtonState2 };
 	const auto onGround{ ( local->m_fFlags( ) & FL_ONGROUND ) };
-	static bool lastOnGround{ };
-	if ( Configs::m_cConfig.m_bBunnyhop ) {
-		if ( onGround )
-			cmd->RemoveButton( IN_JUMP );
-	}	
+	static int lastOnGround{ };
+	static bool wait{ };
 
-	if ( Configs::m_cConfig.m_bBugWalk ) {
-		if ( onGround )
-			cmd->buttonStates.nButtonState1 &= ~IN_JUMP;
+	if ( Configs::m_cConfig.m_bBunnyhop ) {
+		if ( cmd->m_cButtonStates.m_iHeld & IN_JUMP ) {
+			if ( onGround && lastOnGround ) {
+				cmd->m_cButtonStates.m_iHeld &= ~IN_JUMP;
+				cmd->m_cButtonStates.m_iToggle |= IN_JUMP;
+			}
+			else if ( lastOnGround && !onGround )
+				cmd->m_cButtonStates.m_iToggle |= IN_JUMP;
+		}
 	}
+
+	if ( Configs::m_cConfig.m_bAutoStrafer )
+		AutoStrafer( local, cmd );
+
+	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
+	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
+	ctx.m_flUpmove = cmd->cmd.pBase->flUpMove;
 
 	lastOnGround = onGround;
+}
 
-	/*if ( cmd->buttonStates.nButtonState1 != oldButtons ) {
-		const auto base{ cmd->cmd.pBase };
-		if ( base ) {
-			const auto rep{ base->subtickMovesField.pRep };
-			if ( rep ) {
-				for ( int i{ }; i < base->subtickMovesField.nCurrentSize; ++i ) {
-					const auto entry{ rep->tElements[ i ] };
-					if ( entry->nButton == IN_JUMP ) {
-						printf( "%i -> %f\n", ( int ) entry->bPressed, entry->flWhen );
-					}
-				}
-				/*base->subtickMovesField.nCurrentSize += 1;
-				auto pInputEntry = rep->tElements[ base->subtickMovesField.nCurrentSize - 1 ];
-				pInputEntry->bPressed = ( cmd->buttonStates.nButtonState1 & IN_JUMP );
-				pInputEntry->flWhen = 0.01f;
-				pInputEntry->nButton = IN_JUMP;*
+void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
+	if ( local->m_fFlags( ) & FL_ONGROUND )
+		return;
+
+	if ( !cmd->cmd.pBase
+		|| !cmd->cmd.pBase->pViewangles )
+		return;
+
+	const auto velocity{ local->m_vecAbsVelocity( ) };
+	const auto speed2D{ velocity.Length2D( ) };
+	if ( speed2D < 2.f
+		&& !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
+		return;
+
+	const auto idealRot{ std::min( Math::RadiansToDegree( std::asinf( 15.f / speed2D ) ), 90.f ) };
+	const auto sign{ cmd->cmd.pBase->nCommandNumber % 2 ? 1.f : -1.f };
+
+	bool move_forward = cmd->m_cButtonStates.m_iHeld & IN_FORWARD, move_backward = cmd->m_cButtonStates.m_iHeld & IN_BACK;
+	bool move_left = cmd->m_cButtonStates.m_iHeld & IN_MOVELEFT, move_right = cmd->m_cButtonStates.m_iHeld & IN_MOVERIGHT;
+
+	cmd->cmd.pBase->flForwardMove = speed2D > 0.1f ? 0.f : 1.f;
+
+	auto movementAngle{ cmd->cmd.pBase->pViewangles->angValue };
+
+	if ( move_forward )
+		movementAngle.y += move_left ? 45.f : move_right ? -45.f : 0.f;
+	else if ( move_backward )
+		movementAngle.y += move_left ? 135.f : move_right ? -135.f : 180.f;
+	else if ( move_left || move_right )
+		movementAngle.y += move_left ? 90.f : -90.f;
+
+	static auto old_yaw = 0.f;
+	auto yaw_delta = std::remainder( movementAngle.y - old_yaw, 360.f ), abs_yaw_delta = std::abs( yaw_delta );
+	old_yaw = movementAngle.y;
+
+	if ( yaw_delta > 0.f ) cmd->cmd.pBase->flSideMove = -1.f;
+	else if ( yaw_delta < 0.f ) cmd->cmd.pBase->flSideMove = 1.f;
+
+	if ( abs_yaw_delta <= idealRot || abs_yaw_delta >= 30.f ) {
+		const auto vel_ang = Math::RadiansToDegree( std::atan2( velocity.y, velocity.x ) );
+		const auto vel_delta = std::remainder( movementAngle.y - vel_ang, 360.f );
+
+		auto retrack_speed = idealRot * ( ( Configs::m_cConfig.m_iAutoStraferSpeed / 100.f ) * 3 );
+
+		if ( vel_delta <= retrack_speed || speed2D <= 15.f ) {
+			if ( -retrack_speed <= vel_delta || speed2D <= 15.f ) {
+				movementAngle.y += idealRot * sign;
+				cmd->cmd.pBase->flSideMove = sign;
+			}
+			else {
+				movementAngle.y = vel_ang - retrack_speed;
+				cmd->cmd.pBase->flSideMove = 1.f;
 			}
 		}
-	}*/
-	
-	if ( Configs::m_cConfig.m_bBugWalk ) {
-		if ( local->m_fFlags( ) & FL_ONGROUND )
-			cmd->AddButton( IN_JUMP );
-		else
-			cmd->RemoveButton( IN_JUMP );
+		else {
+			movementAngle.y = vel_ang + retrack_speed;
+			cmd->cmd.pBase->flSideMove = -1.f;
+		}
 	}
+
+	MoveMINTFix( cmd, movementAngle );
+}
+
+void CMovement::MoveMINTFix( CUserCmd* cmd, Vector wishAngles ) {
+	// my good friend philip gave me this code.
+	// THANK YOU PHILIP!!!!
+	const float rot{ Math::DegreeToRadians( cmd->cmd.pBase->pViewangles->angValue.y - wishAngles.y ) };
+
+	const float newForward{ std::cos( rot ) * cmd->cmd.pBase->flForwardMove - std::sin( rot ) * cmd->cmd.pBase->flSideMove };
+	const float newSide{ std::sin( rot ) * cmd->cmd.pBase->flForwardMove + std::cos( rot ) * cmd->cmd.pBase->flSideMove };
+
+	// TODO: properly do toggle.
+	cmd->m_cButtonStates.m_iHeld &= ~( IN_BACK | IN_FORWARD | IN_MOVELEFT | IN_MOVERIGHT );
+	cmd->m_cButtonStates.m_iToggle &= ~( IN_BACK | IN_FORWARD | IN_MOVELEFT | IN_MOVERIGHT );
+
+	cmd->cmd.pBase->flForwardMove = std::clamp( newForward, -1.f, 1.f );
+	cmd->cmd.pBase->flSideMove = std::clamp( newSide * -1.f, -1.f, 1.f );
 }

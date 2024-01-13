@@ -38,6 +38,7 @@ namespace Hooks {
 	NEW_HOOK( MouseInputEnabled, bool, __fastcall ) void* rcx );
 	NEW_HOOK( FrameStageNotify, void, __fastcall ) void* rcx, int nFrameStage );
 	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active );
+	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
 
 	inline WNDPROC WndProc;
 	inline HWND hwnd;

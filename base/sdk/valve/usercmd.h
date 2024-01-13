@@ -151,10 +151,14 @@ public:
 // not protobufs
 struct CInButtonState
 {
-	void* pVTable;
-	uint64_t nButtonState1;
-	uint64_t nButtonState2;
-	uint64_t nButtonState3;
+	void* m_pVTable;
+	//uint64_t nButtonState1;
+	//uint64_t nButtonState2;
+	//uint64_t nButtonState3;
+
+	uint64_t m_iHeld;
+	uint64_t m_iToggle;
+	uint64_t m_iScrolled;
 };
 
 class CUserCmd
@@ -162,20 +166,24 @@ class CUserCmd
 public:
 	void* pVTable;
 	CCSGOUserCmdPB cmd;
-	CInButtonState buttonStates;
+	CInButtonState m_cButtonStates;
 	char pad[ 48 ];
 
 	//nButtonState3 is a bait, always 0 VACCVACVACVACV
 	// TODO: figure out what each button state does.
-	void RemoveButton( uint8_t button ) {
+	/*void RemoveButton( uint8_t button ) {
+		const auto old{ this->buttonStates.nButtonState1 };
 		this->buttonStates.nButtonState1 &= ~button;
-		this->buttonStates.nButtonState2 &= ~button;
+		if ( ( old & button ) != ( this->buttonStates.nButtonState1 & button ) )
+			this->buttonStates.nButtonState2 |= button;
+
 		if ( this->cmd.pBase ) {
-			this->cmd.pBase->pInButtonState->State1 &= ~button;
-			this->cmd.pBase->pInButtonState->State2 &= ~button;
+			this->cmd.pBase->pInButtonState->State1 = this->buttonStates.nButtonState1;
+			this->cmd.pBase->pInButtonState->State2 = this->buttonStates.nButtonState2;
 		}
 
-		bool found{ };
+		// TODO: add subtick shit
+		/*bool found{ };
 
 		const auto base{ this->cmd.pBase };
 		if ( base ) {
@@ -193,21 +201,25 @@ public:
 					entry->bPressed = false;
 					entry->flWhen = 0.01f;
 					entry->nButton = button;
-				}*/
+				}*
 			}
-		}
+		}*
 	}
 
 	void AddButton( uint8_t button ) {
+		const auto old{ this->buttonStates.nButtonState1 };
 		this->buttonStates.nButtonState1 |= button;
-		this->buttonStates.nButtonState2 |= button;
+
+		if ( ( old & button ) != ( this->buttonStates.nButtonState1 & button ) )
+			this->buttonStates.nButtonState2 |= button;
 
 		if ( this->cmd.pBase ) {
-			this->cmd.pBase->pInButtonState->State1 |= button;
-			this->cmd.pBase->pInButtonState->State2 |= button;
+			this->cmd.pBase->pInButtonState->State1 = this->buttonStates.nButtonState1;
+			this->cmd.pBase->pInButtonState->State2 = this->buttonStates.nButtonState2;
 		}
 
-		bool found{ };
+		// TODO: add subtick shit
+		/*bool found{ };
 
 		const auto base{ this->cmd.pBase };
 		if ( base ) {
@@ -225,8 +237,8 @@ public:
 					entry->bPressed = true;
 					entry->flWhen = 0.01f;
 					entry->nButton = button;
-				}*/
+				}
 			}
-		}
-	}
+		}*
+	}*/
 };

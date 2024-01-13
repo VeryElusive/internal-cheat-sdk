@@ -19,9 +19,28 @@ struct Vector {
 		return ( std::sqrt( this->LengthSquared( ) ) );
 	}
 
+	const float Length2DSqr( ) const {
+		return ( this->x * this->x + this->y * this->y );
+	}
+
+	const float Length2D( ) const {
+		return std::sqrtf( this->Length2DSqr( ) );
+	}
+
 	float DistTo( const Vector& vecEnd ) const {
 		return ( *this - vecEnd ).Length( );
 	}
+
+	bool IsEqual( const Vector& angEqual, const float flErrorMargin = std::numeric_limits<float>::epsilon( ) ) const {
+		return ( std::fabsf( this->x - angEqual.x ) < flErrorMargin &&
+			std::fabsf( this->y - angEqual.y ) < flErrorMargin &&
+			std::fabsf( this->z - angEqual.z ) < flErrorMargin );
+	}
+
+	bool operator==( const Vector& angBase ) const {
+		return this->IsEqual( angBase );
+	}
+
 
 	Vector operator+( const Vector& vecAdd ) const {
 		return Vector( this->x + vecAdd.x, this->y + vecAdd.y, this->z + vecAdd.z );
@@ -165,6 +184,19 @@ struct Vector2D {
 	void Floor( ) {
 		x = std::floor( x );
 		y = std::floor( y );
+	}
+
+	float Dot( const Vector2D& v ) const {
+		return ( this->x * v.x +
+			this->y * v.y );
+	}
+
+	float LengthSquared( ) const {
+		return ( this->Dot( *this ) );
+	}
+
+	float Length( ) const {
+		return ( sqrt( this->LengthSquared( ) ) );
 	}
 
 	Vector2D( ) {};

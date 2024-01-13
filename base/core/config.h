@@ -30,7 +30,8 @@ struct Config_t {
 
 #pragma region misc
 	bool m_bBunnyhop{ };
-	bool m_bBugWalk{ };
+	bool m_bAutoStrafer{ };
+	int m_iAutoStraferSpeed{ };
 #pragma endregion misc
 
 	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };

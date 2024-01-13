@@ -4,8 +4,6 @@
 #include "vector.h"
 
 // forward declarations
-struct QAngle_t;
-
 #pragma pack(push, 4)
 using Matrix3x3_t = float[ 3 ][ 3 ];
 
@@ -138,7 +136,7 @@ struct Matrix3x4_t
 	}
 
 	/// @returns: angles converted from this matrix
-	[[nodiscard]] QAngle_t ToAngles( ) const;
+	[[nodiscard]] Vector ToAngles( ) const;
 
 	float arrData[ 3 ][ 4 ] = {};
 };

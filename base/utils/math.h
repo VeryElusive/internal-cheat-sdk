@@ -23,22 +23,26 @@ namespace Math {
 		return to * percent + from * ( 1.f - percent ); 
 	}
 
-	__forceinline void SinCos( float& sinResult, float& cosResult, float angle ) {
-		sinResult = std::sin( angle );
-		cosResult = std::cos( angle );
+	__forceinline void SinCos( float radians, float& sine, float& cosine ) { 
+		sine = sin( radians ); 
+		cosine = cos( radians ); 
 	}
+
 	
 	__forceinline float DegreeToRadians( float degrees ) {
 		return degrees * static_cast< float >( M_PI ) / 180.0f;
 	}
 
+	__forceinline float RadiansToDegree( float fRadians ) noexcept {
+		return fRadians * ( 180.0f / M_PI ); 
+	}
 
 	__forceinline void AngleVectors( const Vector& angView, Vector* pForward, Vector* pRight, Vector* pUp ) {
 		float sp, sy, sr, cp, cy, cr;
 
-		SinCos( sp, cp, DegreeToRadians( angView.x ) );
-		SinCos( sy, cy, DegreeToRadians( angView.y ) );
-		SinCos( sr, cr, DegreeToRadians( angView.z ) );
+		SinCos( DegreeToRadians( angView.x ), sp, cp );
+		SinCos( DegreeToRadians( angView.y ), sy, cy );
+		SinCos( DegreeToRadians( angView.z ), sr, cr );
 
 		if ( pForward ) {
 			pForward->x = cp * cy;

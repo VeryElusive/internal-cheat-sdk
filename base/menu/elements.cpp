@@ -58,7 +58,8 @@ void Menu::Register( ) {
 		auto movementGroup{ test2->AddGroup( "Movement", 1.f ) };
 		{
 			movementGroup->Register( ( "Bunnyhop" ), &Configs::m_cConfig.m_bBunnyhop );
-			movementGroup->Register( ( "Bug walk" ), &Configs::m_cConfig.m_bBugWalk );
+			movementGroup->Register( ( "Auto strafer" ), &Configs::m_cConfig.m_bAutoStrafer );
+			movementGroup->Register( ( "Auto strafer speed" ), &Configs::m_cConfig.m_iAutoStraferSpeed, 0.f, 100.f, SHOW( Configs::m_cConfig.m_bAutoStrafer ) );
 		}
 		auto otherGroup{ test2->AddGroup( "Other", 0.6f ) };
 		auto other2Group{ test2->AddGroup( "Other", 0.4f ) };

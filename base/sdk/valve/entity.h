@@ -100,6 +100,7 @@ public:
 	SCHEMA( std::uint8_t, m_iTeamNum );
 	SCHEMA( int, m_iHealth );
 	SCHEMA( int, m_fFlags );
+	SCHEMA( Vector, m_vecAbsVelocity );
 
 	__forceinline bool Dormant( ) {
 		if ( this->m_pGameSceneNode( ) )
