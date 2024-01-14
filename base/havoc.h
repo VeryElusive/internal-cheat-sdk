@@ -7,11 +7,20 @@
 class C_CSPlayerPawn;
 class CCSPlayerController;
 
+struct BBox_t {
+	float x{ }, y{ }, w{}, h{ };
+
+	const Vector2D Position( ) const { return { std::floor( x ), std::floor( y ) }; }
+	const Vector2D Size( ) const { return { std::floor( w ), std::floor( h ) }; }
+	const bool Valid( ) const { return x != 0 && y != 0, w != 0 && h != 0; }
+};
+
 struct PlayerEntry_t {
 	struct Vis {
 		int m_iHealth{ };
 		float m_flAlpha{ };
 		float m_flDormancyFade{ };
+		BBox_t m_cBBox{ };
 
 		inline void ApplyDormancy( Color& col ) const {
 			col.a *= this->m_flAlpha;
@@ -31,6 +40,8 @@ struct PlayerEntry_t {
 
 	void Reset( C_CSPlayerPawn* pawn ) {
 		m_pPawn = pawn;
+
+		Visuals.m_cBBox = { 0,0,0,0 };
 	}
 };
 

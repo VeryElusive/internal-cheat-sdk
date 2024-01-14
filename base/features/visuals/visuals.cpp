@@ -40,7 +40,7 @@ void CVisuals::Main( ) {
 
 			entry.m_pName = playerController->m_sSanitizedPlayerName( );
 
-			if ( playerController->m_bPawnIsAlive( ) )
+			if ( playerController->m_bPawnIsAlive( ) && entry.Visuals.m_cBBox.Valid( ) )
 				Features::Visuals.HandlePlayer( entry );
 		}
 

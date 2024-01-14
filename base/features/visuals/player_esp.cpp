@@ -111,42 +111,37 @@ void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
 	entry.Visuals.m_flAlpha = std::clamp<float>( entry.Visuals.m_flAlpha, 0.f, 1.f );
 	entry.Visuals.m_flDormancyFade = std::clamp<float>( entry.Visuals.m_flDormancyFade, 0.f, 1.f );
 
-	BBox_t bbox;
-	if ( !GetBBox( entry.m_pPawn, bbox ) )
-		return;
-
 	if ( Configs::m_cConfig.m_bBox[ type ] )
-		DrawBox( entry, type, bbox );
+		DrawBox( entry, type );
 
 	if ( Configs::m_cConfig.m_bName[ type ] )
-		DrawName( entry, type, bbox );
+		DrawName( entry, type );
 
 	if ( Configs::m_cConfig.m_bHealth[ type ] )
-		DrawHealth( entry, type, bbox );
+		DrawHealth( entry, type );
 
-	if ( Configs::m_cConfig.m_iWeapon[ type ] )
-		DrawWeapon( entry, type, bbox, DrawAmmo( entry, type, bbox ) );
+	DrawWeapon( entry, type, DrawAmmo( entry, type ) );
 }
 
-void CVisuals::DrawBox( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+void CVisuals::DrawBox( const PlayerEntry_t& entry, uint8_t type ) {
 	Color col{ Configs::m_cConfig.m_colBox[ type ] };
 	entry.Visuals.ApplyDormancy( col );
 
 	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
 	
-	Render::Rect( bbox.Position( ) + 1, bbox.Size( ) - 2, outline );
-	Render::Rect( bbox.Position( ), bbox.Size( ), col );
-	Render::Rect( bbox.Position( ) - 1, bbox.Size( ) + 2, outline );
+	Render::Rect( entry.Visuals.m_cBBox.Position( ) + 1, entry.Visuals.m_cBBox.Size( ) - 2, outline );
+	Render::Rect( entry.Visuals.m_cBBox.Position( ), entry.Visuals.m_cBBox.Size( ), col );
+	Render::Rect( entry.Visuals.m_cBBox.Position( ) - 1, entry.Visuals.m_cBBox.Size( ) + 2, outline );
 }
 
-void CVisuals::DrawName( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+void CVisuals::DrawName( const PlayerEntry_t& entry, uint8_t type ) {
 	Color col{ Configs::m_cConfig.m_colName[ type ] };
 	entry.Visuals.ApplyDormancy( col );
 
-	Render::Text( { bbox.x + bbox.w / 2, bbox.y - 13 }, entry.m_pName, col, TEXT_CENTER | TEXT_DROPSHADOW, 13, Render::Fonts.NameESP );
+	Render::Text( { entry.Visuals.m_cBBox.x + entry.Visuals.m_cBBox.w / 2, entry.Visuals.m_cBBox.y - 13 }, entry.m_pName, col, TEXT_CENTER | TEXT_DROPSHADOW, 13, Render::Fonts.NameESP );
 }
 
-void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type ) {
 	Color col{ Configs::m_cConfig.m_colHealth[ type ] };
 
 	if ( !Configs::m_cConfig.m_bHealthOverride[ type ] ) {
@@ -159,19 +154,19 @@ void CVisuals::DrawHealth( const PlayerEntry_t& entry, uint8_t type, const BBox_
 
 	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
 
-	const int bar_height{ static_cast< int >( static_cast< float >( entry.Visuals.m_iHealth ) * static_cast< float >( bbox.h ) / 100.0f ) };
-	const float offset{ bbox.h - bar_height };
+	const int bar_height{ static_cast< int >( static_cast< float >( entry.Visuals.m_iHealth ) * static_cast< float >( entry.Visuals.m_cBBox.h ) / 100.0f ) };
+	const float offset{ entry.Visuals.m_cBBox.h - bar_height };
 
-	Render::RectFilled( { bbox.x - 6, bbox.y - 1 }, { 4, bbox.h + 2 }, outline.Alpha( outline.a * 0.5f ) );
-	Render::RectFilled( { bbox.x - 5, bbox.y + offset }, { 2, bar_height }, col );
+	Render::RectFilled( { entry.Visuals.m_cBBox.x - 6, entry.Visuals.m_cBBox.y - 1 }, { 4, entry.Visuals.m_cBBox.h + 2 }, outline.Alpha( outline.a * 0.5f ) );
+	Render::RectFilled( { entry.Visuals.m_cBBox.x - 5, entry.Visuals.m_cBBox.y + offset }, { 2, bar_height }, col );
 
-	Render::Rect( { bbox.x - 6, bbox.y - 1 }, { 4, bbox.h + 2 }, outline );
+	Render::Rect( { entry.Visuals.m_cBBox.x - 6, entry.Visuals.m_cBBox.y - 1 }, { 4, entry.Visuals.m_cBBox.h + 2 }, outline );
 
 	if ( entry.Visuals.m_iHealth <= 92 )
-		Render::Text( { bbox.x - 5, bbox.y + offset - 3 }, std::to_string( entry.Visuals.m_iHealth ).c_str( ), Color( 255, 255, 255, ( int ) col.a ), TEXT_CENTER | TEXT_OUTLINE, 8, Render::Fonts.NameESP );
+		Render::Text( { entry.Visuals.m_cBBox.x - 5, entry.Visuals.m_cBBox.y + offset - 3 }, std::to_string( entry.Visuals.m_iHealth ).c_str( ), Color( 255, 255, 255, ( int ) col.a ), TEXT_CENTER | TEXT_OUTLINE, 8, Render::Fonts.NameESP );
 }
 
-bool CVisuals::DrawAmmo( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox ) {
+bool CVisuals::DrawAmmo( const PlayerEntry_t& entry, uint8_t type ) {
 	if ( !Configs::m_cConfig.m_bAmmo[ type ] )
 		return false;
 
@@ -198,18 +193,21 @@ bool CVisuals::DrawAmmo( const PlayerEntry_t& entry, uint8_t type, const BBox_t&
 	const Color outline{ Color( 0, 0, 0, static_cast< int >( col.a ) ) };
 
 	// outline
-	Render::RectFilled( { bbox.x - 1, bbox.y + bbox.h + 2 }, { bbox.w + 2, 4 }, outline.Alpha( outline.a * .5f ) );
+	Render::RectFilled( { entry.Visuals.m_cBBox.x - 1, entry.Visuals.m_cBBox.y + entry.Visuals.m_cBBox.h + 2 }, { entry.Visuals.m_cBBox.w + 2, 4 }, outline.Alpha( outline.a * .5f ) );
 
 	// color
 	if ( ammo )
-		Render::RectFilled( { bbox.x, bbox.y + bbox.h + 3 }, { std::min( bbox.w, ammo * bbox.w / maxClip ), 2 }, col );
+		Render::RectFilled( { entry.Visuals.m_cBBox.x, entry.Visuals.m_cBBox.y + entry.Visuals.m_cBBox.h + 3 }, { std::min( entry.Visuals.m_cBBox.w, ammo * entry.Visuals.m_cBBox.w / maxClip ), 2 }, col );
 
-	Render::Rect( { bbox.x - 1, bbox.y + bbox.h + 2 }, { bbox.w + 2, 4 }, outline );
+	Render::Rect( { entry.Visuals.m_cBBox.x - 1, entry.Visuals.m_cBBox.y + entry.Visuals.m_cBBox.h + 2 }, { entry.Visuals.m_cBBox.w + 2, 4 }, outline );
 
 	return true;
 }
 
-void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_t& bbox, const bool didAmmoBar ) {
+void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const bool didAmmoBar ) {
+	if ( !Configs::m_cConfig.m_iWeapon[ type ] )
+		return;
+
 	const auto weaponServices{ entry.m_pPawn->m_pWeaponServices( ) };
 	if ( !weaponServices )
 		return;
@@ -242,5 +240,5 @@ void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const BBox_
 	if ( didAmmoBar )
 		append += 6;
 
-	Render::Text( { bbox.x + bbox.w / 2, bbox.y + bbox.h + append }, name.c_str( ), col, TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
+	Render::Text( { entry.Visuals.m_cBBox.x + entry.Visuals.m_cBBox.w / 2, entry.Visuals.m_cBBox.y + entry.Visuals.m_cBBox.h + append }, name.c_str( ), col, TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
 }
