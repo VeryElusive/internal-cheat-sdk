@@ -62,6 +62,8 @@ void C_BaseEntity::Initialise( ) {
 	INIT_SCHEMA( C_BaseEntity, m_iHealth );
 	INIT_SCHEMA( C_BaseEntity, m_fFlags );
 	INIT_SCHEMA( C_BaseEntity, m_vecAbsVelocity );
+	INIT_SCHEMA( C_BaseEntity, m_MoveType );
+	INIT_SCHEMA( C_BaseEntity, m_flWaterLevel );
 }
 
 void C_CSPlayerPawnBase::Initialise( ) {

@@ -54,8 +54,8 @@ namespace Input {
 
 	inline void Update( ) {
 		// TODO:
-		//if ( GetForegroundWindow( ) != ctx.hwnd )
-		//	return;
+		if ( GetForegroundWindow( ) != ctx.hwnd )
+			return;
 
 		// TODO: UpdateNeededKeys like in csgo havoc?
 		for ( int i{ }; i < 256; ++i ) {

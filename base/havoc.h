@@ -58,6 +58,8 @@ struct Context_t {
 
 	PlayerEntry_t PlayerEntries[ 64 ]{ };
 
+	HWND hwnd{ };
+
 	float m_flForwardmove{ };
 	float m_flSidemove{ };
 	float m_flUpmove{ };

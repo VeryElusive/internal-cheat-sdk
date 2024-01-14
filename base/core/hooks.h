@@ -41,7 +41,6 @@ namespace Hooks {
 	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
 
 	inline WNDPROC WndProc;
-	inline HWND hwnd;
 	LRESULT CALLBACK hkWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 	void Init( );

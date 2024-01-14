@@ -7,5 +7,6 @@ namespace Displacement {
 	void Init( );
 
 	inline fnGetBaseEntity GetBaseEntity;
+	inline int( __stdcall* fnSetRelativeMouseMode )( int ) = nullptr;
 	//inline ViewMatrix_t* ViewMatrix;
 }

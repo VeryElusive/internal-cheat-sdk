@@ -1,5 +1,6 @@
 #include "../core/hooks.h"
 #include "../core/input.h"
+#include "../core/displacement.h"
 #include "../utils/render/render.h"
 #include "../menu/menu.h"
 #include "../features/visuals/visuals.h"
@@ -10,8 +11,10 @@
 #include "../dependencies/imgui/backends/imgui_impl_win32.h"
 
 LRESULT CALLBACK Hooks::hkWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
-	if ( uMsg == WM_KEYDOWN && wParam == VK_INSERT )
+	if ( uMsg == WM_KEYDOWN && wParam == VK_INSERT ) {
 		Menu::m_bOpened = !Menu::m_bOpened;
+		Displacement::fnSetRelativeMouseMode( !Menu::m_bOpened );
+	}
 
 	if ( Menu::m_bOpened ) {
 		if ( uMsg == WM_MOUSEWHEEL || uMsg == WM_MOUSEHWHEEL )
@@ -58,8 +61,8 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 			DXGI_SWAP_CHAIN_DESC Desc;
 			pSwapChain->GetDesc( &Desc );
 
-			hwnd = Desc.OutputWindow;
-			WndProc = reinterpret_cast< WNDPROC >( SetWindowLongPtr( hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::hkWndProc ) ) );
+			ctx.hwnd = Desc.OutputWindow;
+			WndProc = reinterpret_cast< WNDPROC >( SetWindowLongPtr( ctx.hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::hkWndProc ) ) );
 
 			ID3D11Texture2D* BackBuffer;
 			pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* ) &BackBuffer );
@@ -67,13 +70,13 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 				device->CreateRenderTargetView( BackBuffer, NULL, &renderTargetView );
 				BackBuffer->Release( );
 
-				ImGui_ImplWin32_Init( hwnd );
+				ImGui_ImplWin32_Init( ctx.hwnd );
 				ImGui_ImplDX11_Init( device, context );
 
 				Render::Init( );
 
 				ImGui_ImplDX11_CreateDeviceObjects( );
-				ImGui::GetIO( ).ImeWindowHandle = hwnd;
+				ImGui::GetIO( ).ImeWindowHandle = ctx.hwnd;
 
 				ImGuiContext& g = *GImGui;
 				g.Style.AntiAliasedLines = false;

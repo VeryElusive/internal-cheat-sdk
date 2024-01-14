@@ -100,6 +100,8 @@ public:
 	SCHEMA( std::uint8_t, m_iTeamNum );
 	SCHEMA( int, m_iHealth );
 	SCHEMA( int, m_fFlags );
+	SCHEMA( int, m_MoveType );
+	SCHEMA( float, m_flWaterLevel );
 	SCHEMA( Vector, m_vecAbsVelocity );
 
 	__forceinline bool Dormant( ) {
@@ -379,4 +381,22 @@ enum EFlags : int
 	FL_DISSOLVING = ( 1 << 29 ),
 	FL_TRANSRAGDOLL = ( 1 << 30 ), // entity is turning into client-side ragdoll
 	FL_UNBLOCKABLE_BY_PLAYER = ( 1 << 31 )
+};
+
+enum EMoveType : int
+{
+	MOVETYPE_NONE = 0,
+	MOVETYPE_ISOMETRIC,
+	MOVETYPE_WALK,
+	MOVETYPE_STEP,
+	MOVETYPE_FLY, // no gravity, but still collides with stuff
+	MOVETYPE_FLYGRAVITY, // flies through the air and is affected by gravity
+	MOVETYPE_VPHYSICS,
+	MOVETYPE_PUSH, // no clip to world, push and crush
+	MOVETYPE_NOCLIP, // no gravity, no collisions, still do velocity/absvelocity
+	MOVETYPE_LADDER,
+	MOVETYPE_OBSERVER, // observer movement, depends on player's observer mode
+	MOVETYPE_CUSTOM,
+	MOVETYPE_LAST = MOVETYPE_CUSTOM,
+	MOVETYPE_MAX_BITS = 4
 };

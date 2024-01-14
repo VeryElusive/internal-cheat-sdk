@@ -39,7 +39,7 @@ struct Config_t {
 	Keybind_t m_kBugWalk{ };
 
 	bool m_bThirdperson{ };
-	int m_iThirdpersonDistance{ };
+	int m_iThirdpersonDistance{ 130 };
 	Keybind_t m_kThirdperson{ };
 
 #pragma endregion misc

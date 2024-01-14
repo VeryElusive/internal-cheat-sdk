@@ -7,6 +7,9 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	static int lastOnGround{ };
 	static bool wait{ };
 
+	if ( const int32_t nMoveType = local->m_MoveType( ); nMoveType == MOVETYPE_NOCLIP || nMoveType == MOVETYPE_LADDER || local->m_flWaterLevel( ) >= 2 )//WL_WAIST
+		return;
+
 	if ( Configs::m_cConfig.m_bBunnyhop ) {
 		if ( cmd->m_cButtonStates.m_iHeld & IN_JUMP ) {
 			if ( onGround && lastOnGround ) {
@@ -19,7 +22,7 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	}
 
 
-	if ( Configs::m_cConfig.m_bBugWalk ) {
+	if ( Configs::m_cConfig.m_bBugWalk && Configs::m_cConfig.m_kBugWalk.m_bEnabled ) {
 		if ( local->m_fFlags( ) & FL_ONGROUND ) {
 			cmd->m_cButtonStates.m_iHeld |= IN_JUMP;
 			cmd->m_cButtonStates.m_iToggle |= IN_JUMP;
