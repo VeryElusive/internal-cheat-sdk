@@ -38,6 +38,10 @@ struct Config_t {
 	bool m_bBugWalk{ };
 	Keybind_t m_kBugWalk{ };
 
+	bool m_bThirdperson{ };
+	int m_iThirdpersonDistance{ };
+	Keybind_t m_kThirdperson{ };
+
 #pragma endregion misc
 
 	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };

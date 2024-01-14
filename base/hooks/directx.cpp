@@ -101,9 +101,12 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 	if ( Interfaces::GlobalVars ) {
 		//if ( Displacement::ViewMatrix )
 		//	ctx.m_matViewMatrix = *Displacement::ViewMatrix;
-		Features::Visuals.Main( );
 
 		Input::Update( );
+		Input::CheckBinds( );
+
+		Features::Visuals.Main( );
+
 		Menu::Render( );
 	}
 

@@ -11,7 +11,7 @@ public:
 	MEM_PAD( 0x248 );
 	CUserCmd m_arrCommands[ MULTIPLAYER_BACKUP ];
 	MEM_PAD( 0x1 );
-	bool m_bInThirdPerson;
+	bool m_bCameraInThirdPerson;
 	MEM_PAD( 0x22 );
 	int32_t m_nSequenceNumber;
 

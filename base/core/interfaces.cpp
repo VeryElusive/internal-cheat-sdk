@@ -72,6 +72,11 @@ bool Interfaces::Init( ) {
 	MemAlloc = *reinterpret_cast< IMemAlloc** >( Memory::GetExportAddress( pTier0Handle, _( "g_pMemAlloc" ) ) );
 	CHECK_AND_FAIL( MemAlloc );
 
+	const auto tier0Register = GetRegisterList( TIER0_DLL );
+	CHECK_AND_FAIL( tier0Register );
+
+	Cvar = Capture<IEngineCVar>( tier0Register, _( "VEngineCvar007" ) );
+
 	const auto pLocalizeList = GetRegisterList( LOCALIZE_DLL );
 	CHECK_AND_FAIL( pLocalizeList );
 

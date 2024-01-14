@@ -41,6 +41,7 @@ struct Keybind_t {
 	}
 };
 
+
 namespace Input {
 	inline bool m_bState[ 256 ]{ };
 	inline bool m_bPrevState[ 256 ]{ };
@@ -49,11 +50,14 @@ namespace Input {
 	inline Vector2D m_vecMousePos{ };
 	inline Vector2D m_vecMouseDelta{ };
 
+	void CheckBinds( );
+
 	inline void Update( ) {
 		// TODO:
 		//if ( GetForegroundWindow( ) != ctx.hwnd )
 		//	return;
 
+		// TODO: UpdateNeededKeys like in csgo havoc?
 		for ( int i{ }; i < 256; ++i ) {
 			m_bPrevState[ i ] = m_bState[ i ];
 			m_bState[ i ] = GetAsyncKeyState( i );

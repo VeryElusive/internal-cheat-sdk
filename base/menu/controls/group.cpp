@@ -107,6 +107,8 @@ void CMenuItem::RenderFocus( ) {
 	case TEXT_INPUT:
 		TextInputFocus( );
 		break;
+	case KEY_BIND:
+		KeybindFocus( );
 		break;
 	default:
 		break;
@@ -138,6 +140,9 @@ void CMenuItem::Render( ) {
 		break;
 	case LIST_BOX:
 		Listbox( );
+		break;
+	case KEY_BIND:
+		Keybind( );
 		break;
 	case TEXT_INPUT:
 		TextInput( );

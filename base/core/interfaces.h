@@ -8,6 +8,7 @@
 #include "../sdk/valve/interfaces/ilocalize.h"
 
 class ISource2Client;
+class IEngineCVar;
 
 namespace Interfaces {
 	bool Init( );
@@ -20,4 +21,5 @@ namespace Interfaces {
 	inline IMemAlloc* MemAlloc{ };
 	inline CCSGOInput* Input{ };
 	inline ILocalize* Localize{ };
+	inline IEngineCVar* Cvar{ };
 }

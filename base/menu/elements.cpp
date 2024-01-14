@@ -53,9 +53,16 @@ void Menu::Register( ) {
 	}
 
 	auto test1{ &m_cTabs[ 2 ].m_vecSubtabs.emplace_back( "test", 2 ) };
-	auto test2{ &m_cTabs[ 3 ].m_vecSubtabs.emplace_back( "Misc", 2 ) };
+	auto misc{ &m_cTabs[ 3 ].m_vecSubtabs.emplace_back( "Misc", 2 ) };
 	{
-		auto movementGroup{ test2->AddGroup( "Movement", 1.f ) };
+		auto generalGroup{ misc->AddGroup( "General", 1.f ) };
+		{
+			generalGroup->Register( ( "Thirdperson" ), &Configs::m_cConfig.m_bThirdperson );
+			generalGroup->Register( &Configs::m_cConfig.m_kThirdperson );
+			generalGroup->Register( ( "Thirdperson distance" ), &Configs::m_cConfig.m_iThirdpersonDistance, 30, 250 );
+		}
+
+		auto movementGroup{ misc->AddGroup( "Movement", 1.f ) };
 		{
 			movementGroup->Register( ( "Bunnyhop" ), &Configs::m_cConfig.m_bBunnyhop );
 			movementGroup->Register( ( "Auto strafer" ), &Configs::m_cConfig.m_bAutoStrafer );
@@ -63,8 +70,6 @@ void Menu::Register( ) {
 			movementGroup->Register( ( "Bungus jump bug" ), &Configs::m_cConfig.m_bBugWalk );
 			movementGroup->Register( &Configs::m_cConfig.m_kBugWalk );
 		}
-		auto otherGroup{ test2->AddGroup( "Other", 0.6f ) };
-		auto other2Group{ test2->AddGroup( "Other", 0.4f ) };
 	}
 
 	auto configSubtab{ &m_cTabs[ 4 ].m_vecSubtabs.emplace_back( "Configs", 1 ) };

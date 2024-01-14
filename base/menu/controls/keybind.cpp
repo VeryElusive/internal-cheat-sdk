@@ -27,7 +27,7 @@ const char* keys[ ] = { "[-]", "[M1]", "[M2]", "[BRK]", "[M3]", "[M4]", "[M5]",
 
 #define MAX_ALPHA( col ) col.Alpha( Menu::m_pFocusItem.m_flFocusAnim * 255 )
 
-ComboElement_t items[ 4 ]{ _( "Always on" ),_( "Toggle" ), _( "Hold" ), _( "Off hotkey" ) };
+ComboElement_t items[ 4 ]{ ( "Always on" ),( "Toggle" ), ( "Hold" ), ( "Off hotkey" ) };
 
 void CMenuItem::KeybindFocus( ) {
 	auto& value{ *reinterpret_cast< Keybind_t* >( m_pValue ) };
