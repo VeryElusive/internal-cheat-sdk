@@ -9,6 +9,9 @@ public:
 	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
 
 private:
+	void Yaw( C_CSPlayerPawn* local, float& yaw );
+
+	bool m_bJitter{ };
 };
 
 namespace Features { inline CAntiAim AntiAim; };

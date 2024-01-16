@@ -44,6 +44,15 @@ struct Config_t {
 
 #pragma endregion misc
 
+#pragma region antiaim
+	int m_bAntiAimEnable{ };
+	int m_iAntiAimPitch{ };
+	int m_iAntiAimYaw{ };
+	int m_iAntiAimYawAdd{ };
+	int m_iAntiAimYawRange{ };
+	int m_iAntiAimYawSpeed{ };
+#pragma endregion antiaim
+
 	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };
 
 	bool m_bOptions[ 5 ]{ };

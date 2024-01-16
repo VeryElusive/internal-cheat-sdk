@@ -7,10 +7,9 @@
 class CMovement {
 public:
 	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
-
+	void MoveMINTFix( CUserCmd* cmd, float wishYaw );
 private:
 	void AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd );
-	void MoveMINTFix( CUserCmd* cmd, Vector wishAngles );
 };
 
 namespace Features { inline CMovement Movement; };

@@ -20,6 +20,20 @@ void Menu::Register( ) {
 	}
 
 	auto antiaim{ &m_cTabs[ 0 ].m_vecSubtabs.emplace_back( "Anti-aim", 2 ) };
+	{
+		auto generalGroup{ antiaim->AddGroup( "General", 1.f ) };
+		{
+			generalGroup->Register( _( "Enable" ), &Configs::m_cConfig.m_bAntiAimEnable );
+			generalGroup->Register( _( "Pitch" ), &Configs::m_cConfig.m_iAntiAimPitch, 5, pitch );
+			generalGroup->Register( _( "Yaw" ), &Configs::m_cConfig.m_iAntiAimYaw, 4, yaw );
+			generalGroup->Register( _( "Yaw add" ), &Configs::m_cConfig.m_iAntiAimYawAdd, 5, yawAdd );
+
+
+			generalGroup->Register( _( "Yaw range" ), &Configs::m_cConfig.m_iAntiAimYawRange, 2, 180, SHOW( Configs::m_cConfig.m_iAntiAimYawAdd && Configs::m_cConfig.m_iAntiAimYawAdd != 3 ) );
+
+			generalGroup->Register( _( "Yaw speed" ), &Configs::m_cConfig.m_iAntiAimYawSpeed, 1, 60, SHOW( Configs::m_cConfig.m_iAntiAimYawAdd == 2 || Configs::m_cConfig.m_iAntiAimYawAdd == 3 ) );
+		}
+	}
 
 	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( ( "Enemy" ), 2 );
 	m_cTabs[ 1 ].m_vecSubtabs.emplace_back( ( "Team" ), 2 );

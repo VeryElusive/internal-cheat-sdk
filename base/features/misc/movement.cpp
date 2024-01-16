@@ -103,13 +103,13 @@ void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		}
 	}
 
-	MoveMINTFix( cmd, movementAngle );
+	MoveMINTFix( cmd, movementAngle.y );
 }
 
-void CMovement::MoveMINTFix( CUserCmd* cmd, Vector wishAngles ) {
+void CMovement::MoveMINTFix( CUserCmd* cmd, float wishYaw ) {
 	// my good friend philip gave me this code.
 	// THANK YOU PHILIP!!!!
-	const float rot{ Math::DegreeToRadians( cmd->cmd.pBase->pViewangles->angValue.y - wishAngles.y ) };
+	const float rot{ Math::DegreeToRadians( cmd->cmd.pBase->pViewangles->angValue.y - wishYaw ) };
 
 	const float newForward{ std::cos( rot ) * cmd->cmd.pBase->flForwardMove - std::sin( rot ) * cmd->cmd.pBase->flSideMove };
 	const float newSide{ std::sin( rot ) * cmd->cmd.pBase->flForwardMove + std::cos( rot ) * cmd->cmd.pBase->flSideMove };
