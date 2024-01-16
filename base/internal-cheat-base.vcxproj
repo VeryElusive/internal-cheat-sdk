@@ -38,6 +38,7 @@
     <ClCompile Include="dependencies\minhook\hook.c" />
     <ClCompile Include="dependencies\minhook\trampoline.c" />
     <ClCompile Include="features\misc\movement.cpp" />
+    <ClCompile Include="features\rage\antiaim.cpp" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
     <ClCompile Include="hooks\client.cpp" />
@@ -80,7 +81,9 @@
     <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="features\misc\misc.h" />
     <ClInclude Include="features\misc\movement.h" />
+    <ClInclude Include="features\rage\antiaim.h" />
     <ClInclude Include="features\visuals\visuals.h" />
+    <ClInclude Include="hooks\networkgameclient.cpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="havoc.h" />
     <ClInclude Include="core\hooks.h" />
@@ -116,9 +119,11 @@
     <ClInclude Include="sdk\valve\interfaces\ienginecvar.h" />
     <ClInclude Include="sdk\valve\interfaces\IGameResourceService.h" />
     <ClInclude Include="sdk\valve\interfaces\ccsgoinput.h" />
+    <ClInclude Include="sdk\valve\interfaces\iinputsystem.h" />
     <ClInclude Include="sdk\valve\interfaces\ilocalize.h" />
     <ClInclude Include="sdk\valve\interfaces\imemalloc.h" />
     <ClInclude Include="sdk\valve\interfaces\ischemasystem.h" />
+    <ClInclude Include="sdk\valve\interfaces\csource2client.h" />
     <ClInclude Include="sdk\valve\interfaces\iviewrender.h" />
     <ClInclude Include="sdk\valve\usercmd.h" />
     <ClInclude Include="sdk\vector.h" />
@@ -130,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\imgui\LICENSE.txt" />
+    <Text Include="sdk\valve\interfaces\research.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

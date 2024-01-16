@@ -13,7 +13,8 @@
 LRESULT CALLBACK Hooks::hkWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
 	if ( uMsg == WM_KEYDOWN && wParam == VK_INSERT ) {
 		Menu::m_bOpened = !Menu::m_bOpened;
-		Displacement::fnSetRelativeMouseMode( !Menu::m_bOpened );
+		if ( Interfaces::InputSystem->IsRelativeMouseMode( ) )
+			Displacement::fnSetRelativeMouseMode( !Menu::m_bOpened );
 	}
 
 	if ( Menu::m_bOpened ) {
@@ -87,8 +88,14 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 		}
 	}
 
-	if ( ctx.m_bUnloading )
+	if ( ctx.m_bUnloading ) {
+		static bool done{ };
+		if ( !done ) {
+			Render::Unload( );
+			done = true;
+		}
 		return og( pSwapChain, SyncInterval, Flags );
+	}
 
 	ImGui_ImplDX11_NewFrame( );
 	ImGui_ImplWin32_NewFrame( );

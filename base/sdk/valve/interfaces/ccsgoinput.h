@@ -18,4 +18,12 @@ public:
 	CUserCmd* GetUserCmd( ) {
 		return &m_arrCommands[ m_nSequenceNumber % MULTIPLAYER_BACKUP ];
 	}
+
+	__forceinline void test( ) const {
+			*reinterpret_cast< int* >( ( reinterpret_cast< std::uintptr_t >( this ) + 0x61C8 ) ) = 1;
+	}
+
+	void SetViewAngles( Vector angle ) {
+		return Displacement::SetViewAngles( this, 0, &angle );
+	}
 };

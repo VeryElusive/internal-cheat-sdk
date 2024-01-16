@@ -7,6 +7,8 @@
 void __fastcall Hooks::hkFrameStageNotify( void* rcx, int frameStage ) {
 	const auto og{ FrameStageNotify.Original<decltype( &hkFrameStageNotify )>( ) };
 
+	//Interfaces::Input->test( );
+
 	switch ( frameStage ) {
 	case FRAME_RENDER_END:
 		ctx.GetLocal( );

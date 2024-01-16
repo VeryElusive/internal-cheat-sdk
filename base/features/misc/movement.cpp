@@ -7,7 +7,7 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	static int lastOnGround{ };
 	static bool wait{ };
 
-	if ( const int32_t nMoveType = local->m_MoveType( ); nMoveType == MOVETYPE_NOCLIP || nMoveType == MOVETYPE_LADDER || local->m_flWaterLevel( ) >= 2 )//WL_WAIST
+	if ( local->m_MoveType( ) != MOVETYPE_WALK )
 		return;
 
 	if ( Configs::m_cConfig.m_bBunnyhop ) {
@@ -38,7 +38,7 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
-	ctx.m_flUpmove = cmd->cmd.pBase->flUpMove;
+	//ctx.m_flUpmove = cmd->cmd.pBase->flUpMove;
 
 	lastOnGround = onGround;
 }

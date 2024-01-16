@@ -24,6 +24,7 @@ __int64 __fastcall Hooks::hkLevelShutdown( void* rcx ) {
 void __fastcall Hooks::hkOverrideView( void* rcx, CViewSetup* setup ) {
 	const auto og{ OverrideView.Original<decltype( &hkOverrideView )>( ) };
 
+	//const auto b{ setup->m_angView 
 	// TODO: avoid cvar usage lol
 	CVAR( cam_idealdist );
 	CVAR( cam_collision );
@@ -51,7 +52,7 @@ void __fastcall Hooks::hkOverrideView( void* rcx, CViewSetup* setup ) {
 		if ( Interfaces::Input->m_bCameraInThirdPerson )
 			Interfaces::Input->m_bCameraInThirdPerson = false;
 
-		cam_idealdist->value.fl = 0;
+		cam_idealdist->value.fl = 30;
 	}
 
 	return og( rcx, setup );

@@ -57,7 +57,7 @@ bool Interfaces::Init( ) {
 	const auto pClientRegister = GetRegisterList( CLIENT_DLL );
 	CHECK_AND_FAIL( pClientRegister );
 
-	Client = Capture<ISource2Client>( pClientRegister, _( "Source2Client002" ) );
+	Client = Capture<CSource2Client>( pClientRegister, _( "Source2Client002" ) );
 	CHECK_AND_FAIL( Client );
 
 	const auto pSchemaSystemRegisterList = GetRegisterList( SCHEMASYSTEM_DLL );
@@ -76,6 +76,13 @@ bool Interfaces::Init( ) {
 	CHECK_AND_FAIL( tier0Register );
 
 	Cvar = Capture<IEngineCVar>( tier0Register, _( "VEngineCvar007" ) );
+	CHECK_AND_FAIL( Cvar );
+
+	const auto pInputSystemRegisterList = GetRegisterList( INPUT_SYSTEM );
+	CHECK_AND_FAIL( pInputSystemRegisterList );
+
+	InputSystem = Capture<IInputSystem>( pInputSystemRegisterList, _( "InputSystemVersion001" ) );
+	CHECK_AND_FAIL( InputSystem );
 
 	const auto pLocalizeList = GetRegisterList( LOCALIZE_DLL );
 	CHECK_AND_FAIL( pLocalizeList );

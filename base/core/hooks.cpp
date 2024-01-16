@@ -28,4 +28,10 @@ void Hooks::Init( ) {
 	INIT_HOOK( LevelShutdown, Memory::FindPattern( CLIENT_DLL, _( "48 83 EC ? 48 8B 0D ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C9 45 33 C0 48 8B 01 FF 50 ? 48 85 C0 74 ? 48 8B 0D ? ? ? ? 48 8B D0 4C 8B 01 48 83 C4 ? 49 FF 60 ? 48 83 C4 ? C3 CC CC CC 48 83 EC ? 4C 8B D9" ) ) );
 	
 	INIT_HOOK( OverrideView, Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 01 48 8B DA" ) ) );
+
+	INIT_HOOK( Unknown01, Memory::FindPattern( CLIENT_DLL, _( "85 D2 0F 85 ? ? ? ? 48 8B C4 44 88" ) ) );
+
+	//INIT_HOOK( SetViewAngles, Memory::FindPattern( CLIENT_DLL, _( "85 D2 75 3F 48 63 81 ? ? ? ? F2 41 0F 10 00 85" ) ) );
+
+	//INIT_HOOK( SendMove, Memory::FindPattern( ENGINE2_DLL, _( "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 50 33 C0 C6 81" ) ) )
 }

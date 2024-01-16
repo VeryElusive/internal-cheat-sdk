@@ -52,9 +52,12 @@ struct Context_t {
 
 	ViewMatrix_t m_matViewMatrix{ };
 
+	Vector m_vecVIEWViewAngles{ };
 	Vector m_vecViewAngles{ };
 
 	bool m_bUnloading{ };
+
+	CUserCmd* m_pLastCmd{ };
 
 	PlayerEntry_t PlayerEntries[ 64 ]{ };
 

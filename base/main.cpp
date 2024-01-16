@@ -41,14 +41,16 @@ void Entry( HMODULE hModule ) {
 
 	ctx.m_bUnloading = true;
 
-	Render::Unload( );
+	std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+
+	//Render::Unload( );
 
 	MH_DisableHook( MH_ALL_HOOKS );
 	MH_RemoveHook( MH_ALL_HOOKS );
 
 	MH_Uninitialize( );
 
-	reinterpret_cast< WNDPROC >( SetWindowLongPtr( Hooks::hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::WndProc ) ) );
+	reinterpret_cast< WNDPROC >( SetWindowLongPtr( ctx.hwnd, GWLP_WNDPROC, reinterpret_cast< LONG_PTR >( Hooks::WndProc ) ) );
 
 	FreeConsole( );
 

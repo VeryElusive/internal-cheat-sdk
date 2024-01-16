@@ -40,6 +40,10 @@ namespace Hooks {
 	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active );
 	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
 
+	// part of CClientInput
+	NEW_HOOK( Unknown01, void, __fastcall ) void* rcx, int edx, char a3, unsigned char a4 );
+	//NEW_HOOK( SendMove, void*, __fastcall ) void* rcx, void* rdx );
+
 	inline WNDPROC WndProc;
 	LRESULT CALLBACK hkWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
