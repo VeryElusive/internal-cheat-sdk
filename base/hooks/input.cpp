@@ -56,6 +56,11 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int sequenceNumber, std
 
 	ctx.m_pLastCmd = cmd;
 
+	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
+
+	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
+	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );
+
 	return result;
 }
 

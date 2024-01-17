@@ -10,6 +10,7 @@ public:
 
 private:
 	void Yaw( C_CSPlayerPawn* local, float& yaw );
+	bool Condition( C_CSPlayerPawn* local, CUserCmd* cmd );
 
 	bool m_bJitter{ };
 };

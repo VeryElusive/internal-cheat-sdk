@@ -91,11 +91,16 @@ void Menu::Register( ) {
 
 		configGroup->Register( &selectedConfig );
 		configGroup->Register( &typedConfig );
+		configGroup->Register( "Refresh", [ ] {
+			Configs::Refresh( );
+			} );
+
 		configGroup->Register( "Create", [ ] {
 			const auto filePath{ typedConfig };
 			Configs::SaveCFG( filePath );
 			Configs::Refresh( );
 			} );
+
 		configGroup->Register( "Remove", [ ] {
 			Configs::Remove( selectedConfig );
 			Configs::Refresh( );

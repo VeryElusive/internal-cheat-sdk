@@ -26,7 +26,7 @@ void CMenuItem::Listbox( ) {
 	// TODO: dynamic sizing
 	// TODO: scrolling
 	// TODO: clip rects
-	const auto size{ Vector2D( ( Menu::m_vecSize.x - BAR_SIZE - MARGIN * 2 ) / 1 - PADDING * 4, Menu::m_vecSize.y - MARGIN * 2 - PADDING * 4 - PADDING * 5 - ITEM_HEIGHT * 2 * 5 ) };
+	const auto size{ Vector2D( ( Menu::m_vecSize.x - BAR_SIZE - MARGIN * 2 ) / 1 - PADDING * 4, Menu::m_vecSize.y - MARGIN * 2 - PADDING * 4 - PADDING * 6 - ITEM_HEIGHT * 2 * 6 ) };
 
 	Render::Rect( Menu::m_vecDrawPos - Vector2D( 1, 1 ), size + Vector2D( 2, 2 ),  OUTLINE_DARK );
 	Render::Rect( Menu::m_vecDrawPos, size,  OUTLINE_LIGHT );

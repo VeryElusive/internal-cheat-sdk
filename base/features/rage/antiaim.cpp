@@ -3,6 +3,19 @@
 #include "../../core/config.h"
 #include <random>
 
+bool CAntiAim::Condition( C_CSPlayerPawn* local, CUserCmd* cmd ) {
+	if ( local->m_MoveType( ) != MOVETYPE_WALK )
+		return false;
+
+	if ( cmd->m_cButtonStates.m_iHeld & IN_ATTACK )
+		return false;
+
+	if ( cmd->m_cButtonStates.m_iHeld & IN_USE )
+		return false;
+
+	return true;
+}
+
 // TODO: detected! look at nConsumedServerAngleChanges (pretty sure it is a checksum but havent reversed it)
 
 // TODO: set the sub tick angles to this aswell.
@@ -55,11 +68,14 @@ void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw ) {
 }
 
 void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
-	if ( !Configs::m_cConfig.m_bAntiAimEnable )
+	if ( !Configs::m_cConfig.m_bAntiAimEnable
+		|| !Condition( local, cmd ) )
 		return;
 
 	m_bJitter = !m_bJitter;
 	switch ( Configs::m_cConfig.m_iAntiAimPitch ) {
+	case 0:
+		break;
 	case 1: 
 		cmd->cmd.pBase->pViewangles->angValue.x -89.f; // up
 		break;

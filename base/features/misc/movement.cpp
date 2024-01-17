@@ -145,4 +145,7 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 
 	auto v60 = sinf( v58 ) * sideMove;
 	cmd->cmd.pBase->flSideMove = v60 - ( sinf( v57 ) * forwardMove );
+
+	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
+	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );
 }
