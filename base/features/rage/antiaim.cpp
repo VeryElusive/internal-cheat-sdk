@@ -78,5 +78,5 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	Yaw( local, cmd->cmd.pBase->pViewangles->angValue.y );
 
-	Features::Movement.MoveMINTFix( local, cmd, old );
+	Features::Movement.MoveMINTFix( local, cmd, old.y );
 }

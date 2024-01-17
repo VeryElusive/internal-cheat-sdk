@@ -117,22 +117,32 @@ void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	cmd->cmd.pBase->flSideMove = std::clamp( newSide * -1.f, -1.f, 1.f );
 }
 
-void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAngle ) {
+void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAngle ) {
 	if ( !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
 		return;
 
-	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
+	if ( wishAngle < 0.f )
+		wishAngle += 360.f;
 
-	if ( cmd == nullptr )
-		return;
+	auto curAngles{ cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( ).y };
+	if ( curAngles < 0.f )
+		curAngles += 360.f;
 
-	Vector o_fwd, o_right, n_fwd, n_right;
-	Math::AngleVectors( wishAngle, &o_fwd, &o_right, nullptr );
-	Math::AngleVectors( cmd->cmd.pBase->pViewangles->angValue, &n_fwd, &n_right, nullptr );
-	o_fwd.z = o_right.z = n_fwd.z = n_right.z = 0.f;
-	o_fwd.NormalizeInPlace( ), o_right.NormalizeInPlace( ), n_fwd.NormalizeInPlace( ), n_right.NormalizeInPlace( );
+	float rot{ std::fabs( curAngles - wishAngle ) };
+	if ( wishAngle <= curAngles )
+		rot = 360.f - std::fabs( wishAngle - curAngles );
 
-	auto o_wish_coords = o_fwd * cmd->cmd.pBase->flForwardMove + o_right * cmd->cmd.pBase->flSideMove;
-	cmd->cmd.pBase->flForwardMove = ( n_right.y * o_wish_coords.x - n_right.x * o_wish_coords.y ) / ( n_right.y * n_fwd.x - n_right.x * n_fwd.y );
-	cmd->cmd.pBase->flSideMove = ( n_fwd.x * o_wish_coords.y - n_fwd.y * o_wish_coords.x ) / ( n_right.y * n_fwd.x - n_right.x * n_fwd.y );
+	auto forwardMove{ cmd->cmd.pBase->flForwardMove };
+	auto sideMove{ cmd->cmd.pBase->flSideMove };
+
+	// we do a little bit of l3d451r7ing...
+
+	auto v57 = ( 360.f - rot ) * 0.017453292f;
+	auto v58 = ( ( 360.f - rot ) + 90.f ) * 0.017453292f;
+
+	auto v59 = cosf( v57 ) * forwardMove;
+	cmd->cmd.pBase->flForwardMove = v59 - ( cosf( v58 ) * sideMove );
+
+	auto v60 = sinf( v58 ) * sideMove;
+	cmd->cmd.pBase->flSideMove = v60 - ( sinf( v57 ) * forwardMove );
 }

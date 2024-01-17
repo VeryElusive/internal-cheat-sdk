@@ -135,7 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\imgui\LICENSE.txt" />
-    <Text Include="sdk\valve\interfaces\research.txt" />
+    <Text Include="research.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

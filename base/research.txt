@@ -1,0 +1,47 @@
+both of these functions set CCSGOInput (interface) viewangles ( offset 0x6140 ), ps this is not the exact sig, both are a little below the opcode u want
+42 39 54 07 34 7E 4B 49 8D 48 38 48 03 CF
+
+
+4D 85 FF 74 25 84 C0 74 21 49 8B 04 24 4C 8B CE 4D 8B C7 8B D3 49 8B
+
+
+
+movement fix reversed from nexus (brazil paste)
+
+void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAngle ) {
+	if ( !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
+		return;
+
+	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
+
+	if ( cmd == nullptr )
+		return;
+
+	float v56{ };
+
+	auto v55{ wishAngle.y };
+	auto v45{ cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( ).y };
+
+	if ( v55 < 0.f )
+		v55 = v55 + 360.f;
+
+	if ( v45 < 0.f )
+		v45 = v45 + 360.f;
+
+	if ( v55 <= v45 )
+		v56 = 360.0 - fabs( v55 - v45 );
+	else
+		v56 = fabs( v45 - v55 );
+
+	auto v39{ cmd->cmd.pBase->flForwardMove };
+	auto v40{ cmd->cmd.pBase->flSideMove };
+
+	auto v57 = ( 360.f - v56 ) * 0.017453292f;
+	auto v58 = ( ( 360.f - v56 ) + 90.f ) * 0.017453292f;
+
+	auto v59 = cosf( v57 ) * v39;
+	cmd->cmd.pBase->flForwardMove = v59 - ( cosf( v58 ) * v40 );
+
+	auto v60 = sinf( v58 ) * v40;
+	cmd->cmd.pBase->flSideMove = v60 - ( sinf( v57 ) * v39 );
+}
