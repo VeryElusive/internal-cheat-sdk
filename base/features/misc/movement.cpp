@@ -35,9 +35,6 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	if ( Configs::m_cConfig.m_bAutoStrafer )
 		AutoStrafer( local, cmd );
-
-	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
-	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
 	//ctx.m_flUpmove = cmd->cmd.pBase->flUpMove;
 
 	lastOnGround = onGround;
@@ -103,13 +100,11 @@ void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		}
 	}
 
-	MoveMINTFix( cmd, movementAngle.y );
-}
+	///MoveMINTFix( cmd, movementAngle.y );
 
-void CMovement::MoveMINTFix( CUserCmd* cmd, float wishYaw ) {
 	// my good friend philip gave me this code.
 	// THANK YOU PHILIP!!!!
-	const float rot{ Math::DegreeToRadians( cmd->cmd.pBase->pViewangles->angValue.y - wishYaw ) };
+	const float rot{ Math::DegreeToRadians( cmd->cmd.pBase->pViewangles->angValue.y - movementAngle.y ) };
 
 	const float newForward{ std::cos( rot ) * cmd->cmd.pBase->flForwardMove - std::sin( rot ) * cmd->cmd.pBase->flSideMove };
 	const float newSide{ std::sin( rot ) * cmd->cmd.pBase->flForwardMove + std::cos( rot ) * cmd->cmd.pBase->flSideMove };
@@ -120,4 +115,24 @@ void CMovement::MoveMINTFix( CUserCmd* cmd, float wishYaw ) {
 
 	cmd->cmd.pBase->flForwardMove = std::clamp( newForward, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( newSide * -1.f, -1.f, 1.f );
+}
+
+void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAngle ) {
+	if ( !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
+		return;
+
+	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
+
+	if ( cmd == nullptr )
+		return;
+
+	Vector o_fwd, o_right, n_fwd, n_right;
+	Math::AngleVectors( wishAngle, &o_fwd, &o_right, nullptr );
+	Math::AngleVectors( cmd->cmd.pBase->pViewangles->angValue, &n_fwd, &n_right, nullptr );
+	o_fwd.z = o_right.z = n_fwd.z = n_right.z = 0.f;
+	o_fwd.NormalizeInPlace( ), o_right.NormalizeInPlace( ), n_fwd.NormalizeInPlace( ), n_right.NormalizeInPlace( );
+
+	auto o_wish_coords = o_fwd * cmd->cmd.pBase->flForwardMove + o_right * cmd->cmd.pBase->flSideMove;
+	cmd->cmd.pBase->flForwardMove = ( n_right.y * o_wish_coords.x - n_right.x * o_wish_coords.y ) / ( n_right.y * n_fwd.x - n_right.x * n_fwd.y );
+	cmd->cmd.pBase->flSideMove = ( n_fwd.x * o_wish_coords.y - n_fwd.y * o_wish_coords.x ) / ( n_right.y * n_fwd.x - n_right.x * n_fwd.y );
 }

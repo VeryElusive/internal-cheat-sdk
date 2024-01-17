@@ -45,7 +45,7 @@ struct Config_t {
 #pragma endregion misc
 
 #pragma region antiaim
-	int m_bAntiAimEnable{ };
+	bool m_bAntiAimEnable{ };
 	int m_iAntiAimPitch{ };
 	int m_iAntiAimYaw{ };
 	int m_iAntiAimYawAdd{ };
@@ -59,6 +59,7 @@ struct Config_t {
 };
 
 namespace Configs {
+	inline bool m_bRefresh = { true };
 	inline std::vector<std::string> m_vecFileNames = { };
 	inline Config_t m_cConfig{ };
 	inline std::filesystem::path m_fsPath = "C:\\Havoc\\Configs\\";

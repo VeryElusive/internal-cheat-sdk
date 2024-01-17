@@ -12,20 +12,16 @@ void CMenuItem::Listbox( ) {
 	//Menu::m_vecDrawPos.y += 16;
 
 	static std::vector< ComboElement_t > configs{ };
-	static float time{ };
-
-	bool refreshed{ };
-	// TODO:
-	/*if ( ctx.m_flTime - time > 3.f ) {
-		time = ctx.m_flTime;
-		Configs::Refresh( );
+	if ( Configs::m_bRefresh ) {
+		Configs::m_bRefresh = false;
 
 		configs.clear( );
 		for ( auto& config : Configs::m_vecFileNames )
 			configs.push_back( config.c_str( ) );
+	}
+	static float time{ };
 
-		refreshed = true;
-	}*/
+	bool refreshed{ };
 
 	// TODO: dynamic sizing
 	// TODO: scrolling

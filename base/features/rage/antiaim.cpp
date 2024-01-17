@@ -18,6 +18,7 @@ void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw ) {
 	case 1: yaw += 180.f; break;// backward
 	case 2: yaw += 90.f; break;// left
 	case 3: yaw -= 90.f; break;// right
+	default: break;
 	}
 
 	switch ( Configs::m_cConfig.m_iAntiAimYawAdd ) {
@@ -54,6 +55,9 @@ void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw ) {
 }
 
 void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
+	if ( !Configs::m_cConfig.m_bAntiAimEnable )
+		return;
+
 	m_bJitter = !m_bJitter;
 	switch ( Configs::m_cConfig.m_iAntiAimPitch ) {
 	case 1: 
@@ -70,9 +74,9 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		break;
 	}
 
-	const auto old{ cmd->cmd.pBase->pViewangles->angValue.y };
+	const auto old{ cmd->cmd.pBase->pViewangles->angValue };
 
 	Yaw( local, cmd->cmd.pBase->pViewangles->angValue.y );
 
-	Features::Movement.MoveMINTFix( cmd, old );
+	Features::Movement.MoveMINTFix( local, cmd, old );
 }

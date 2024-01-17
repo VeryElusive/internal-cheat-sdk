@@ -88,14 +88,8 @@ HRESULT APIENTRY Hooks::hkPresent( IDXGISwapChain* pSwapChain, UINT SyncInterval
 		}
 	}
 
-	if ( ctx.m_bUnloading ) {
-		static bool done{ };
-		if ( !done ) {
-			Render::Unload( );
-			done = true;
-		}
+	if ( ctx.m_bUnloading )
 		return og( pSwapChain, SyncInterval, Flags );
-	}
 
 	ImGui_ImplDX11_NewFrame( );
 	ImGui_ImplWin32_NewFrame( );

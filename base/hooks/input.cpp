@@ -19,10 +19,6 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int sequenceNumber, std
 
 	const auto result{ og( rcx, sequenceNumber, a3, active ) };
 
-	Vector d;
-	Interfaces::Client->GetViewAngles( &d );
-	ctx.m_flUpmove = d.x;
-
 	ctx.GetLocal( );
 	if ( !ctx.m_pLocal || !ctx.m_pLocal->m_bPawnIsAlive( ) )
 		return result;
@@ -31,11 +27,32 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int sequenceNumber, std
 	if ( !localPawn )
 		return result;
 
+	/*if ( cmd->cmd.pBase->flForwardMove != 0 ) {
+		if ( cmd->cmd.pBase->flForwardMove > 0 )
+			cmd->cmd.pBase->flForwardMove = 1.f;
+		else
+			cmd->cmd.pBase->flForwardMove = -1.f;
+	}
+
+	if ( cmd->cmd.pBase->flSideMove > 1.f || cmd->cmd.pBase->flSideMove < 1.f )
+		cmd->cmd.pBase->flSideMove = 0;
+
+	if ( cmd->cmd.pBase->flSideMove != 0 ) {
+		if ( cmd->cmd.pBase->flSideMove > 0 )
+			cmd->cmd.pBase->flSideMove = 1.f;
+		else
+			cmd->cmd.pBase->flSideMove = -1.f;
+	}*/
+
 	Features::Movement.Main( localPawn, cmd );
 
 	Features::AntiAim.Main( localPawn, cmd );
 
+	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
+	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
+
 	cmd->cmd.pBase->subtickMovesField.nCurrentSize = 0;
+	cmd->cmd.inputHistoryField.nCurrentSize = 0;
 
 	ctx.m_pLastCmd = cmd;
 

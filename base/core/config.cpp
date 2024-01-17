@@ -62,6 +62,8 @@ void Configs::Refresh( ) {
 			m_vecFileNames.push_back( it.path( ).filename( ).string( ).substr( 0, it.path( ).filename( ).string( ).size( ) - 6 ) );
 		}
 	}
+
+	Configs::m_bRefresh = true;
 }
 
 void Configs::Remove( const std::size_t nIndex ) {
@@ -72,4 +74,6 @@ void Configs::Remove( const std::size_t nIndex ) {
 	const auto file{ std::filesystem::path( m_fsPath / fsFilePath ) };
 
 	std::filesystem::remove( file );
+
+	Configs::m_bRefresh = true;
 }

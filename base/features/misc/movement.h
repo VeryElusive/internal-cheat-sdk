@@ -7,7 +7,7 @@
 class CMovement {
 public:
 	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
-	void MoveMINTFix( CUserCmd* cmd, float wishYaw );
+	void MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAngle );
 private:
 	void AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd );
 };
