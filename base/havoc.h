@@ -42,6 +42,9 @@ struct PlayerEntry_t {
 		m_pPawn = pawn;
 
 		Visuals.m_cBBox = { 0,0,0,0 };
+		Visuals.m_flAlpha = 0.f;
+		Visuals.m_flDormancyFade = 0.f;
+		Visuals.m_iHealth = 0;
 	}
 };
 
@@ -55,6 +58,8 @@ struct Context_t {
 	Vector m_vecViewAngles{ };
 
 	bool m_bUnloading{ };
+
+	bool m_bAllowBoneUpdate{ true };
 
 	CUserCmd* m_pLastCmd{ };
 

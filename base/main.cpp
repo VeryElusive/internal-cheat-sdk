@@ -32,6 +32,8 @@ void Entry( HMODULE hModule ) {
 
 	Hooks::Init( );
 
+	Configs::Refresh( );
+
 #ifdef _DEBUG
 	printf( "\nDeployed havoc.\n" );
 #endif

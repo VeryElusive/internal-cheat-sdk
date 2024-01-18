@@ -12,12 +12,10 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	if ( Configs::m_cConfig.m_bBunnyhop ) {
 		if ( cmd->m_cButtonStates.m_iHeld & IN_JUMP ) {
-			if ( onGround && lastOnGround ) {
+			if ( onGround && !lastOnGround ) {
 				cmd->m_cButtonStates.m_iHeld &= ~IN_JUMP;
 				cmd->m_cButtonStates.m_iToggle |= IN_JUMP;
 			}
-			else if ( lastOnGround && !onGround )
-				cmd->m_cButtonStates.m_iToggle |= IN_JUMP;
 		}
 	}
 

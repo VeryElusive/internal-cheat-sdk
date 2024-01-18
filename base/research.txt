@@ -1,8 +1,13 @@
 both of these functions set CCSGOInput (interface) viewangles ( offset 0x6140 ), ps this is not the exact sig, both are a little below the opcode u want
 42 39 54 07 34 7E 4B 49 8D 48 38 48 03 CF
 
-
 4D 85 FF 74 25 84 C0 74 21 49 8B 04 24 4C 8B CE 4D 8B C7 8B D3 49 8B
+
+
+functions that modify bone position:
+48 8B 45 20 42 09 1C 30 48 8B 45 30 41 09 1C 06 48 8B 4D 20 48 8B 55 08 (called every frame)
+
+48 FF C6 41 D1 C6 FF C7 (not even sure when this is called)
 
 
 

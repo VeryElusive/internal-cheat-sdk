@@ -125,4 +125,19 @@ public:
 
 		return nullptr;
 	}
+
+	void UnlockHiddenCVars( ) {
+		for ( int i = this->listConvars.Head( ); i != this->listConvars.InvalidIndex( ); i = this->listConvars.Next( i ) )
+		{
+			CConVar* pConVar = this->listConvars.Element( i );
+			if ( pConVar == nullptr )
+				continue;
+
+			if ( pConVar->nFlags & FCVAR_HIDDEN )
+				pConVar->nFlags &= ~FCVAR_HIDDEN;
+
+			if ( pConVar->nFlags & FCVAR_DEVELOPMENTONLY )
+				pConVar->nFlags &= ~FCVAR_DEVELOPMENTONLY;
+		}
+	}
 };

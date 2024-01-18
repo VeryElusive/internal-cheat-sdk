@@ -63,11 +63,49 @@ public:
 	static void Initialise( );
 };
 
+class CSkeletonInstance;
+
 class CGameSceneNode {
 public:
 	SCHEMA( Vector, m_vecAbsOrigin );
 	SCHEMA( CTransform, m_nodeToWorld );
 	SCHEMA( bool, m_bDormant );
+
+	CSkeletonInstance* GetSkeletonInstance( ) {
+		return Memory::CallVFunc< CSkeletonInstance*, 8 >( this );
+	}
+
+public:
+	static void Initialise( );
+};
+
+struct alignas( 16 ) CBoneData {
+	Vector position;
+	float scale;
+	Vector4D rotation;
+};
+
+class CModel {
+public:
+
+public:
+	std::uint8_t padding_0[ 0x170 ];
+	std::int32_t BoneCount;
+};
+
+class CModelState {
+public:
+	std::uint8_t padding_0[ 0x80 ];
+	CBoneData* bones;
+	std::uint8_t padding_1[ 0x18 + 8 ];
+	void* modelHandle;//CStrongHandle<CModel>
+	void* modelName;//CUtlSymbolLarge
+};
+
+class CSkeletonInstance : public CGameSceneNode {
+public:
+	SCHEMA( CModelState, m_modelState );
+	SCHEMA( std::uint8_t, m_nHitboxSet );
 
 public:
 	static void Initialise( );
@@ -399,4 +437,29 @@ enum EMoveType : int
 	MOVETYPE_CUSTOM,
 	MOVETYPE_LAST = MOVETYPE_CUSTOM,
 	MOVETYPE_MAX_BITS = 4
+};
+
+enum EBoneFlags : uint32_t {
+	FLAG_NO_BONE_FLAGS = 0x0,
+	FLAG_BONEFLEXDRIVER = 0x4,
+	FLAG_CLOTH = 0x8,
+	FLAG_PHYSICS = 0x10,
+	FLAG_ATTACHMENT = 0x20,
+	FLAG_ANIMATION = 0x40,
+	FLAG_MESH = 0x80,
+	FLAG_HITBOX = 0x100,
+	FLAG_BONE_USED_BY_VERTEX_LOD0 = 0x400,
+	FLAG_BONE_USED_BY_VERTEX_LOD1 = 0x800,
+	FLAG_BONE_USED_BY_VERTEX_LOD2 = 0x1000,
+	FLAG_BONE_USED_BY_VERTEX_LOD3 = 0x2000,
+	FLAG_BONE_USED_BY_VERTEX_LOD4 = 0x4000,
+	FLAG_BONE_USED_BY_VERTEX_LOD5 = 0x8000,
+	FLAG_BONE_USED_BY_VERTEX_LOD6 = 0x10000,
+	FLAG_BONE_USED_BY_VERTEX_LOD7 = 0x20000,
+	FLAG_BONE_MERGE_READ = 0x40000,
+	FLAG_BONE_MERGE_WRITE = 0x80000,
+	FLAG_ALL_BONE_FLAGS = 0xfffff,
+	BLEND_PREALIGNED = 0x100000,
+	FLAG_RIGIDLENGTH = 0x200000,
+	FLAG_PROCEDURAL = 0x400000,
 };

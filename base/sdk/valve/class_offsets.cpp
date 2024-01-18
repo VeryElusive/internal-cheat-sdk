@@ -30,6 +30,7 @@ void ClassOffsets::Initialise( ) {
 	CEntityInstance::Initialise( );
 	CEntityIdentity::Initialise( );
 	C_BasePlayerWeapon::Initialise( );
+	CSkeletonInstance::Initialise( );
 
 	// other
 }
@@ -108,3 +109,7 @@ void C_BasePlayerWeapon::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerWeapon, m_iClip2 );
 }
 
+void CSkeletonInstance::Initialise( ) {
+	INIT_SCHEMA( CSkeletonInstance, m_modelState );
+	INIT_SCHEMA( CSkeletonInstance, m_nHitboxSet );
+}

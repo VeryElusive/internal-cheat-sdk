@@ -43,7 +43,5 @@ void CVisuals::Main( ) {
 			if ( playerController->m_bPawnIsAlive( ) && entry.Visuals.m_cBBox.Valid( ) )
 				Features::Visuals.HandlePlayer( entry );
 		}
-
-		//if ( );
 	}
 }

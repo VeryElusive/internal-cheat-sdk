@@ -41,11 +41,13 @@
     <ClCompile Include="features\rage\antiaim.cpp" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
+    <ClCompile Include="hooks\bones.cpp" />
     <ClCompile Include="hooks\client.cpp" />
     <ClCompile Include="hooks\clientmode.cpp" />
     <ClCompile Include="hooks\directx.cpp" />
     <ClCompile Include="hooks\input.cpp" />
     <ClCompile Include="hooks\rendergamesystem.cpp" />
+    <ClCompile Include="hooks\tests.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu\controls\button.cpp" />
     <ClCompile Include="menu\controls\checkbox.cpp" />

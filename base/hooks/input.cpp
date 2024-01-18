@@ -12,37 +12,22 @@ bool __fastcall Hooks::hkMouseInputEnabled( void* rcx ) {
 	return Menu::m_bOpened ? false : og( rcx );
 }
 
-bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active ) {
+bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3, bool morePasses ) {
 	const auto og{ CreateMove.Original<decltype( &hkCreateMove )>( ) };
 
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
-	const auto result{ og( rcx, sequenceNumber, a3, active ) };
+	const auto result{ og( rcx, edx, a3, morePasses ) };
 
 	ctx.GetLocal( );
-	if ( !ctx.m_pLocal || !ctx.m_pLocal->m_bPawnIsAlive( ) )
+	if ( !ctx.m_pLocal 
+		|| !ctx.m_pLocal->m_bPawnIsAlive( )
+		|| morePasses )
 		return result;
 
 	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
 	if ( !localPawn )
 		return result;
-
-	/*if ( cmd->cmd.pBase->flForwardMove != 0 ) {
-		if ( cmd->cmd.pBase->flForwardMove > 0 )
-			cmd->cmd.pBase->flForwardMove = 1.f;
-		else
-			cmd->cmd.pBase->flForwardMove = -1.f;
-	}
-
-	if ( cmd->cmd.pBase->flSideMove > 1.f || cmd->cmd.pBase->flSideMove < 1.f )
-		cmd->cmd.pBase->flSideMove = 0;
-
-	if ( cmd->cmd.pBase->flSideMove != 0 ) {
-		if ( cmd->cmd.pBase->flSideMove > 0 )
-			cmd->cmd.pBase->flSideMove = 1.f;
-		else
-			cmd->cmd.pBase->flSideMove = -1.f;
-	}*/
 
 	Features::Movement.Main( localPawn, cmd );
 
@@ -53,6 +38,8 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int sequenceNumber, std
 
 	cmd->cmd.pBase->subtickMovesField.nCurrentSize = 0;
 	cmd->cmd.inputHistoryField.nCurrentSize = 0;
+
+	ctx.m_bAllowBoneUpdate = true;
 
 	ctx.m_pLastCmd = cmd;
 
