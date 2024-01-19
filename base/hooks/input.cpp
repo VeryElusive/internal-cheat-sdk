@@ -21,29 +21,31 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	ctx.GetLocal( );
 	if ( !ctx.m_pLocal 
-		|| !ctx.m_pLocal->m_bPawnIsAlive( )
-		|| morePasses )
+		|| !ctx.m_pLocal->m_bPawnIsAlive( ) )
 		return result;
 
 	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
 	if ( !localPawn )
 		return result;
 
-	Features::Movement.Main( localPawn, cmd );
+	if ( !morePasses )
+		Features::Movement.Main( localPawn, cmd );
 
-	Features::AntiAim.Main( localPawn, cmd );
+	Features::AntiAim.Main( localPawn, cmd, !morePasses );
 
 	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
 
-	cmd->cmd.pBase->subtickMovesField.nCurrentSize = 0;
-	cmd->cmd.inputHistoryField.nCurrentSize = 0;
+	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
 
-	ctx.m_bAllowBoneUpdate = true;
+	//cmd->cmd.pBase->subtickMovesField.nCurrentSize = 0;
+	//cmd->cmd.inputHistoryField.nCurrentSize = 0;
+
+	if ( !morePasses )
+		ctx.m_bAllowBoneUpdate = true;
 
 	ctx.m_pLastCmd = cmd;
 
-	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
 
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );

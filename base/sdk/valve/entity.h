@@ -2,6 +2,7 @@
 #include "entity_handle.h"
 #include "interfaces/ischemasystem.h"
 #include "../transform.h"
+#include "../../core/displacement.h"
 
 #define VAR_AT_OFFSET( type, name, offset ) __forceinline type& name( ) const { \
 		return *reinterpret_cast< type* >( ( reinterpret_cast< std::uintptr_t >( this ) + offset ) ); \
@@ -64,12 +65,15 @@ public:
 };
 
 class CSkeletonInstance;
+class C_CSPlayerPawn;
 
 class CGameSceneNode {
 public:
 	SCHEMA( Vector, m_vecAbsOrigin );
 	SCHEMA( CTransform, m_nodeToWorld );
 	SCHEMA( bool, m_bDormant );
+
+	VAR_AT_OFFSET( C_CSPlayerPawn*, m_pPawn, 0x30 );
 
 	CSkeletonInstance* GetSkeletonInstance( ) {
 		return Memory::CallVFunc< CSkeletonInstance*, 8 >( this );
@@ -87,7 +91,9 @@ struct alignas( 16 ) CBoneData {
 
 class CModel {
 public:
-
+	unsigned int GetBoneParent( const int index ) {
+		return Displacement::GetBoneParent( this, index );
+	}
 public:
 	std::uint8_t padding_0[ 0x170 ];
 	std::int32_t BoneCount;
@@ -97,8 +103,8 @@ class CModelState {
 public:
 	std::uint8_t padding_0[ 0x80 ];
 	CBoneData* bones;
-	std::uint8_t padding_1[ 0x18 + 8 ];
-	void* modelHandle;//CStrongHandle<CModel>
+	std::uint8_t padding_1[ 0x18 ];
+	CStrongHandle<CModel> modelHandle;
 	void* modelName;//CUtlSymbolLarge
 };
 

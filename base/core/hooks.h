@@ -40,7 +40,8 @@ namespace Hooks {
 	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active );
 	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
 
-	NEW_HOOK( CalcWorldSpaceBones, void, __fastcall ) void* rcx, int edx );
+	NEW_HOOK( CalcWorldSpaceBones, void, __fastcall ) void* rcx, int flags );
+	NEW_HOOK( CalcAnimationState, void, __fastcall ) void* rcx, int edx );
 
 	// part of CClientInput
 	NEW_HOOK( Unknown01, void, __fastcall ) void* rcx, int edx, char a3, unsigned char a4 );

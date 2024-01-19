@@ -51,3 +51,25 @@ public:
 private:
 	std::uint32_t nIndex;
 };
+
+
+struct ResourceBinding_t {
+	void* data;
+};
+
+template <class T>
+class CStrongHandle {
+public:
+	explicit operator T* ( ) const {
+		return IsValid( ) ? reinterpret_cast< T* >( binding_->data ) : nullptr;
+	}
+
+	T* operator->( ) const {
+		return IsValid( ) ? reinterpret_cast< T* >( binding_->data ) : nullptr;
+	}
+
+	[[nodiscard]] bool IsValid( ) const { return binding_->data != nullptr; }
+
+private:
+	const ResourceBinding_t* binding_;
+};

@@ -160,7 +160,7 @@ void Render::Init( ) {
     Fonts.Tabs = io.Fonts->AddFontFromFileTTF( _( "C:\\test2.ttf" ), 50.f, nullptr, io.Fonts->GetGlyphRangesDefault( ) );
 
     Fonts.NameESP = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\Fonts\\Verdana.ttf" ), 12.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
-    Fonts.HealthESP = io.Fonts->AddFontFromFileTTF( _( "C:\\Windows\\smallest.ttf" ), 8.f, nullptr, io.Fonts->GetGlyphRangesCyrillic( ) );
+    Fonts.HealthESP = io.Fonts->AddFontFromFileTTF( _( "C:\\smallest.ttf" ), 8.f, nullptr, io.Fonts->GetGlyphRangesDefault( ) );
 
     //io.Fonts->Build( );
 }
