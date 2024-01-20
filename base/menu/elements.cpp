@@ -61,7 +61,7 @@ void Menu::Register( ) {
 			ESPGroup->Register( ( "Weapon color" ) );
 			ESPGroup->Register( &Configs::m_cConfig.m_colWeapon[ i ] );
 
-
+			ESPGroup->Register( ( "Skeleton" ), &Configs::m_cConfig.m_bSkeleton[ i ] );
 		}
 	}
 
@@ -73,6 +73,12 @@ void Menu::Register( ) {
 			generalGroup->Register( ( "Thirdperson" ), &Configs::m_cConfig.m_bThirdperson );
 			generalGroup->Register( &Configs::m_cConfig.m_kThirdperson );
 			generalGroup->Register( ( "Thirdperson distance" ), &Configs::m_cConfig.m_iThirdpersonDistance, 30, 250 );
+
+			generalGroup->Register( "Accent color" );
+			generalGroup->Register( &Configs::m_cConfig.m_cAccent );			
+			
+			generalGroup->Register( "Secondary accent color" );
+			generalGroup->Register( &Configs::m_cConfig.m_cAccent2 );
 		}
 
 		auto movementGroup{ misc->AddGroup( "Movement", 1.f ) };

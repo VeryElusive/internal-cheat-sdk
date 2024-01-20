@@ -9,6 +9,9 @@ functions that modify bone position:
 
 48 FF C6 41 D1 C6 FF C7 (not even sure when this is called)
 
+getting commands:
+41 F7 ED C1 FA 04 8B C2 C1 E8 1F 03 D0 (all 3 functions that come up display same code)
+
 
 
 movement fix reversed from nexus (brazil paste)

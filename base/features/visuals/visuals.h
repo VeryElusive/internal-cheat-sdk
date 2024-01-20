@@ -22,6 +22,7 @@ private:
 	void DrawBox( const PlayerEntry_t& entry, uint8_t type );
 	void DrawName( const PlayerEntry_t& entry, uint8_t type );
 	void DrawHealth( const PlayerEntry_t& entry, uint8_t type );
+	void DrawSkeleton( const PlayerEntry_t& entry, uint8_t type );
 	bool DrawAmmo( const PlayerEntry_t& entry, uint8_t type );
 	void DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const bool didAmmoBar );
 };

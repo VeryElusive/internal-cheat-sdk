@@ -94,6 +94,10 @@ public:
 	unsigned int GetBoneParent( const int index ) {
 		return Displacement::GetBoneParent( this, index );
 	}
+	
+	unsigned int GetBoneFlags( const int index ) {
+		return Displacement::GetBoneFlags( this, index );
+	}
 public:
 	std::uint8_t padding_0[ 0x170 ];
 	std::int32_t BoneCount;

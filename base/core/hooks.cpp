@@ -33,6 +33,8 @@ void Hooks::Init( ) {
 
 	INIT_HOOK( CalcWorldSpaceBones, Memory::FindPattern( CLIENT_DLL, _( "40 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8D 6C 24 ? 48 8B F1" ) ) );
 
+	//INIT_HOOK( ModifyBonePosition, Memory::FindPattern( ANIMATION_SYSTEM, _( "48 8B C4 48 89 58 08 48 89 68 10 48 89 70 20 4C 89 40" ) ) );
+
 	//INIT_HOOK( SetViewAngles, Memory::FindPattern( CLIENT_DLL, _( "85 D2 75 3F 48 63 81 ? ? ? ? F2 41 0F 10 00 85" ) ) );
 
 	//INIT_HOOK( SendMove, Memory::FindPattern( ENGINE2_DLL, _( "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 50 33 C0 C6 81" ) ) )

@@ -24,6 +24,9 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 		|| !ctx.m_pLocal->m_bPawnIsAlive( ) )
 		return result;
 
+	if ( !cmd->cmd.pBase )
+		return result;
+
 	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
 	if ( !localPawn )
 		return result;
@@ -43,9 +46,6 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	if ( !morePasses )
 		ctx.m_bAllowBoneUpdate = true;
-
-	ctx.m_pLastCmd = cmd;
-
 
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );

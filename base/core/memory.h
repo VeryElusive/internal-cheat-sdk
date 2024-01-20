@@ -10,6 +10,7 @@
 #define SCHEMASYSTEM_DLL _( L"schemasystem.dll" )
 #define LOCALIZE_DLL _( L"localize.dll" )
 #define INPUT_SYSTEM _( L"inputsystem.dll" )
+#define ANIMATION_SYSTEM _( L"animationsystem.dll" )
 
 
 #pragma region memory_definitions

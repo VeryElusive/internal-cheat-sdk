@@ -10,8 +10,8 @@
 #include <functional>
 
 // colors
-#define ACCENT2 Color( 182, 139, 252 )
-#define ACCENT Configs::m_cConfig.m_cColorPickerTest /*Color( 115, 155, 255 )*/
+#define ACCENT2 Configs::m_cConfig.m_cAccent2 /*Color( 182, 139, 252 )*/
+#define ACCENT Configs::m_cConfig.m_cAccent /*Color( 115, 155, 255 )*/
 
 #define BACKGROUND Color( 20, 20, 20 )
 #define GROUP Color( 25, 25, 25 )

@@ -61,8 +61,6 @@ struct Context_t {
 
 	bool m_bAllowBoneUpdate{ true };
 
-	CUserCmd* m_pLastCmd{ };
-
 	PlayerEntry_t PlayerEntries[ 64 ]{ };
 
 	HWND hwnd{ };

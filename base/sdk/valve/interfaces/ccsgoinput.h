@@ -7,11 +7,11 @@
 class CCSGOInput
 {
 public:
-	void* m_pVtable;
-	MEM_PAD( 0x248 );
-	CUserCmd m_arrCommands[ MULTIPLAYER_BACKUP ];
-	MEM_PAD( 0x1 );
-	bool m_bCameraInThirdPerson;
+	void* m_pVtable;//0x0
+	MEM_PAD( 0x3038 );//0x8
+	CUserCmd m_arrCommands[ MULTIPLAYER_BACKUP ];// 0x3040
+	MEM_PAD( 0x1 );//8E00
+	bool m_bCameraInThirdPerson;//8E01
 	MEM_PAD( 0x22 );
 	int32_t m_nSequenceNumber;
 

@@ -120,6 +120,9 @@ void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
 	if ( Configs::m_cConfig.m_bHealth[ type ] )
 		DrawHealth( entry, type );
 
+	if ( Configs::m_cConfig.m_bSkeleton[ type ] )
+		DrawSkeleton( entry, type );
+
 	DrawWeapon( entry, type, DrawAmmo( entry, type ) );
 }
 
@@ -241,4 +244,40 @@ void CVisuals::DrawWeapon( const PlayerEntry_t& entry, uint8_t type, const bool 
 		append += 6;
 
 	Render::Text( { entry.Visuals.m_cBBox.x + entry.Visuals.m_cBBox.w / 2, entry.Visuals.m_cBBox.y + entry.Visuals.m_cBBox.h + append }, name.c_str( ), col, TEXT_CENTER | TEXT_OUTLINE, 12, Render::Fonts.NameESP );
+}
+
+void CVisuals::DrawSkeleton( const PlayerEntry_t& entry, uint8_t type ) {
+	const auto gameSceneNode{ entry.m_pPawn->m_pGameSceneNode( ) };
+	if ( !gameSceneNode )
+		return;
+
+	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+	if ( !skeleton )
+		return;
+
+	const auto modelState{ skeleton->m_modelState( ) };
+
+	const auto model{ modelState.modelHandle };
+	if ( !model.IsValid( ) )
+		return;
+
+	Color col{ Configs::m_cConfig.m_colSkeleton[ type ] };
+	entry.Visuals.ApplyDormancy( col );
+
+	for ( std::int32_t i = 0; i < model->BoneCount; ++i ) {
+		const auto boneFlag{ model->GetBoneFlags( i ) };
+		if ( !( boneFlag & FLAG_HITBOX ) ) 
+			continue;
+
+		const auto boneParentIndex{ model->GetBoneParent( i ) };
+		if ( boneParentIndex == -1 )
+			continue;
+
+		Vector2D screen{ };
+		Vector2D parentScreen{ };
+
+		if ( Render::WorldToScreen( modelState.bones[ i ].position, screen ) 
+			&& Render::WorldToScreen( modelState.bones[ boneParentIndex ].position, parentScreen ) )
+			Render::Line( screen, parentScreen, col );
+	}
 }

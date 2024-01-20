@@ -7,6 +7,9 @@
 struct Keybind_t;
 
 struct Config_t {
+	Color m_cAccent{ Color( 115, 155, 255 ) };
+	Color m_cAccent2{ Color( 182, 139, 252 ) };
+
 #pragma region visuals
 
 #pragma region player ESP
@@ -26,6 +29,9 @@ struct Config_t {
 
 	int m_iWeapon[ 3 ];
 	Color m_colWeapon[ 3 ] = { Color( 255, 255, 255 ), Color( 255, 255, 255 ), Color( 255, 255, 255 ) };
+
+	bool m_bSkeleton[ 3 ];
+	Color m_colSkeleton[ 3 ] = { Color( 255, 255, 255 ), Color( 255, 255, 255 ), Color( 255, 255, 255 ) };
 
 #pragma endregion player ESP
 
@@ -52,10 +58,6 @@ struct Config_t {
 	int m_iAntiAimYawRange{ };
 	int m_iAntiAimYawSpeed{ };
 #pragma endregion antiaim
-
-	Color m_cColorPickerTest{ Color( 115, 155, 255 ) };
-
-	bool m_bOptions[ 5 ]{ };
 };
 
 namespace Configs {

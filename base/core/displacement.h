@@ -14,6 +14,8 @@ namespace Displacement {
 	
 	inline fnSetViewAngles SetViewAngles;
 
+	// both are same function args/type
 	inline fnGetBoneParent GetBoneParent;
+	inline fnGetBoneParent GetBoneFlags;
 	//inline ViewMatrix_t* ViewMatrix;
 }
