@@ -69,6 +69,7 @@ void C_BaseEntity::Initialise( ) {
 
 void C_CSPlayerPawnBase::Initialise( ) {
 	INIT_SCHEMA( C_CSPlayerPawnBase, m_pClippingWeapon );
+	INIT_SCHEMA( C_CSPlayerPawnBase, m_iOldIDEntIndex );
 }
 
 void CCSWeaponBaseVData::Initialise( ) {

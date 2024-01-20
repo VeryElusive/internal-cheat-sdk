@@ -3,6 +3,7 @@
 #include "interfaces/ischemasystem.h"
 #include "../transform.h"
 #include "../../core/displacement.h"
+#include "skeleton.h"
 
 #define VAR_AT_OFFSET( type, name, offset ) __forceinline type& name( ) const { \
 		return *reinterpret_cast< type* >( ( reinterpret_cast< std::uintptr_t >( this ) + offset ) ); \
@@ -81,35 +82,6 @@ public:
 
 public:
 	static void Initialise( );
-};
-
-struct alignas( 16 ) CBoneData {
-	Vector position;
-	float scale;
-	Vector4D rotation;
-};
-
-class CModel {
-public:
-	unsigned int GetBoneParent( const int index ) {
-		return Displacement::GetBoneParent( this, index );
-	}
-	
-	unsigned int GetBoneFlags( const int index ) {
-		return Displacement::GetBoneFlags( this, index );
-	}
-public:
-	std::uint8_t padding_0[ 0x170 ];
-	std::int32_t BoneCount;
-};
-
-class CModelState {
-public:
-	std::uint8_t padding_0[ 0x80 ];
-	CBoneData* bones;
-	std::uint8_t padding_1[ 0x18 ];
-	CStrongHandle<CModel> modelHandle;
-	void* modelName;//CUtlSymbolLarge
 };
 
 class CSkeletonInstance : public CGameSceneNode {
@@ -270,6 +242,7 @@ class C_CSPlayerPawnBase : public C_BasePlayerPawn
 {
 public:
 	SCHEMA( C_CSWeaponBase*, m_pClippingWeapon );
+	SCHEMA( int, m_iOldIDEntIndex );
 
 public:
 	static void Initialise( );

@@ -127,6 +127,7 @@
     <ClInclude Include="sdk\valve\interfaces\ischemasystem.h" />
     <ClInclude Include="sdk\valve\interfaces\csource2client.h" />
     <ClInclude Include="sdk\valve\interfaces\iviewrender.h" />
+    <ClInclude Include="sdk\valve\skeleton.h" />
     <ClInclude Include="sdk\valve\usercmd.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />

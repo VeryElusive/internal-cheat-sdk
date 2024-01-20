@@ -3,6 +3,7 @@
 
 #include "sdk/matrix.h"
 #include "sdk/color.h"
+#include "sdk/valve/skeleton.h"
 
 class C_CSPlayerPawn;
 class CCSPlayerController;
@@ -12,7 +13,7 @@ struct BBox_t {
 
 	const Vector2D Position( ) const { return { std::floor( x ), std::floor( y ) }; }
 	const Vector2D Size( ) const { return { std::floor( w ), std::floor( h ) }; }
-	const bool Valid( ) const { return x != 0 && y != 0, w != 0 && h != 0; }
+	const bool Valid( ) const { return x != 0 && y != 0 && w != 0 && h != 0; }
 };
 
 struct PlayerEntry_t {
@@ -31,7 +32,8 @@ struct PlayerEntry_t {
 	}; Vis Visuals;
 
 	struct Anim {
-
+		CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
+		Vector m_vecLastBoneOrigin{ };
 	}; Anim Animations;
 
 	const char* m_pName{ };
@@ -61,6 +63,7 @@ struct Context_t {
 
 	bool m_bAllowBoneUpdate{ true };
 
+	// TODO: make this an std::map indexed by entity handle. for that, we need to find an entity remove callback.
 	PlayerEntry_t PlayerEntries[ 64 ]{ };
 
 	HWND hwnd{ };

@@ -257,14 +257,14 @@ void CVisuals::DrawSkeleton( const PlayerEntry_t& entry, uint8_t type ) {
 
 	const auto modelState{ skeleton->m_modelState( ) };
 
-	const auto model{ modelState.modelHandle };
+	const auto model{ modelState.m_hModel };
 	if ( !model.IsValid( ) )
 		return;
 
 	Color col{ Configs::m_cConfig.m_colSkeleton[ type ] };
 	entry.Visuals.ApplyDormancy( col );
 
-	for ( std::int32_t i = 0; i < model->BoneCount; ++i ) {
+	for ( std::int32_t i = 0; i < model->m_iBoneCount; ++i ) {
 		const auto boneFlag{ model->GetBoneFlags( i ) };
 		if ( !( boneFlag & FLAG_HITBOX ) ) 
 			continue;
@@ -276,8 +276,8 @@ void CVisuals::DrawSkeleton( const PlayerEntry_t& entry, uint8_t type ) {
 		Vector2D screen{ };
 		Vector2D parentScreen{ };
 
-		if ( Render::WorldToScreen( modelState.bones[ i ].position, screen ) 
-			&& Render::WorldToScreen( modelState.bones[ boneParentIndex ].position, parentScreen ) )
+		if ( Render::WorldToScreen( modelState.m_pBones[ i ].m_vecPosition, screen ) 
+			&& Render::WorldToScreen( modelState.m_pBones[ boneParentIndex ].m_vecPosition, parentScreen ) )
 			Render::Line( screen, parentScreen, col );
 	}
 }

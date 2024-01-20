@@ -3,7 +3,7 @@
 #include "../core/config.h"
 #include "../sdk/valve/entity.h"
 
-bool __fastcall Hooks::hkModifyBonePosition( __int64 a1, int* a2, int* a3, void* a4 ) {
+/*bool __fastcall Hooks::hkModifyBonePosition( __int64 a1, int* a2, int* a3, void* a4 ) {
 	const auto og{ ModifyBonePosition.Original<decltype( &hkModifyBonePosition )>( ) };
 
 	ctx.GetLocal( );
@@ -11,7 +11,8 @@ bool __fastcall Hooks::hkModifyBonePosition( __int64 a1, int* a2, int* a3, void*
 		return og( a1, a2, a3, a4 );
 
 	return 1;
-}
+}*/
+
 void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 	const auto og{ CalcWorldSpaceBones.Original<decltype( &hkCalcWorldSpaceBones )>( ) };
 
@@ -28,37 +29,37 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 	if ( skeleton->m_pPawn( ) != local )
 		return og( rcx, flags );
 
+	if ( flags != FLAG_ALL_BONE_FLAGS )
+		return;
+
 	static Vector lastAbsOrigin{ };
 	if ( ctx.m_bAllowBoneUpdate ) {
-		if ( flags == FLAG_ALL_BONE_FLAGS ) {
-			ctx.m_bAllowBoneUpdate = false;
+		ctx.m_bAllowBoneUpdate = false;
 
-			lastAbsOrigin = skeleton->m_vecAbsOrigin( );
-			return og( rcx, flags );
-		}
+		lastAbsOrigin = skeleton->m_vecAbsOrigin( );
+		return og( rcx, flags );
 	}
-	else if ( lastAbsOrigin != skeleton->m_vecAbsOrigin( )
-		&& flags == FLAG_ALL_BONE_FLAGS ) {
+	else if ( lastAbsOrigin != skeleton->m_vecAbsOrigin( ) ) {
 		const auto delta{ skeleton->m_vecAbsOrigin( ) - lastAbsOrigin };
 
 		const auto modelState{ skeleton->m_modelState( ) };
 
-		const auto model{ modelState.modelHandle };
-		if ( !model.IsValid( ) ) 
+		const auto model{ modelState.m_hModel };
+		if ( !model.IsValid( ) )
 			return;
 
-		auto backupBones{ Interfaces::MemAlloc->Alloc( model->BoneCount * sizeof( CBoneData ) ) };
-		std::memcpy( backupBones, &modelState.bones[ 0 ], model->BoneCount * sizeof( CBoneData ) );
+		auto backupBones{ Interfaces::MemAlloc->Alloc( model->m_iBoneCount * sizeof( CBoneData ) ) };
+		std::memcpy( backupBones, &modelState.m_pBones[ 0 ], model->m_iBoneCount * sizeof( CBoneData ) );
 
 		og( rcx, flags );
 
-		std::memcpy( &modelState.bones[ 0 ], backupBones, model->BoneCount * sizeof( CBoneData ) );
+		std::memcpy( &modelState.m_pBones[ 0 ], backupBones, model->m_iBoneCount * sizeof( CBoneData ) );
 
-		for ( std::int32_t i = 0; i < model->BoneCount; ++i )
-			modelState.bones[ i ].position += delta;
+		for ( std::int32_t i = 0; i < model->m_iBoneCount; ++i )
+			modelState.m_pBones[ i ].m_vecPosition += delta;
 
 		Interfaces::MemAlloc->Free( backupBones );
 
 		lastAbsOrigin = skeleton->m_vecAbsOrigin( );
 	}
-}  
+}

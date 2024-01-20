@@ -41,9 +41,7 @@ namespace Hooks {
 	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
 
 	NEW_HOOK( CalcWorldSpaceBones, void, __fastcall ) void* rcx, int flags );
-	NEW_HOOK( ModifyBonePosition, bool, __fastcall ) __int64 a1, int* a2, int* a3, void* a4 );
-
-
+	//NEW_HOOK( ModifyBonePosition, bool, __fastcall ) __int64 a1, int* a2, int* a3, void* a4 );
 	NEW_HOOK( CalcAnimationState, void, __fastcall ) void* rcx, int edx );
 
 	// part of CClientInput
