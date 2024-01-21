@@ -123,6 +123,7 @@ public:
 	SCHEMA( int, m_fFlags );
 	SCHEMA( int, m_MoveType );
 	SCHEMA( float, m_flWaterLevel );
+	SCHEMA( float, m_flSimulationTime );
 	SCHEMA( Vector, m_vecAbsVelocity );
 
 	__forceinline bool Dormant( ) {

@@ -68,7 +68,7 @@ public:
 		return IsValid( ) ? reinterpret_cast< T* >( binding_->data ) : nullptr;
 	}
 
-	[[nodiscard]] bool IsValid( ) const { return binding_->data != nullptr; }
+	[[nodiscard]] bool IsValid( ) const { if ( !binding_ ) return false; return binding_->data != nullptr; }
 
 private:
 	const ResourceBinding_t* binding_;

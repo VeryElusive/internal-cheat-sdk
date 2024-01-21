@@ -62,6 +62,7 @@ void Menu::Register( ) {
 			ESPGroup->Register( &Configs::m_cConfig.m_colWeapon[ i ] );
 
 			ESPGroup->Register( ( "Skeleton" ), &Configs::m_cConfig.m_bSkeleton[ i ] );
+			ESPGroup->Register( &Configs::m_cConfig.m_colSkeleton[ i ] );
 		}
 	}
 

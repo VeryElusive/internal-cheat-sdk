@@ -33,10 +33,12 @@ struct PlayerEntry_t {
 	}; Vis Visuals;
 
 	struct Anim {
-		//CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
+		CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
 		Vector m_vecLastBoneOrigin{ };
 
 		bool m_bShouldUpdateBones{ };
+
+		float m_flSimulationTime{ };
 	}; Anim Animations;
 
 	const char* m_pName{ };

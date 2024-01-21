@@ -66,6 +66,7 @@ void C_BaseEntity::Initialise( ) {
 	INIT_SCHEMA( C_BaseEntity, m_vecAbsVelocity );
 	INIT_SCHEMA( C_BaseEntity, m_MoveType );
 	INIT_SCHEMA( C_BaseEntity, m_flWaterLevel );
+	INIT_SCHEMA( C_BaseEntity, m_flSimulationTime );
 }
 
 void C_CSPlayerPawnBase::Initialise( ) {

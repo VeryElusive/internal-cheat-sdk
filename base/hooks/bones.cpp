@@ -36,14 +36,13 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 		return;
 
 	if ( entry.Animations.m_bShouldUpdateBones ) {
-		entry.Animations.m_bShouldUpdateBones = false;
-
-		skeleton->m_vecAbsOrigin( ) = skeleton->m_vecOrigin( );
-
 		entry.Animations.m_vecLastBoneOrigin = skeleton->m_vecAbsOrigin( );
-		return og( rcx, flags );
+
+		og( rcx, flags );
+		entry.Animations.m_bShouldUpdateBones = false;
+		return;
 	}
-	/*else if ( entry.Animations.m_vecLastBoneOrigin != skeleton->m_vecAbsOrigin( ) ) {
+	else if ( entry.Animations.m_vecLastBoneOrigin != skeleton->m_vecAbsOrigin( ) ) {
 		const auto delta{ skeleton->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
 		const auto modelState{ skeleton->m_modelState( ) };
@@ -65,5 +64,5 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 		Interfaces::MemAlloc->Free( backupBones );
 
 		entry.Animations.m_vecLastBoneOrigin = skeleton->m_vecAbsOrigin( );
-	}*/
+	}
 }
