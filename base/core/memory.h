@@ -9,8 +9,9 @@
 #define TIER0_DLL _( L"tier0.dll" )
 #define SCHEMASYSTEM_DLL _( L"schemasystem.dll" )
 #define LOCALIZE_DLL _( L"localize.dll" )
-#define INPUT_SYSTEM _( L"inputsystem.dll" )
-#define ANIMATION_SYSTEM _( L"animationsystem.dll" )
+#define INPUT_SYSTEM_DLL _( L"inputsystem.dll" )
+#define ANIMATION_SYSTEM_DLL _( L"animationsystem.dll" )
+#define PARTICLES_DLL _( L"particles.dll" )
 
 
 #pragma region memory_definitions

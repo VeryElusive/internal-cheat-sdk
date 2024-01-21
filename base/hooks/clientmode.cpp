@@ -10,8 +10,7 @@ __int64* __fastcall Hooks::hkLevelInit( void* rcx, const char* newMap ) {
 	if ( Interfaces::GlobalVars == nullptr )
 		Interfaces::GlobalVars = *reinterpret_cast< CGlobalVarsBase** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 89 0D ? ? ? ? 48 89 41" ) ), 0x3, 0x7 ) );
 
-	for ( int i{ }; i < 64; ++i )
-		ctx.PlayerEntries[ i ].Reset( nullptr );
+	ctx.m_mapPlayerEntries.clear( );
 
 	return og( rcx, newMap );
 }
@@ -21,8 +20,7 @@ __int64 __fastcall Hooks::hkLevelShutdown( void* rcx ) {
 
 	Interfaces::GlobalVars = nullptr;
 
-	for ( int i{ }; i < 64; ++i )
-		ctx.PlayerEntries[ i ].Reset( nullptr );
+	ctx.m_mapPlayerEntries.clear( );
 
 	return og( rcx );
 }

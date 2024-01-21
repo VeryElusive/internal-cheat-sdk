@@ -4,6 +4,8 @@
 using fnGetBaseEntity = void* ( __thiscall* ) ( void*, int );
 using fnSetViewAngles = void ( __fastcall* ) ( void*, int, Vector* angle );
 using fnGetBoneParent = int ( __fastcall* ) ( void*, int );
+using fnFindVarMaterial = std::uintptr_t( __fastcall* ) ( const char*, int, int );
+using fnEventGetInt = std::int64_t( __fastcall* ) ( void*, const char* );
 
 namespace Displacement {
 	void Init( );
@@ -17,5 +19,8 @@ namespace Displacement {
 	// both are same function args/type
 	inline fnGetBoneParent GetBoneParent;
 	inline fnGetBoneParent GetBoneFlags;
-	//inline ViewMatrix_t* ViewMatrix;
+
+	inline fnEventGetInt EventGetInt;
+
+	inline fnFindVarMaterial FindVarMaterial;
 }

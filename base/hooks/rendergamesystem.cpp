@@ -33,7 +33,7 @@ ViewMatrix_t* __fastcall Hooks::hkGetMatrixForView( void* pRenderGameSystem, IVi
 			if ( !pawn )
 				continue;
 
-			PlayerEntry_t& entry{ ctx.PlayerEntries[ i ] };
+			PlayerEntry_t& entry{ ctx.m_mapPlayerEntries[ pawn->GetRefEHandle( ).m_nIndex ] };
 
 			if ( entry.m_pPawn != pawn
 				|| !playerController->m_bPawnIsAlive( ) )

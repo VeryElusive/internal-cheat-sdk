@@ -11,45 +11,45 @@ class CBaseHandle
 {
 public:
 	CBaseHandle( ) noexcept :
-		nIndex( INVALID_EHANDLE_INDEX ) { }
+		m_nIndex( INVALID_EHANDLE_INDEX ) { }
 
 	CBaseHandle( const int nEntry, const int nSerial ) noexcept
 	{
-		nIndex = nEntry | ( nSerial << NUM_SERIAL_NUM_SHIFT_BITS );
+		m_nIndex = nEntry | ( nSerial << NUM_SERIAL_NUM_SHIFT_BITS );
 	}
 
 	bool operator!=( const CBaseHandle& other ) const noexcept
 	{
-		return nIndex != other.nIndex;
+		return m_nIndex != other.m_nIndex;
 	}
 
 	bool operator==( const CBaseHandle& other ) const noexcept
 	{
-		return nIndex == other.nIndex;
+		return m_nIndex == other.m_nIndex;
 	}
 
 	bool operator<( const CBaseHandle& other ) const noexcept
 	{
-		return nIndex < other.nIndex;
+		return m_nIndex < other.m_nIndex;
 	}
 
 	[[nodiscard]] bool IsValid( ) const noexcept
 	{
-		return nIndex != INVALID_EHANDLE_INDEX;
+		return m_nIndex != INVALID_EHANDLE_INDEX;
 	}
 
 	[[nodiscard]] int GetEntryIndex( ) const noexcept
 	{
-		return static_cast< int >( nIndex & ENT_ENTRY_MASK );
+		return static_cast< int >( m_nIndex & ENT_ENTRY_MASK );
 	}
 
 	[[nodiscard]] int GetSerialNumber( ) const noexcept
 	{
-		return static_cast< int >( nIndex >> NUM_SERIAL_NUM_SHIFT_BITS );
+		return static_cast< int >( m_nIndex >> NUM_SERIAL_NUM_SHIFT_BITS );
 	}
 
-private:
-	std::uint32_t nIndex;
+//private:
+	std::uint32_t m_nIndex;
 };
 
 

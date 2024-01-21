@@ -39,12 +39,14 @@
     <ClCompile Include="dependencies\minhook\trampoline.c" />
     <ClCompile Include="features\misc\movement.cpp" />
     <ClCompile Include="features\rage\antiaim.cpp" />
+    <ClCompile Include="features\rage\lag_record.cpp" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
     <ClCompile Include="hooks\bones.cpp" />
     <ClCompile Include="hooks\client.cpp" />
     <ClCompile Include="hooks\clientmode.cpp" />
     <ClCompile Include="hooks\directx.cpp" />
+    <ClCompile Include="hooks\event.cpp" />
     <ClCompile Include="hooks\input.cpp" />
     <ClCompile Include="hooks\rendergamesystem.cpp" />
     <ClCompile Include="hooks\tests.cpp" />
@@ -84,6 +86,7 @@
     <ClInclude Include="features\misc\misc.h" />
     <ClInclude Include="features\misc\movement.h" />
     <ClInclude Include="features\rage\antiaim.h" />
+    <ClInclude Include="features\rage\lag_record.h" />
     <ClInclude Include="features\visuals\visuals.h" />
     <ClInclude Include="hooks\networkgameclient.cpp" />
     <ClInclude Include="pch.h" />
@@ -116,6 +119,7 @@
     <ClInclude Include="sdk\valve\class_offsets.h" />
     <ClInclude Include="sdk\valve\entity.h" />
     <ClInclude Include="sdk\valve\entity_handle.h" />
+    <ClInclude Include="sdk\valve\events.h" />
     <ClInclude Include="sdk\valve\interfaces\CGlobalVarsBase.h" />
     <ClInclude Include="sdk\valve\interfaces\iengineclient.h" />
     <ClInclude Include="sdk\valve\interfaces\ienginecvar.h" />
@@ -127,6 +131,7 @@
     <ClInclude Include="sdk\valve\interfaces\ischemasystem.h" />
     <ClInclude Include="sdk\valve\interfaces\csource2client.h" />
     <ClInclude Include="sdk\valve\interfaces\iviewrender.h" />
+    <ClInclude Include="sdk\valve\key_string.h" />
     <ClInclude Include="sdk\valve\skeleton.h" />
     <ClInclude Include="sdk\valve\usercmd.h" />
     <ClInclude Include="sdk\vector.h" />

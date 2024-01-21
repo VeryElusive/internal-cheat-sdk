@@ -71,6 +71,7 @@ class C_CSPlayerPawn;
 class CGameSceneNode {
 public:
 	SCHEMA( Vector, m_vecAbsOrigin );
+	SCHEMA( Vector, m_vecOrigin );
 	SCHEMA( CTransform, m_nodeToWorld );
 	SCHEMA( bool, m_bDormant );
 
@@ -233,6 +234,7 @@ class C_BasePlayerPawn : public C_BaseModelEntity
 {
 public:
 	SCHEMA( CPlayer_WeaponServices*, m_pWeaponServices );
+	SCHEMA( CBaseHandle, m_hPawn );
 
 public:
 	static void Initialise( );

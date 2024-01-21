@@ -2,6 +2,7 @@
 #include "../dependencies/minhook/minhook.h"
 #include "../sdk/matrix.h"
 #include "../sdk/valve/interfaces/iviewrender.h"
+#include "../sdk/valve/events.h"
 
 #include <d3d11.h>
 
@@ -39,6 +40,7 @@ namespace Hooks {
 	NEW_HOOK( FrameStageNotify, void, __fastcall ) void* rcx, int nFrameStage );
 	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active );
 	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
+	NEW_HOOK( HandleEvents, void, __fastcall ) void* rcx, Events_t* const event );
 
 	NEW_HOOK( CalcWorldSpaceBones, void, __fastcall ) void* rcx, int flags );
 	//NEW_HOOK( ModifyBonePosition, bool, __fastcall ) __int64 a1, int* a2, int* a3, void* a4 );

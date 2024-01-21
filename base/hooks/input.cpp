@@ -45,7 +45,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	//cmd->cmd.inputHistoryField.nCurrentSize = 0;
 
 	if ( !morePasses )
-		ctx.m_bAllowBoneUpdate = true;
+		ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
 
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );

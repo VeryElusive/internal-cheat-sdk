@@ -23,7 +23,7 @@ void CLagCompensation::Main( ) {
 			if ( !pawn )
 				continue;
 
-			PlayerEntry_t& entry{ ctx.PlayerEntries[ i ] };
+			PlayerEntry_t& entry{ ctx.m_mapPlayerEntries[ pawn->GetRefEHandle( ).m_nIndex ] };
 
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );
@@ -34,5 +34,5 @@ void CLagCompensation::Main( ) {
 }
 
 void CLagCompensation::UpdateRecord( PlayerEntry_t& entry ) {
-
+	entry.Animations.m_bShouldUpdateBones = true;
 }

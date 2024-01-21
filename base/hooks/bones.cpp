@@ -22,25 +22,29 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 	if ( !ctx.m_pLocal )
 		return og( rcx, flags );
 
-	const C_CSPlayerPawn* local{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
-	if ( !local )
+	const auto pawn{ skeleton->m_pPawn( ) };
+	if ( !pawn )
 		return og( rcx, flags );
 
-	if ( skeleton->m_pPawn( ) != local )
+	auto it{ ctx.m_mapPlayerEntries.find( pawn->GetRefEHandle( ).m_nIndex ) };
+	if ( it == ctx.m_mapPlayerEntries.end( ) )
 		return og( rcx, flags );
+
+	auto& entry = it->second;
 
 	if ( flags != FLAG_ALL_BONE_FLAGS )
 		return;
 
-	static Vector lastAbsOrigin{ };
-	if ( ctx.m_bAllowBoneUpdate ) {
-		ctx.m_bAllowBoneUpdate = false;
+	if ( entry.Animations.m_bShouldUpdateBones ) {
+		entry.Animations.m_bShouldUpdateBones = false;
 
-		lastAbsOrigin = skeleton->m_vecAbsOrigin( );
+		skeleton->m_vecAbsOrigin( ) = skeleton->m_vecOrigin( );
+
+		entry.Animations.m_vecLastBoneOrigin = skeleton->m_vecAbsOrigin( );
 		return og( rcx, flags );
 	}
-	else if ( lastAbsOrigin != skeleton->m_vecAbsOrigin( ) ) {
-		const auto delta{ skeleton->m_vecAbsOrigin( ) - lastAbsOrigin };
+	/*else if ( entry.Animations.m_vecLastBoneOrigin != skeleton->m_vecAbsOrigin( ) ) {
+		const auto delta{ skeleton->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
 		const auto modelState{ skeleton->m_modelState( ) };
 
@@ -60,6 +64,6 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 
 		Interfaces::MemAlloc->Free( backupBones );
 
-		lastAbsOrigin = skeleton->m_vecAbsOrigin( );
-	}
+		entry.Animations.m_vecLastBoneOrigin = skeleton->m_vecAbsOrigin( );
+	}*/
 }

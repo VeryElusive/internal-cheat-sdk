@@ -78,7 +78,7 @@ bool Interfaces::Init( ) {
 	Cvar = Capture<IEngineCVar>( tier0Register, _( "VEngineCvar007" ) );
 	CHECK_AND_FAIL( Cvar );
 
-	const auto pInputSystemRegisterList = GetRegisterList( INPUT_SYSTEM );
+	const auto pInputSystemRegisterList = GetRegisterList( INPUT_SYSTEM_DLL );
 	CHECK_AND_FAIL( pInputSystemRegisterList );
 
 	InputSystem = Capture<IInputSystem>( pInputSystemRegisterList, _( "InputSystemVersion001" ) );

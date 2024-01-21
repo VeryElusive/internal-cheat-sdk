@@ -4,6 +4,7 @@
 #include "sdk/matrix.h"
 #include "sdk/color.h"
 #include "sdk/valve/skeleton.h"
+#include <unordered_map>
 
 class C_CSPlayerPawn;
 class CCSPlayerController;
@@ -32,8 +33,10 @@ struct PlayerEntry_t {
 	}; Vis Visuals;
 
 	struct Anim {
-		CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
+		//CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
 		Vector m_vecLastBoneOrigin{ };
+
+		bool m_bShouldUpdateBones{ };
 	}; Anim Animations;
 
 	const char* m_pName{ };
@@ -61,10 +64,8 @@ struct Context_t {
 
 	bool m_bUnloading{ };
 
-	bool m_bAllowBoneUpdate{ true };
-
-	// TODO: make this an std::map indexed by entity handle. for that, we need to find an entity remove callback.
-	PlayerEntry_t PlayerEntries[ 64 ]{ };
+	//PlayerEntry_t PlayerEntries[ 64 ]{ };
+	std::unordered_map< unsigned int, PlayerEntry_t > m_mapPlayerEntries{ };
 
 	HWND hwnd{ };
 

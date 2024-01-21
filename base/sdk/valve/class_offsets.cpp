@@ -47,6 +47,7 @@ void CCSPlayerController::Initialise( ) {
 
 void CGameSceneNode::Initialise( ) {
 	INIT_SCHEMA( CGameSceneNode, m_vecAbsOrigin );
+	INIT_SCHEMA( CGameSceneNode, m_vecOrigin );
 	INIT_SCHEMA( CGameSceneNode, m_nodeToWorld );
 	INIT_SCHEMA( CGameSceneNode, m_bDormant );
 }
@@ -78,6 +79,7 @@ void CCSWeaponBaseVData::Initialise( ) {
 
 void C_BasePlayerPawn::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerPawn, m_pWeaponServices );
+	INIT_SCHEMA( C_BasePlayerPawn, m_hPawn );
 }
 
 void CPlayer_WeaponServices::Initialise( ) {

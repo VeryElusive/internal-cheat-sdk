@@ -7,6 +7,9 @@ void Displacement::Init( ) {
 	SetViewAngles = reinterpret_cast< fnSetViewAngles >( Memory::FindPattern( CLIENT_DLL, _( "85 D2 75 3F 48 63 81 ? ? ? ? F2 41 0F 10 00 85" ) ) );
 	GetBoneParent = reinterpret_cast< fnGetBoneParent >( Memory::FindPattern( CLIENT_DLL, _( "85 D2 78 17 3B 91 70" ) ) );
 	GetBoneFlags = reinterpret_cast< fnGetBoneParent >( Memory::FindPattern( CLIENT_DLL, _( "85 D2 78 16 3B 91" ) ) );
+	EventGetInt = reinterpret_cast< fnEventGetInt >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 41 56 48 83 EC 30 48 8B 01 41 8B F0 4C 8B F1 41 B0 01 48 8D 4C 24 20 48 8B DA 48 8B 78" ) ) );
+
+	FindVarMaterial = reinterpret_cast< fnFindVarMaterial >( Memory::FindPattern( PARTICLES_DLL, _( "48 89 5C 24 08 57 48 81 EC C0 00 00 00 33 C0 8B" ) ) );
 	//ViewMatrix = reinterpret_cast< ViewMatrix_t* >( Memory::FindPattern( CLIENT_DLL, _( "48 8D 0D ? ? ? ? 48 C1 E0 06 48 03 C1" ) ) );
 
 	const void* SDL3{ Memory::GetModuleBaseHandle( _( L"SDL3.dll" ) ) };
