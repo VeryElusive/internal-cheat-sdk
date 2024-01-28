@@ -1,6 +1,7 @@
 #include "../havoc.h"
 #include "../core/hooks.h"
 #include "../core/config.h"
+#include "../sdk/valve/usercmd.h"
 
 void __fastcall Hooks::hkCalcAnimationState( void* rcx, int flags ) {
 	const auto og{ CalcAnimationState.Original<decltype( &hkCalcAnimationState )>( ) };
@@ -18,4 +19,14 @@ void __fastcall Hooks::hkCalcAnimationState( void* rcx, int flags ) {
 
 	if ( entry.Animations.m_bShouldUpdateBones )
 		og( rcx, flags );
+}
+
+void* __fastcall Hooks::hkSetTargetTime( int* output, int* input ) {
+	const auto og{ SetTargetTime.Original<decltype( &hkSetTargetTime )>( ) };
+
+	const auto ret{ og( output, input ) };
+
+	//printf( "input: %i | output: %i | tickcount: %i | dbg tickcount: %i\n", *input, *output, Interfaces::GlobalVars->m_nTickCount, ctx.DEBUGBacktrackCMDTickcount );
+
+	return ret;
 }

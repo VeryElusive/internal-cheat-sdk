@@ -20,6 +20,18 @@ enum EClientFrameStage : int
 	FRAME_NET_FULL_FRAME_UPDATE_ON_REMOVE
 };
 
+enum FLOWTYPE : int {
+	FLOW_OUTGOING = 0,
+	FLOW_INCOMING = 1,
+};
+
+class CNetChannelInfo {
+public:
+	float GetLatency( int flow ) {
+		return Memory::CallVFunc<int, 10u>( this, flow );
+	}
+};
+
 class IEngineClient
 {
 public:
@@ -33,6 +45,10 @@ public:
 
 	bool IsConnected( ) {
 		return Memory::CallVFunc<bool, 33U>( this );
+	}
+
+	CNetChannelInfo* GetNetChannelInfo( int splitscreenSlot = 0 ) {
+		return Memory::CallVFunc<CNetChannelInfo*, 34U>( this, splitscreenSlot );
 	}
 
 	// return CBaseHandle index

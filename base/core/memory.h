@@ -5,6 +5,7 @@
 #include "../utils/xorstr.h"
 
 #define CLIENT_DLL _( L"client.dll" )
+#define SERVER_DLL _( L"server.dll" )
 #define ENGINE2_DLL _( L"engine2.dll" )
 #define TIER0_DLL _( L"tier0.dll" )
 #define SCHEMASYSTEM_DLL _( L"schemasystem.dll" )

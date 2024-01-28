@@ -1,5 +1,6 @@
 #pragma once
 #include "core/interfaces.h"
+#include "features/rage/lag_record.h"
 
 #include "sdk/matrix.h"
 #include "sdk/color.h"
@@ -33,12 +34,12 @@ struct PlayerEntry_t {
 	}; Vis Visuals;
 
 	struct Anim {
-		CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
 		Vector m_vecLastBoneOrigin{ };
 
 		bool m_bShouldUpdateBones{ };
 
-		float m_flSimulationTime{ };
+		std::vector< CLagRecord > m_vecLagRecords{ };
+
 	}; Anim Animations;
 
 	const char* m_pName{ };
@@ -70,6 +71,11 @@ struct Context_t {
 	std::unordered_map< unsigned int, PlayerEntry_t > m_mapPlayerEntries{ };
 
 	HWND hwnd{ };
+
+	CBoneData DEBUGBacktrackBones[ 1024u ]{ };//
+
+	float m_flRenderTickFraction{ };
+	int m_iRenderTick{ };
 
 	float m_flForwardmove{ };
 	float m_flSidemove{ };

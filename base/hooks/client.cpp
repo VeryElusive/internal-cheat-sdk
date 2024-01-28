@@ -20,7 +20,7 @@ void __fastcall Hooks::hkFrameStageNotify( void* rcx, int frameStage ) {
 
 	switch ( frameStage ) {
 	case FRAME_NET_UPDATE_END:
-		Features::LagCompensation.Main( );
+		Features::LagCompensation.Main( true );
 		break;
 	default:
 		break;

@@ -11,7 +11,7 @@ void __fastcall Hooks::hkHandleEvents( void* rcx, Events_t* event ) {
     switch ( FNV1A::Hash( eventName ) ) {
     case FNV1A::HashConst( "round_end" ):
     case FNV1A::HashConst( "round_start" ):
-        /*for ( auto it{ ctx.m_mapPlayerEntries.begin( ) }; it != ctx.m_mapPlayerEntries.end( ); ) {
+        for ( auto it{ ctx.m_mapPlayerEntries.begin( ) }; it != ctx.m_mapPlayerEntries.end( ); ) {
             auto& entry{ *it };
             if ( !entry.second.m_pPawn 
                 || !Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( entry.first ) ) {
@@ -20,7 +20,7 @@ void __fastcall Hooks::hkHandleEvents( void* rcx, Events_t* event ) {
             }
 
             ++it;
-        }*/
+        }
         break;
     default:
         break;

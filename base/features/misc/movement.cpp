@@ -130,8 +130,8 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 	if ( wishAngle <= curAngles )
 		rot = 360.f - std::fabs( wishAngle - curAngles );
 
-	auto forwardMove{ cmd->cmd.pBase->flForwardMove };
-	auto sideMove{ cmd->cmd.pBase->flSideMove };
+	const auto forwardMove{ cmd->cmd.pBase->flForwardMove };
+	const auto sideMove{ cmd->cmd.pBase->flSideMove };
 
 	// we do a little bit of l3d451r7ing...
 

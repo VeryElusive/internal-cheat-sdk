@@ -106,9 +106,9 @@ struct CSubtickMoveStep : CBasePB
 
 struct CInButtonStatePB : CBasePB
 {
-	std::uint64_t State1;
-	std::uint64_t State2;
-	std::uint64_t State3;
+	uint64_t m_iHeld;
+	uint64_t m_iToggle;
+	uint64_t m_iScrolled;
 };
 
 class CBaseUserCmdPB : public CBasePB
@@ -143,9 +143,9 @@ public:
 	CBaseUserCmdPB* pBase;
 	int32_t nWeaponDecision;
 	int32_t nWeaponDecisionWeapon;
-	int32_t nAttack3StartHhistoryIndex;
-	int32_t nAttack1StartHhistoryIndex;
-	int32_t nAttack2StartHhistoryIndex;
+	int32_t nAttack3HistoryIndex;
+	int32_t nAttackEndHistoryIndex;
+	int32_t nAttackStartHistoryIndex;
 };
 
 // not protobufs
