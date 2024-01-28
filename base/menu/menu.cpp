@@ -41,7 +41,7 @@ void Menu::Render( ) {
 
 	Render::Text( m_vecPos + Vector2D( BAR_SIZE / 2, 20 ), "Havoc", ACCENT, TEXT_CENTER, 13, Render::Fonts.Menu );
 	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 85, m_vecSize.y - MARGIN + 2 ), "Developed by", DIM_ELEMENT, TEXT_RIGHT, 13, Render::Fonts.Menu );
-	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 56, m_vecSize.y - MARGIN + 2 ), "Artie", ACCENT, TEXT_RIGHT, 13, Render::Fonts.Menu );
+	Render::Text( m_vecPos + Vector2D( m_vecSize.x - 56, m_vecSize.y - MARGIN + 2 ), "0xartie", ACCENT, TEXT_RIGHT, 13, Render::Fonts.Menu );
 
 	RenderElements( );
 

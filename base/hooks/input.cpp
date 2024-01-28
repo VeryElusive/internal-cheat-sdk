@@ -46,11 +46,6 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
 
-	//cmd->cmd.pBase->subtickMovesField.nCurrentSize = 0;
-	//cmd->cmd.pBase->subtickMovesField.nTotalSize = 0;
-	//if ( cmd->cmd.pBase->subtickMovesField.pRep )
-	//	cmd->cmd.pBase->subtickMovesField.pRep->nAllocatedSize = 0;
-
 	if ( !morePasses )
 		ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
 
@@ -61,6 +56,12 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	//	printf( "da\n" );
 
 	if ( !morePasses ) {
+		/*if ( Input::Pressed( VK_SHIFT ) ) {
+			cmd->cmd.nAttackStartHistoryIndex = 0;
+			cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+			cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
+		}*/
+
 		if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
 			const auto sub_tick = cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ];
 
@@ -119,6 +120,21 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 				sub_tick->sv_interp1->flFraction = 0.f;
 			}
 
+			/*if ( cmd->cmd.pBase->subtickMovesField.pRep ) {
+				//PRINT_PTR( cmd->cmd.pBase->subtickMovesField.pRep );
+				cmd->cmd.pBase->subtickMovesField.nCurrentSize += 1;
+				cmd->cmd.pBase->subtickMovesField.nTotalSize += 1;
+				cmd->cmd.pBase->subtickMovesField.pRep->nAllocatedSize += 1;
+
+				auto& element{ cmd->cmd.pBase->subtickMovesField.pRep->tElements[ cmd->cmd.pBase->subtickMovesField.pRep->nAllocatedSize - 1 ] };
+				element = ( CSubtickMoveStep* )Interfaces::MemAlloc->Alloc( sizeof( CSubtickMoveStep ) );
+
+				//PRINT_PTR( &cmd->cmd.pBase->subtickMovesField.pRep->tElements[ 0 ] );
+
+				element->bPressed = true;
+				element->nButton = IN_ATTACK;
+				element->flWhen = record->flRenderTickFraction;
+			}*/
 
 			//ctx.m_flUpmove = sub_tick->cl_interp ? 1.f : 0.f;
 		}

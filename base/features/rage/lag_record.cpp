@@ -110,5 +110,16 @@ float calc_lerp( ) noexcept {
 
 
 bool CLagRecord::IsRecordValid( ) {
-	return Interfaces::GlobalVars->m_nTickCount - 3 <= this->m_nAddedTickCount;
+	//return Interfaces::GlobalVars->m_nTickCount - 12 <= this->m_nAddedTickCount;
+
+	CVAR( sv_maxunlag );
+	//const auto nci = Interfaces::Engine->GetNetChannelInfo( );
+	//if ( !nci )
+	//	return std::numeric_limits<float>::max( );
+
+	const auto latency = 0.f;// nci->get_latency( se::flow::FLOW_OUTGOING ) + nci->get_latency( se::flow::FLOW_INCOMING );
+	const float correct = std::clamp( latency + calc_lerp( ), 0.0f, sv_maxunlag->value.fl );
+	const float max_delta = sv_maxunlag->value.fl - correct;
+
+	return Interfaces::GlobalVars->m_flCurTime - max_delta <= this->m_flSimulationTime;
 }
