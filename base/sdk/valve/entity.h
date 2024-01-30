@@ -229,6 +229,7 @@ public:
 	VAR_AT_OFFSET( float, m_flPenetration, 0xd3c );
 	VAR_AT_OFFSET( float, m_flRangeModifier, 0xd44 );
 	VAR_AT_OFFSET( float, m_flHeadshotMultiplier, 0xd34 );
+	VAR_AT_OFFSET( float, m_flArmorRatio, 0xd38 );
 
 public:
 	static void Initialise( );
@@ -241,12 +242,37 @@ public:
 	VAR_AT_OFFSET( std::uint32_t, Index, 0x10 );
 };
 
+class CPlayer_ItemServices {
+public:
+	SCHEMA( bool, m_bHasHeavyArmor );
+
+public:
+	static void Initialise( );
+};
+
+/*class CPlayer_CameraServices {
+public:
+	SCHEMA( int, m_ArmorValue );
+
+public:
+	static void Initialise( );
+};*/
+
 //C_CSPlayerPawn : C_CSPlayerPawnBase, C_BasePlayerPawn, [ C_BaseCombatCharacter, C_BaseFlex, CBaseAnimGraph ], C_BaseModelEntity, C_BaseEntity, CEntityInstance
 class C_BasePlayerPawn : public C_BaseModelEntity
 {
 public:
 	SCHEMA( CPlayer_WeaponServices*, m_pWeaponServices );
 	SCHEMA( CBaseHandle, m_hPawn );
+	SCHEMA( CPlayer_ItemServices*, m_pItemServices );
+	//SCHEMA( CPlayer_CameraServices*, m_pCameraServices );
+
+	bool HasHeavyArmor( ) const {
+		if ( !m_pItemServices( ) )
+			return false;
+
+		return m_pItemServices( )->m_bHasHeavyArmor( );
+	}
 
 public:
 	static void Initialise( );
@@ -257,6 +283,8 @@ class C_CSPlayerPawnBase : public C_BasePlayerPawn
 public:
 	SCHEMA( C_CSWeaponBase*, m_pClippingWeapon );
 	SCHEMA( int, m_iOldIDEntIndex );
+	SCHEMA( int, m_ArmorValue );
+	SCHEMA( bool, m_bHasHelmet );// test
 
 public:
 	static void Initialise( );

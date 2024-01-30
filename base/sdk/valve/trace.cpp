@@ -1,4 +1,5 @@
 #include "trace.h"
+#include "../../core/displacement.h"
 
 TraceFilter_t::TraceFilter_t( std::uintptr_t mask, const void* skip, int layer ) noexcept {
 	Displacement::TraceFilterInit( this, skip, mask, layer, 7 );

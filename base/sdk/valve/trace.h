@@ -1,6 +1,5 @@
 #pragma once
 #include "../../core/memory.h"
-#include "../../core/displacement.h"
 #include "../vector.h"
 
 inline static constexpr std::uint32_t K_MAIN_PEN_MASK = 0x1C300Bu;
@@ -91,9 +90,9 @@ struct HandleBulletPenetrationData_t {
     float m_flRange{ };
     int m_iPenCount{ };
     bool m_bFailed{ };
-}
+};
 
-static void CreateTrace( TraceData_t* const trace, const Vector start, const Vector end, const TraceFilter_t& filter, const int penetrationCount );
-static void InitTraceInfo( GameTrace_t* const hit );
-static void GetTraceInfo( TraceData_t* const trace, GameTrace_t* const hit, const float unknownFloat, void* unknown );
-static bool HandleBulletPenetration( TraceData_t* const trace, HandleBulletPenetrationData_t* stats, UpdateValue_t* const mod_value, const bool draw_showimpacts = false );
+void CreateTrace( TraceData_t* const trace, const Vector start, const Vector end, const TraceFilter_t& filter, const int penetrationCount );
+void InitTraceInfo( GameTrace_t* const hit );
+void GetTraceInfo( TraceData_t* const trace, GameTrace_t* const hit, const float unknownFloat, void* unknown );
+bool HandleBulletPenetration( TraceData_t* const trace, HandleBulletPenetrationData_t* stats, UpdateValue_t* const mod_value, const bool draw_showimpacts );

@@ -31,6 +31,9 @@ void ClassOffsets::Initialise( ) {
 	CEntityIdentity::Initialise( );
 	C_BasePlayerWeapon::Initialise( );
 	CSkeletonInstance::Initialise( );
+	CPlayer_ItemServices::Initialise( );
+
+	//CPlayer_CameraServices::Initialise( );
 
 	// other
 }
@@ -72,6 +75,7 @@ void C_BaseEntity::Initialise( ) {
 void C_CSPlayerPawnBase::Initialise( ) {
 	INIT_SCHEMA( C_CSPlayerPawnBase, m_pClippingWeapon );
 	INIT_SCHEMA( C_CSPlayerPawnBase, m_iOldIDEntIndex );
+	INIT_SCHEMA( C_CSPlayerPawnBase, m_ArmorValue );
 }
 
 void CCSWeaponBaseVData::Initialise( ) {
@@ -81,6 +85,7 @@ void CCSWeaponBaseVData::Initialise( ) {
 void C_BasePlayerPawn::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerPawn, m_pWeaponServices );
 	INIT_SCHEMA( C_BasePlayerPawn, m_hPawn );
+	INIT_SCHEMA( C_BasePlayerPawn, m_pItemServices );
 }
 
 void CPlayer_WeaponServices::Initialise( ) {
@@ -117,3 +122,11 @@ void CSkeletonInstance::Initialise( ) {
 	INIT_SCHEMA( CSkeletonInstance, m_modelState );
 	INIT_SCHEMA( CSkeletonInstance, m_nHitboxSet );
 }
+
+void CPlayer_ItemServices::Initialise( ) {
+	INIT_SCHEMA( CPlayer_ItemServices, m_bHasHeavyArmor );
+}
+
+/*void CPlayer_CameraServices::Initialise( ) {
+	INIT_SCHEMA( CPlayer_ItemServices, m_ArmorValue );
+}*/

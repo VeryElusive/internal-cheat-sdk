@@ -37,12 +37,19 @@ bool CPenetration::FireBullet( Vector start, Vector end,
                 return true;
             }
 
-            if ( HandleBulletPenetration( &traceData, &handleBulletPenetrationData, value ) )
+            if ( HandleBulletPenetration( &traceData, &handleBulletPenetrationData, value, false ) )
                 return false;
 
             penData.m_flDamage = handleBulletPenetrationData.m_flDamage;
         }
     }
+}
+
+bool IsEntityArmored( const C_CSPlayerPawn* entity, const int hitgroup ) {
+    if ( hitgroup == HITGROUP_HEAD )
+        return entity->m_bHasHelmet( );
+
+    return entity->m_ArmorValue( ) > 0;
 }
 
 void CPenetration::ScaleDamage( const int hitgroup, const C_CSPlayerPawn* entity, CCSWeaponBaseVData* weaponData, float& damage ) {
@@ -64,7 +71,7 @@ void CPenetration::ScaleDamage( const int hitgroup, const C_CSPlayerPawn* entity
 
     // server.dll; F3 0F 10 35 ?? ?? ?? ?? 0F 29 7C 24 30 44 0F 29 44 24
     // xref: mp_heavybot_damage_reduction_scale
-    if ( entity->m_bHasHeavyArmor( ) )
+    if ( entity->HasHeavyArmor( ) )
         head_damage_scale *= 0.5f;
 
     switch ( hitgroup ) {
@@ -88,12 +95,12 @@ void CPenetration::ScaleDamage( const int hitgroup, const C_CSPlayerPawn* entity
         break;
     }
 
-    if ( !entity->is_armored( hitgroup ) )
+    if ( !IsEntityArmored( entity, hitgroup ) )
         return;
 
     float heavy_armor_bonus = 1.0f, armor_bonus = 0.5f, armor_ratio = weaponData->m_flArmorRatio( ) * 0.5f;
 
-    if ( entity->m_bHasHeavyArmor( ) ) {
+    if ( entity->HasHeavyArmor( ) ) {
         heavy_armor_bonus = 0.25f;
         armor_bonus = 0.33f;
         armor_ratio *= 0.20f;
