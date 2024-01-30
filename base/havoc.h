@@ -72,7 +72,7 @@ struct Context_t {
 
 	HWND hwnd{ };
 
-	CBoneData DEBUGBacktrackBones[ 1024u ]{ };//
+	CBoneData DEBUGBacktrackBones[ 128u ]{ };//
 
 	float m_flRenderTickFraction{ };
 	int m_iRenderTick{ };

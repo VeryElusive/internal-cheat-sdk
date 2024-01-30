@@ -40,6 +40,7 @@
     <ClCompile Include="features\misc\movement.cpp" />
     <ClCompile Include="features\rage\antiaim.cpp" />
     <ClCompile Include="features\rage\lag_record.cpp" />
+    <ClCompile Include="features\rage\ragebot.cpp" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
     <ClCompile Include="hooks\bones.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="features\misc\movement.h" />
     <ClInclude Include="features\rage\antiaim.h" />
     <ClInclude Include="features\rage\lag_record.h" />
+    <ClInclude Include="features\rage\ragebot.h" />
     <ClInclude Include="features\visuals\visuals.h" />
     <ClInclude Include="hooks\networkgameclient.cpp" />
     <ClInclude Include="pch.h" />

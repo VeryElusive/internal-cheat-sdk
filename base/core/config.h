@@ -58,6 +58,10 @@ struct Config_t {
 	int m_iAntiAimYawRange{ };
 	int m_iAntiAimYawSpeed{ };
 #pragma endregion antiaim
+
+#pragma region ragebot
+	bool m_bRageBotEnable{ };
+#pragma endregion ragebot
 };
 
 namespace Configs {

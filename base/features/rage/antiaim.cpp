@@ -7,8 +7,8 @@ bool CAntiAim::Condition( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( local->m_MoveType( ) != MOVETYPE_WALK )
 		return false;
 
-	//if ( cmd->m_cButtonStates.m_iHeld & IN_ATTACK )
-	//	return false;
+	if ( cmd->m_cButtonStates.m_iHeld & IN_ATTACK )
+		return false;
 
 	if ( cmd->m_cButtonStates.m_iHeld & IN_USE )
 		return false;

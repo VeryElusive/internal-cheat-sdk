@@ -140,6 +140,10 @@ public:
 		return VecEmpty;
 	}
 
+	__forceinline CHitboxSet* GetHitboxSet( unsigned int hitboxIndex ) {
+		return ( CHitboxSet* ) Displacement::GetHitboxSet( this, hitboxIndex );
+	}
+
 public:
 	static void Initialise( );
 };
@@ -216,8 +220,15 @@ class CCSWeaponBaseVData
 {
 public:
 	SCHEMA( const char*, m_szName );
+
+	//https://github.com/neverlosecc/source2sdk/blob/cs2/sdk/client.hpp
 	VAR_AT_OFFSET( int32_t, m_iMaxClip1, 0x1fc );
 	VAR_AT_OFFSET( int32_t, m_iMaxClip2, 0x200 );
+	VAR_AT_OFFSET( int32_t, m_nDamage, 0xd30 );
+	VAR_AT_OFFSET( float, m_flRange, 0xd40 );
+	VAR_AT_OFFSET( float, m_flPenetration, 0xd3c );
+	VAR_AT_OFFSET( float, m_flRangeModifier, 0xd44 );
+	VAR_AT_OFFSET( float, m_flHeadshotMultiplier, 0xd34 );
 
 public:
 	static void Initialise( );
@@ -448,4 +459,18 @@ enum EBoneFlags : uint32_t {
 	BLEND_PREALIGNED = 0x100000,
 	FLAG_RIGIDLENGTH = 0x200000,
 	FLAG_PROCEDURAL = 0x400000,
+};
+
+enum EHitGroupIndex : int
+{
+	HITGROUP_GENERIC = 0,
+	HITGROUP_HEAD,
+	HITGROUP_CHEST,
+	HITGROUP_STOMACH,
+	HITGROUP_LEFTARM,
+	HITGROUP_RIGHTARM,
+	HITGROUP_LEFTLEG,
+	HITGROUP_RIGHTLEG,
+	HITGROUP_NECK,
+	HITGROUP_GEAR = 10
 };

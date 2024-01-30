@@ -46,7 +46,7 @@ void CVisuals::Main( ) {
 		}
 	}
 
-	for ( std::int32_t i = 0; i < 1024; ++i ) {
+	for ( std::int32_t i = 0; i < 128; ++i ) {
 		Vector2D screen{ };
 		Vector2D parentScreen{ };
 

@@ -14,9 +14,9 @@ public:
 		m_nAddedTickCount( tickCount )
 	{ };
 
-	bool IsRecordValid( );
+	bool IsRecordValid( ) const;
 
-	CBoneData m_arrBones[ 1024u ]{ };//MAX_STUDIO_BONES
+	CBoneData m_arrBones[ 128u ]{ };
 
 	Vector m_vecOrigin{ };
 
@@ -33,7 +33,7 @@ struct PlayerEntry_t;
 
 class CLagCompensation {
 public:
-	void Main( bool netUpdate );
+	void Main( );
 private:
 	void AddRecord( PlayerEntry_t& entry );
 };

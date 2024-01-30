@@ -8,6 +8,12 @@ void Displacement::Init( ) {
 	GetBoneParent = reinterpret_cast< fnGetBoneParent >( Memory::FindPattern( CLIENT_DLL, _( "85 D2 78 17 3B 91 70" ) ) );
 	GetBoneFlags = reinterpret_cast< fnGetBoneParent >( Memory::FindPattern( CLIENT_DLL, _( "85 D2 78 16 3B 91" ) ) );
 	EventGetInt = reinterpret_cast< fnEventGetInt >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 41 56 48 83 EC 30 48 8B 01 41 8B F0 4C 8B F1 41 B0 01 48 8D 4C 24 20 48 8B DA 48 8B 78" ) ) );
+	GetHitboxSet = reinterpret_cast< fnGetHitboxSet >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 8B DA 48 8B F9 E8 ? ? ? ? 48 8B F0 48 85 C0 0F 84" ) ) );
+	TraceFilterInit = reinterpret_cast< fnTraceFilterInit >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 0F B6 41 37 33" ) ) );
+	CreateTrace = reinterpret_cast< fnCreateTrace >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC 40 F2" ) ) );
+	InitTraceInfo = reinterpret_cast< fnInitTraceInfo >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 33 FF 48 8B 0D" ) ) );
+	GetTraceInfo = reinterpret_cast< fnGetTraceInfo >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 60 48 8B E9 0F" ) ) );
+	HandleBulletPenetration = reinterpret_cast< fnHandleBulletPenetration >( Memory::FindPattern( CLIENT_DLL, _( "48 8B C4 44 89 48 20 55 57 41 55" ) ) );
 
 	FindVarMaterial = reinterpret_cast< fnFindVarMaterial >( Memory::FindPattern( PARTICLES_DLL, _( "48 89 5C 24 08 57 48 81 EC C0 00 00 00 33 C0 8B" ) ) );
 	//ViewMatrix = reinterpret_cast< ViewMatrix_t* >( Memory::FindPattern( CLIENT_DLL, _( "48 8D 0D ? ? ? ? 48 C1 E0 06 48 03 C1" ) ) );

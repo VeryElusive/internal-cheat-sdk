@@ -34,7 +34,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 		return result;
 
 	if ( !morePasses ) {
-		Features::LagCompensation.Main( false );
+		Features::LagCompensation.Main( );
 
 		Features::Movement.Main( localPawn, cmd );
 	}

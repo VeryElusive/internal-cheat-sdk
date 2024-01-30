@@ -8,7 +8,7 @@
 
 // TODO: MOVE THIS TO CREATEMOVE!!!!
 
-void CLagCompensation::Main( bool netUpdate ) {
+void CLagCompensation::Main( ) {
 	for ( int i{ 1 }; i < Interfaces::Engine->GetMaxClients( ); ++i ) {
 		const auto ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
 		if ( !ent
@@ -42,9 +42,7 @@ void CLagCompensation::Main( bool netUpdate ) {
 				it = entry.Animations.m_vecLagRecords.erase( it );
 			}
 
-			if ( netUpdate )
-				entry.Animations.m_bShouldUpdateBones = true;
-			else if ( entry.Animations.m_vecLagRecords.empty( )
+			if ( entry.Animations.m_vecLagRecords.empty( )
 				|| entry.m_pPawn->m_flSimulationTime( ) != entry.Animations.m_vecLagRecords.back( ).m_flSimulationTime )
 				AddRecord( entry );
 		}
@@ -75,22 +73,22 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	//const auto backupAbsOrigin{ entry.m_pPawn->GetAbsOrigin( ) };
 	//skeleton->m_vecAbsOrigin( ) = entry.m_pPawn->GetAbsOrigin( ) = entry.m_pPawn->m_pGameSceneNode( )->m_vecOrigin( );
 
-	//entry.Animations.m_bShouldUpdateBones = true;
+	entry.Animations.m_bShouldUpdateBones = true;
 
-	//const auto CalcWorldSpaceBones{ Hooks::CalcWorldSpaceBones.Original<decltype( &Hooks::hkCalcWorldSpaceBones )>( ) };
-	//if ( !CalcWorldSpaceBones )
-	//	return;
+	const auto CalcWorldSpaceBones{ Hooks::CalcWorldSpaceBones.Original<decltype( &Hooks::hkCalcWorldSpaceBones )>( ) };
+	if ( !CalcWorldSpaceBones )
+		return;
 
-	//CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
+	CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
 
 	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], model->m_iBoneCount * sizeof( CBoneData ) );
 
-	if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecAbsOrigin( ) ) {
+	/*if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecAbsOrigin( ) ) {
 		const auto delta{ gameSceneNode->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
 		for ( std::int32_t i = 0; i < model->m_iBoneCount; ++i )
 			record.m_arrBones[ i ].m_vecPosition += delta;
-	}
+	}*/
 
 	//skeleton->m_vecAbsOrigin( ) = entry.m_pPawn->GetAbsOrigin( ) = backupAbsOrigin;
 }
@@ -109,7 +107,7 @@ float calc_lerp( ) noexcept {
 }
 
 
-bool CLagRecord::IsRecordValid( ) {
+bool CLagRecord::IsRecordValid( ) const {
 	//return Interfaces::GlobalVars->m_nTickCount - 12 <= this->m_nAddedTickCount;
 
 	CVAR( sv_maxunlag );
