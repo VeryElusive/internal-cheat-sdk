@@ -120,6 +120,7 @@
     <ClInclude Include="sdk\utlhash.h" />
     <ClInclude Include="sdk\utllinkedlist.h" />
     <ClInclude Include="sdk\utlmemory.h" />
+    <ClInclude Include="sdk\utlstring.h" />
     <ClInclude Include="sdk\utlvector.h" />
     <ClInclude Include="sdk\valve\class_offsets.h" />
     <ClInclude Include="sdk\valve\entity.h" />

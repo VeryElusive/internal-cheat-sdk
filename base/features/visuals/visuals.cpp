@@ -48,7 +48,6 @@ void CVisuals::Main( ) {
 
 	for ( std::int32_t i = 0; i < 128; ++i ) {
 		Vector2D screen{ };
-		Vector2D parentScreen{ };
 
 		if ( Render::WorldToScreen( ctx.DEBUGBacktrackBones[ i ].m_vecPosition, screen ) )
 			Render::RectFilled( screen, { 4, 4 }, Color( 255, 255, 255 ) );

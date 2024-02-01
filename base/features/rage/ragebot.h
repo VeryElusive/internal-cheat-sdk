@@ -24,6 +24,7 @@ public:
 
 	void GetBestLagRecord( PlayerEntry_t& entry );
 	void SelectBetterTarget( const CAimTarget& compareTarget );
+	float QuickScan( CLagRecord* record, std::vector <int> hitgroups );
 };
 
 class CRageBot {

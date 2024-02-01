@@ -15,7 +15,8 @@ struct BBox_t {
 
 	const Vector2D Position( ) const { return { std::floor( x ), std::floor( y ) }; }
 	const Vector2D Size( ) const { return { std::floor( w ), std::floor( h ) }; }
-	const bool Valid( ) const { return x != 0 && y != 0 && w != 0 && h != 0; }
+	const bool Valid( ) const { return x != 0 && y != 0 && w != 0 && h != 0
+			&& std::isfinite( x ) && std::isfinite( y ) && std::isfinite( w ) && std::isfinite( h ); }
 };
 
 struct PlayerEntry_t {

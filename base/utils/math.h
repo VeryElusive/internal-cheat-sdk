@@ -62,4 +62,34 @@ namespace Math {
 			pUp->z = cr * cp;
 		}
 	}
+
+	__forceinline Vector VectorTransform( const Vector& vecTransform, const Matrix3x4_t& matrix ) {
+		return Vector( vecTransform.Dot( matrix[ 0 ] ) + matrix[ 0 ][ 3 ],
+			vecTransform.Dot( matrix[ 1 ] ) + matrix[ 1 ][ 3 ],
+			vecTransform.Dot( matrix[ 2 ] ) + matrix[ 2 ][ 3 ] );
+	}
+
+	__forceinline void VectorAngles( const Vector& vecForward, Vector& angView ) {
+		Vector  left;
+		float   len, pitch, yaw, roll;
+
+		// get 2d length.
+		len = vecForward.Length2D( );
+
+		if ( len > 0.f ) {
+			// calculate pitch and yaw.
+			pitch = RadiansToDegree( std::atan2( -vecForward.z, len ) );
+			yaw = RadiansToDegree( std::atan2( vecForward.y, vecForward.x ) );
+			roll = 0.f;
+		}
+
+		else {
+			pitch = float( ( vecForward.z > 0 ) ? 270 : 90 );
+			yaw = 0.f;
+			roll = 0.f;
+		}
+
+		// set out angles.
+		angView = { pitch, yaw, roll };
+	}
 }

@@ -31,7 +31,8 @@ void ClassOffsets::Initialise( ) {
 	CEntityIdentity::Initialise( );
 	C_BasePlayerWeapon::Initialise( );
 	CSkeletonInstance::Initialise( );
-	CPlayer_ItemServices::Initialise( );
+	CCSPlayer_ItemServices::Initialise( );
+	C_BaseModelEntity::Initialise( );
 
 	//CPlayer_CameraServices::Initialise( );
 
@@ -84,7 +85,7 @@ void CCSWeaponBaseVData::Initialise( ) {
 
 void C_BasePlayerPawn::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerPawn, m_pWeaponServices );
-	INIT_SCHEMA( C_BasePlayerPawn, m_hPawn );
+	//INIT_SCHEMA( C_BasePlayerPawn, m_hPawn );
 	INIT_SCHEMA( C_BasePlayerPawn, m_pItemServices );
 }
 
@@ -123,10 +124,14 @@ void CSkeletonInstance::Initialise( ) {
 	INIT_SCHEMA( CSkeletonInstance, m_nHitboxSet );
 }
 
-void CPlayer_ItemServices::Initialise( ) {
-	INIT_SCHEMA( CPlayer_ItemServices, m_bHasHeavyArmor );
+void CCSPlayer_ItemServices::Initialise( ) {
+	INIT_SCHEMA( CCSPlayer_ItemServices, m_bHasHeavyArmor );
 }
 
 /*void CPlayer_CameraServices::Initialise( ) {
 	INIT_SCHEMA( CPlayer_ItemServices, m_ArmorValue );
 }*/
+
+void C_BaseModelEntity::Initialise( ) {
+	INIT_SCHEMA( C_BaseModelEntity, m_vecViewOffset );
+}

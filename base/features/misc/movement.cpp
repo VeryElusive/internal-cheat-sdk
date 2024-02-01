@@ -116,13 +116,15 @@ void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 }
 
 void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAngle ) {
+	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( );
+
 	if ( !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
 		return;
 
 	if ( wishAngle < 0.f )
 		wishAngle += 360.f;
 
-	auto curAngles{ cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( ).y };
+	auto curAngles{ cmd->cmd.pBase->pViewangles->angValue.ClampAngle( ).y };
 	if ( curAngles < 0.f )
 		curAngles += 360.f;
 

@@ -6,6 +6,7 @@
 #include "../features/misc/movement.h"
 #include "../features/rage/antiaim.h"
 #include "../features/rage/lag_record.h"
+#include "../features/rage/ragebot.h"
 #include "../core/config.h"
 
 bool __fastcall Hooks::hkMouseInputEnabled( void* rcx ) {
@@ -35,6 +36,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	if ( !morePasses ) {
 		Features::LagCompensation.Main( );
+		Features::RageBot.Main( localPawn, cmd );
 
 		Features::Movement.Main( localPawn, cmd );
 	}
@@ -44,7 +46,8 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
 
-	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
+	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( );
+	cmd->cmd.pBase->pViewangles->angValue.ClampAngle( );
 
 	if ( !morePasses )
 		ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
@@ -55,12 +58,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	//if ( cmd->cmd.nAttack3StartHistoryIndex >= 0 )
 	//	printf( "da\n" );
 
-	if ( !morePasses ) {
-		/*if ( Input::Pressed( VK_SHIFT ) ) {
-			cmd->cmd.nAttackStartHistoryIndex = 0;
-			cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
-			cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
-		}*/
+	/*if ( !morePasses ) {
 
 		if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
 			const auto sub_tick = cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ];
@@ -134,12 +132,12 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 				element->bPressed = true;
 				element->nButton = IN_ATTACK;
 				element->flWhen = record->flRenderTickFraction;
-			}*/
+			}
 
 			//ctx.m_flUpmove = sub_tick->cl_interp ? 1.f : 0.f;
 		}
 		
-	}
+	}*/
 
 	return result;
 }

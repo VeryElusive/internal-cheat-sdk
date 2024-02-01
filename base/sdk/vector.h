@@ -40,21 +40,9 @@ struct Vector {
 
 	auto& ClampAngle( ) { this->x = std::clamp( this->x, -89.f, 89.f ); this->y = std::clamp( this->y, -180.f, 180.f ); this->z = std::clamp( this->z, -50.f, 50.f ); return *this; }
 
-	auto& NormalizeAngle( ) {
-		auto& to_normalize = *this;
-		if ( to_normalize.x > 180.f || to_normalize.x < -180.f ) {
-			auto val = 360.f * std::round( std::abs( to_normalize.x / 360.f ) );
-			to_normalize.x < 0.f ? to_normalize.x += val : to_normalize.x -= val;
-		}
-		if ( to_normalize.y > 180.f || to_normalize.y < -180.f ) {
-			auto val = 360.f * std::round( std::abs( to_normalize.y / 360.f ) );
-			to_normalize.y < 0.f ? to_normalize.y += val : to_normalize.y -= val;
-		}
-		if ( to_normalize.z > 180.f || to_normalize.z < -180.f ) {
-			auto val = 360.f * std::round( std::abs( to_normalize.z / 360.f ) );
-			to_normalize.z < 0.f ? to_normalize.z += val : to_normalize.z -= val;
-		}
-		return to_normalize;
+	void NormalizeAngle( ) {
+		this->x = std::remainderf( this->x, 180.f );
+		this->y = std::remainderf( this->y, 360.f );
 	}
 
 	float NormalizeInPlace( ) {

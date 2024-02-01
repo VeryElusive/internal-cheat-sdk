@@ -5,7 +5,7 @@
 struct PenetrationData_t {
 	float m_flDamage{ };
 
-	uint8_t m_iPenetrationCount{ };
+	uint8_t m_iPenetrationCount{ 4 };
 };
 
 class CPenetration {

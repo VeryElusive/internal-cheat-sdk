@@ -5,13 +5,6 @@
 #include "../../core/displacement.h"
 #include "skeleton.h"
 
-#define VAR_AT_OFFSET( type, name, offset ) __forceinline type& name( ) const { \
-		return *reinterpret_cast< type* >( ( reinterpret_cast< std::uintptr_t >( this ) + offset ) ); \
-	} \
-
-#define SCHEMA( type, name ) private: inline static uint32_t name##_OFFSET; \
-		public: VAR_AT_OFFSET( type, name, name##_OFFSET )
-
 class CCollisionProperty;
 class CEntityInstance;
 
@@ -90,6 +83,15 @@ public:
 	SCHEMA( CModelState, m_modelState );
 	SCHEMA( std::uint8_t, m_nHitboxSet );
 
+	CModel* GetModel( ) {
+		auto ptr = *reinterpret_cast< void** >( ( uintptr_t ) this + 0x200 );
+
+		if ( !ptr )
+			return nullptr;
+
+		return *reinterpret_cast< CModel** >( ptr );
+	}
+
 public:
 	static void Initialise( );
 };
@@ -140,8 +142,8 @@ public:
 		return VecEmpty;
 	}
 
-	__forceinline CHitboxSet* GetHitboxSet( unsigned int hitboxIndex ) {
-		return ( CHitboxSet* ) Displacement::GetHitboxSet( this, hitboxIndex );
+	__forceinline CHitboxSet* GetHitboxSet( unsigned int hitboxSetIndex ) {
+		return ( CHitboxSet* ) Displacement::GetHitboxSet( this, hitboxSetIndex );
 	}
 
 public:
@@ -151,7 +153,9 @@ public:
 class C_BaseModelEntity : public C_BaseEntity
 {
 public:
-
+	SCHEMA( Vector, m_vecViewOffset );
+public:
+	static void Initialise( );
 };
 
 class CEconItemDefinition {
@@ -242,7 +246,7 @@ public:
 	VAR_AT_OFFSET( std::uint32_t, Index, 0x10 );
 };
 
-class CPlayer_ItemServices {
+class CCSPlayer_ItemServices {
 public:
 	SCHEMA( bool, m_bHasHeavyArmor );
 
@@ -263,8 +267,8 @@ class C_BasePlayerPawn : public C_BaseModelEntity
 {
 public:
 	SCHEMA( CPlayer_WeaponServices*, m_pWeaponServices );
-	SCHEMA( CBaseHandle, m_hPawn );
-	SCHEMA( CPlayer_ItemServices*, m_pItemServices );
+	//SCHEMA( CBaseHandle, m_hPawn );
+	SCHEMA( CCSPlayer_ItemServices*, m_pItemServices );
 	//SCHEMA( CPlayer_CameraServices*, m_pCameraServices );
 
 	bool HasHeavyArmor( ) const {
@@ -501,4 +505,29 @@ enum EHitGroupIndex : int
 	HITGROUP_RIGHTLEG,
 	HITGROUP_NECK,
 	HITGROUP_GEAR = 10
+};
+
+enum EHitboxIndex : int
+{
+	HITBOX_INVALID = -1,
+	HITBOX_HEAD,
+	HITBOX_NECK,
+	HITBOX_PELVIS,
+	HITBOX_STOMACH,
+	HITBOX_LOWER_CHEST,
+	HITBOX_CHEST,
+	HITBOX_UPPER_CHEST,
+	HITBOX_RIGHT_THIGH,
+	HITBOX_LEFT_THIGH,
+	HITBOX_RIGHT_CALF,
+	HITBOX_LEFT_CALF,
+	HITBOX_RIGHT_FOOT,
+	HITBOX_LEFT_FOOT,
+	HITBOX_RIGHT_HAND,
+	HITBOX_LEFT_HAND,
+	HITBOX_RIGHT_UPPER_ARM,
+	HITBOX_RIGHT_FOREARM,
+	HITBOX_LEFT_UPPER_ARM,
+	HITBOX_LEFT_FOREARM,
+	HITBOX_MAX
 };

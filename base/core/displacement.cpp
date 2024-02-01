@@ -14,6 +14,7 @@ void Displacement::Init( ) {
 	InitTraceInfo = reinterpret_cast< fnInitTraceInfo >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 57 48 83 EC 20 48 8B D9 33 FF 48 8B 0D" ) ) );
 	GetTraceInfo = reinterpret_cast< fnGetTraceInfo >( Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 60 48 8B E9 0F" ) ) );
 	HandleBulletPenetration = reinterpret_cast< fnHandleBulletPenetration >( Memory::FindPattern( CLIENT_DLL, _( "48 8B C4 44 89 48 20 55 57 41 55" ) ) );
+	GetBoneIndexFromHitbox = reinterpret_cast< fnGetBoneIndexFromHitbox >( Memory::FindPattern( CLIENT_DLL, _( "48 83 EC 08 83 79 10 00 44 8B D2 4C 8B C9 75 0A B8" ) ) );// first, not unique.
 
 	FindVarMaterial = reinterpret_cast< fnFindVarMaterial >( Memory::FindPattern( PARTICLES_DLL, _( "48 89 5C 24 08 57 48 81 EC C0 00 00 00 33 C0 8B" ) ) );
 	//ViewMatrix = reinterpret_cast< ViewMatrix_t* >( Memory::FindPattern( CLIENT_DLL, _( "48 8D 0D ? ? ? ? 48 C1 E0 06 48 03 C1" ) ) );

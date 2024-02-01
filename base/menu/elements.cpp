@@ -12,7 +12,7 @@ void Menu::Register( ) {
 	{
 		auto generalGroup{ aimbot->AddGroup( "General", 1.f ) };
 		{
-			generalGroup->Register( ( "Enable" ), &Configs::m_cConfig.m_bEnabled );
+			generalGroup->Register( ( "Enable" ), &Configs::m_cConfig.m_bRageBotEnable );
 
 		}
 		auto otherGroup{ aimbot->AddGroup( "Other", 0.6f ) };
