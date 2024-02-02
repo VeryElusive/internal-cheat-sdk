@@ -13,6 +13,8 @@ bool CPenetration::FireBullet( Vector start, Vector end,
     const TraceFilter_t filter( K_MAIN_PEN_MASK, shooter, 3 );
     CreateTrace( &traceData, start, endPos, filter, 4 );
 
+    penData.m_flDamage = weaponData->m_nDamage( );
+
     HandleBulletPenetrationData_t handleBulletPenetrationData( static_cast< float >( weaponData->m_nDamage( ) ),
         weaponData->m_flPenetration( ), weaponData->m_flRange( ),
         weaponData->m_flRangeModifier( ), 4, false );
@@ -23,26 +25,32 @@ bool CPenetration::FireBullet( Vector start, Vector end,
                 reinterpret_cast< std::uintptr_t >( traceData.m_pUpdateValue )
                 + i * sizeof( UpdateValue_t ) ) };
 
-            GameTrace_t game_trace{ };
-            InitTraceInfo( &game_trace );
+            GameTrace_t trace{ };
+            InitTraceInfo( &trace );
             GetTraceInfo(
-                &traceData, &game_trace, 0.0f,
+                &traceData, &trace, 0.0f,
                 reinterpret_cast< void* >(
                     reinterpret_cast< std::uintptr_t >( &traceData.m_arr[ 0 ] )
                     + sizeof( UnknownTraceMember_t ) * ( value->m_hHandleIdx & K_ENT_ENTRY_MASK ) ) );
 
-            if ( game_trace.m_pHitEntity == target ) {
+            if ( trace.m_pHitEntity == target ) {
                 if ( penData.m_flDamage > 0.f )
-                    ScaleDamage( game_trace.m_pHitboxData->m_iHitgroup, target, weaponData, penData.m_flDamage );
+                    ScaleDamage( trace.m_pHitboxData->m_iHitgroup, target, weaponData, penData.m_flDamage );
+
+                penData.m_iHitGroup = trace.m_pHitboxData->m_iHitgroup;
                 return true;
             }
 
-            if ( HandleBulletPenetration( &traceData, &handleBulletPenetrationData, value, false ) )
-                return false;
+            if ( HandleBulletPenetration( &traceData, &handleBulletPenetrationData, value, false ) ) 
+                goto FAILED;
 
             penData.m_flDamage = handleBulletPenetrationData.m_flDamage;
         }
     }
+
+    FAILED:
+    penData.m_flDamage = 0;
+    return false;
 }
 
 bool IsEntityArmored( const C_CSPlayerPawn* entity, const int hitgroup ) {

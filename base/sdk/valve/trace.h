@@ -37,15 +37,12 @@ struct GameTrace_t {
 };
 
 struct TraceFilter_t {
-    __int64 m_iMask{ };
-    __int64 m_arrUnk[ 2 ]{ };
-    int m_arrSkipHandles[ 4 ]{ };
-    short m_iCollisions[ 2 ]{ };
-    short m_v3{ };
-    bool m_v4{ }, m_v5{ }, m_v6{ };
+    MEM_PAD( 0x39 );
 
     TraceFilter_t( std::uintptr_t mask, const void* skip, int layer ) noexcept;
 };
+
+static_assert ( sizeof( TraceFilter_t ) == 0x39 );
 
 struct UpdateValue_t {
     float m_flPreviousLengthMod{ };

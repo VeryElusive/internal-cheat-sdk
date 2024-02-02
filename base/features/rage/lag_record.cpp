@@ -34,6 +34,8 @@ void CLagCompensation::Main( ) {
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );
 
+			entry.m_iIndex = i;
+
 			// TODO: do this properly (like flDeadTime from csgo)
 			for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); ) {
 				if ( entry.Animations.m_vecLagRecords.size( ) < 32 )

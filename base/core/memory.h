@@ -104,8 +104,7 @@ namespace Memory {
 	std::size_t BytesToPattern( const std::uint8_t* pByteBuffer, const std::size_t nByteCount, char* szOutBuffer );
 	void* GetExportAddress( const void* hModuleBase, const char* szProcedureName );
 
-	__forceinline std::uint8_t* ResolveRelativeAddress( std::uint8_t* nAddressBytes, std::uint32_t nRVAOffset, std::uint32_t nRIPOffset )
-	{
+	__forceinline std::uint8_t* ResolveRelativeAddress( std::uint8_t* nAddressBytes, std::uint32_t nRVAOffset, std::uint32_t nRIPOffset ) {
 		std::uint32_t nRVA = *reinterpret_cast< std::uint32_t* >( nAddressBytes + nRVAOffset );
 		std::uint64_t nRIP = reinterpret_cast< std::uint64_t >( nAddressBytes ) + nRIPOffset;
 

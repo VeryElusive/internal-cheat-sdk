@@ -51,8 +51,10 @@ struct RepeatedPtrField_t
 class CBasePB
 {
 	void* pVTable; // 0x0
-	std::uint32_t nHasBits; // 0x8
-	std::uint64_t nCachedBits; // 0xC
+public:
+	int m_nUnknown0; // 0x8
+	int m_nUnknown1; // 0xC
+	int m_nSomeFlag; // 0x10
 };
 static_assert( sizeof( CBasePB ) == 0x18 );
 

@@ -33,6 +33,7 @@ void ClassOffsets::Initialise( ) {
 	CSkeletonInstance::Initialise( );
 	CCSPlayer_ItemServices::Initialise( );
 	C_BaseModelEntity::Initialise( );
+	C_CSWeaponBase::Initialise( );
 
 	//CPlayer_CameraServices::Initialise( );
 
@@ -77,6 +78,8 @@ void C_CSPlayerPawnBase::Initialise( ) {
 	INIT_SCHEMA( C_CSPlayerPawnBase, m_pClippingWeapon );
 	INIT_SCHEMA( C_CSPlayerPawnBase, m_iOldIDEntIndex );
 	INIT_SCHEMA( C_CSPlayerPawnBase, m_ArmorValue );
+	INIT_SCHEMA( C_CSPlayerPawnBase, m_bWaitForNoAttack );
+	INIT_SCHEMA( C_CSPlayerPawnBase, m_bIsDefusing );
 }
 
 void CCSWeaponBaseVData::Initialise( ) {
@@ -87,6 +90,7 @@ void C_BasePlayerPawn::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerPawn, m_pWeaponServices );
 	//INIT_SCHEMA( C_BasePlayerPawn, m_hPawn );
 	INIT_SCHEMA( C_BasePlayerPawn, m_pItemServices );
+	INIT_SCHEMA( C_BasePlayerPawn, m_vOldOrigin );
 }
 
 void CPlayer_WeaponServices::Initialise( ) {
@@ -117,6 +121,10 @@ void CEntityIdentity::Initialise( ) {
 void C_BasePlayerWeapon::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerWeapon, m_iClip1 );
 	INIT_SCHEMA( C_BasePlayerWeapon, m_iClip2 );
+	INIT_SCHEMA( C_BasePlayerWeapon, m_nNextPrimaryAttackTick );
+	INIT_SCHEMA( C_BasePlayerWeapon, m_flNextPrimaryAttackTickRatio );
+	INIT_SCHEMA( C_BasePlayerWeapon, m_nNextSecondaryAttackTick );
+	INIT_SCHEMA( C_BasePlayerWeapon, m_flNextSecondaryAttackTickRatio );
 }
 
 void CSkeletonInstance::Initialise( ) {
@@ -134,4 +142,8 @@ void CCSPlayer_ItemServices::Initialise( ) {
 
 void C_BaseModelEntity::Initialise( ) {
 	INIT_SCHEMA( C_BaseModelEntity, m_vecViewOffset );
+}
+
+void C_CSWeaponBase::Initialise( ) {
+	INIT_SCHEMA( C_CSWeaponBase, m_bInReload );
 }

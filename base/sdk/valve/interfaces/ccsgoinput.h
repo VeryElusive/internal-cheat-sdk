@@ -6,12 +6,15 @@
 
 class CSubTickData {
 public:
-	unsigned int m_iRenderTick{ };
-	float m_flRenderTickFraction{ };
-	unsigned int m_iPlayerTick{ };
-	float m_flPlayerTickFraction{ };
-
-	MEM_PAD( 0x50 );
+	unsigned int m_iRenderTick{ };//0x0
+	float m_flRenderTickFraction{ };//0x4
+	unsigned int m_iPlayerTick{ };//0x8
+	float m_flPlayerTickFraction{ };//0xc
+	MEM_PAD( 0x18 );//0x10
+	unsigned int m_iTargetEntIndex{ };//0x28
+	MEM_PAD( 0x24 );//0x2c
+	unsigned int m_nFrameNumber{ };//0x50
+	MEM_PAD( 0xC );//0x54
 };
 
 class CCSGOInput

@@ -36,9 +36,14 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	if ( !morePasses ) {
 		Features::LagCompensation.Main( );
-		Features::RageBot.Main( localPawn, cmd );
 
 		Features::Movement.Main( localPawn, cmd );
+
+		const auto backupViewAngles{ cmd->cmd.pBase->pViewangles->angValue.y };
+
+		Features::RageBot.Main( localPawn, cmd );
+
+		Features::Movement.MoveMINTFix( localPawn, cmd, backupViewAngles );
 	}
 
 	Features::AntiAim.Main( localPawn, cmd, !morePasses );
@@ -55,8 +60,9 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );
 
-	//if ( cmd->cmd.nAttack3StartHistoryIndex >= 0 )
-	//	printf( "da\n" );
+	if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
+		PRINT_PTR( &cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ]->cl_interp );
+	}
 
 	/*if ( !morePasses ) {
 
@@ -161,6 +167,7 @@ void* __fastcall Hooks::hkLagcompensation( void* subTickData, void* inputHistory
 
 	ctx.m_flRenderTickFraction = std->m_flRenderTickFraction;
 	ctx.m_iRenderTick = std->m_iRenderTick;
+	ctx.m_nFrameNumber = std->m_nFrameNumber;
 
 	return og( subTickData, inputHistoryFieldCurrent, a3, a4, a5, a6 );
 }

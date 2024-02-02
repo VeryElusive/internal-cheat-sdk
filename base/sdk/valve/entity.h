@@ -110,6 +110,7 @@ class CPlayer_WeaponServices
 {
 public:
 	SCHEMA( CBaseHandle, m_hActiveWeapon );
+	VAR_AT_OFFSET( float, m_flNextAttack, 0xc0 );// part of CCSPlayer_WeaponServices (i dont care to make new class) https://github.com/sezzyaep/CS2-OFFSETS/blob/main/client.dll.hpp
 
 public:
 	static void Initialise( );
@@ -213,8 +214,12 @@ public:
 
 class C_BasePlayerWeapon : public C_EconEntity {
 public:
-	SCHEMA( int32_t, m_iClip1 );
-	SCHEMA( int32_t, m_iClip2 );
+	SCHEMA( int, m_iClip1 );
+	SCHEMA( int, m_iClip2 );
+	SCHEMA( int, m_nNextPrimaryAttackTick );
+	SCHEMA( float, m_flNextPrimaryAttackTickRatio );
+	SCHEMA( int, m_nNextSecondaryAttackTick );
+	SCHEMA( float, m_flNextSecondaryAttackTickRatio );
 
 public:
 	static void Initialise( );
@@ -244,6 +249,9 @@ public:
 	// you can find this in cheat engine by first printin out the pointer of the weapon, then use the structure dissect feature, the class name is exposed.
 	VAR_AT_OFFSET( CCSWeaponBaseVData*, m_pWeaponData, 0x360 );
 	VAR_AT_OFFSET( std::uint32_t, Index, 0x10 );
+	SCHEMA( bool, m_bInReload );
+
+	static void Initialise( );
 };
 
 class CCSPlayer_ItemServices {
@@ -269,6 +277,7 @@ public:
 	SCHEMA( CPlayer_WeaponServices*, m_pWeaponServices );
 	//SCHEMA( CBaseHandle, m_hPawn );
 	SCHEMA( CCSPlayer_ItemServices*, m_pItemServices );
+	SCHEMA( Vector, m_vOldOrigin );
 	//SCHEMA( CPlayer_CameraServices*, m_pCameraServices );
 
 	bool HasHeavyArmor( ) const {
@@ -289,6 +298,8 @@ public:
 	SCHEMA( int, m_iOldIDEntIndex );
 	SCHEMA( int, m_ArmorValue );
 	SCHEMA( bool, m_bHasHelmet );// test
+	SCHEMA( bool, m_bWaitForNoAttack );
+	SCHEMA( bool, m_bIsDefusing );
 
 public:
 	static void Initialise( );

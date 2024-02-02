@@ -47,6 +47,8 @@ struct PlayerEntry_t {
 
 	C_CSPlayerPawn* m_pPawn{ };
 
+	unsigned int m_iIndex{ };
+
 	void Reset( C_CSPlayerPawn* pawn ) {
 		m_pPawn = pawn;
 
@@ -77,6 +79,7 @@ struct Context_t {
 
 	float m_flRenderTickFraction{ };
 	int m_iRenderTick{ };
+	int m_nFrameNumber{ };
 
 	float m_flForwardmove{ };
 	float m_flSidemove{ };
