@@ -123,3 +123,64 @@ bool CLagRecord::IsRecordValid( ) const {
 
 	return Interfaces::GlobalVars->m_flCurTime - max_delta <= this->m_flSimulationTime;
 }
+
+void CLagRecord::Apply( C_CSPlayerPawn* pawn ) const {
+	const auto gameSceneNode{ pawn->m_pGameSceneNode( ) };
+	if ( !gameSceneNode )
+		return;
+
+	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+	if ( !skeleton )
+		return;
+
+	const auto modelState{ skeleton->m_modelState( ) };
+
+	const auto model{ modelState.m_hModel };
+	if ( !model.IsValid( ) )
+		return;
+
+	pawn->GetAbsOrigin( ) = this->m_vecOrigin;
+
+	std::memcpy( &modelState.m_pBones[ 0 ], this->m_arrBones, model->m_iBoneCount * sizeof( CBoneData ) );
+}
+
+
+CLagBackup::CLagBackup( C_CSPlayerPawn* pawn ) {
+	const auto gameSceneNode{ pawn->m_pGameSceneNode( ) };
+	if ( !gameSceneNode )
+		return;
+
+	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+	if ( !skeleton )
+		return;
+
+	const auto modelState{ skeleton->m_modelState( ) };
+
+	const auto model{ modelState.m_hModel };
+	if ( !model.IsValid( ) )
+		return;
+
+	this->m_vecOrigin = pawn->GetAbsOrigin( );
+
+	std::memcpy( this->m_arrBones, &modelState.m_pBones[ 0 ], model->m_iBoneCount * sizeof( CBoneData ) );
+}
+
+void CLagBackup::Apply( C_CSPlayerPawn* pawn ) const {
+	const auto gameSceneNode{ pawn->m_pGameSceneNode( ) };
+	if ( !gameSceneNode )
+		return;
+
+	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+	if ( !skeleton )
+		return;
+
+	const auto modelState{ skeleton->m_modelState( ) };
+
+	const auto model{ modelState.m_hModel };
+	if ( !model.IsValid( ) )
+		return;
+
+	pawn->GetAbsOrigin( ) = this->m_vecOrigin;
+
+	std::memcpy( &modelState.m_pBones[ 0 ], this->m_arrBones, model->m_iBoneCount * sizeof( CBoneData ) );
+}

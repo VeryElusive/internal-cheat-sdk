@@ -2,6 +2,7 @@
 #include "autowall.h"
 #include "../../utils/math.h"
 #include "../../core/config.h"
+#include "../../sdk/valve/entity.h"
 
 #include "../../sdk/fnv1a.h"
 
@@ -34,120 +35,7 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( !bestTarget.m_pRecord )
 		return;
 
-	const auto gameSceneNode{ bestTarget.m_pEntry->m_pPawn->m_pGameSceneNode( ) };
-	if ( !gameSceneNode )
-		return;
-
-	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
-	if ( !skeleton )
-		return;
-
-	const auto hitboxSet{ bestTarget.m_pEntry->m_pPawn->GetHitboxSet( skeleton->m_nHitboxSet( ) ) };
-
-	auto& model{ skeleton->m_modelState( ).m_hModel };
-	if ( !model.IsValid( ) )
-		return;
-
-	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
-	const auto& bone{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
-
-	const auto point{ bestTarget.m_pRecord->m_arrBones[ bone ].m_vecPosition };
-
-	const auto headPos{ ( local->m_vOldOrigin( ) + local->m_vecViewOffset( ) ) };
-
-	Vector angle{ };
-	Math::VectorAngles( point - headPos, angle );
-
-	cmd->cmd.pBase->pViewangles->angValue = angle;
-
-	cmd->cmd.nAttackStartHistoryIndex = 0;
-	cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
-	cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
-
-	const auto sub_tick = cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ];
-
-	if ( sub_tick->pTargetViewCmd )
-		sub_tick->pTargetViewCmd->angValue = angle;
-	if ( sub_tick->pViewCmd )
-		sub_tick->pViewCmd->angValue = angle;
-
-	auto& record{ bestTarget.m_pRecord };
-
-	std::memcpy( ctx.DEBUGBacktrackBones, record->m_arrBones, sizeof( record->m_arrBones ) );
-
-	cmd->cmd.pBase->nTickCount = record->m_nAddedTickCount;
-
-	sub_tick->m_nSomeFlag |= 0x200u;
-	sub_tick->m_nSomeFlag |= 0x400u;
-	sub_tick->m_nSomeFlag |= 0x1u;
-	sub_tick->nPlayerTickCount = record->nRenderTickCount + 1;
-	sub_tick->flPlayerTickFraction = record->flRenderTickFraction + 0.0012f;
-
-	sub_tick->nRenderTickCount = record->nRenderTickCount;
-	sub_tick->flRenderTickFraction = record->flRenderTickFraction;
-
-	auto v58 = ( void** ) ( sub_tick->m_nUnknown0 & 0xFFFFFFFFFFFFFFFCu );
-	if ( ( sub_tick->m_nUnknown0 & 1 ) != 0 )
-		v58 = ( void** ) *v58;
-
-	sub_tick->m_nSomeFlag |= 0x100u;
-
-	if ( !sub_tick->player_interp )
-		sub_tick->player_interp = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
-
-	sub_tick->player_interp->m_nSomeFlag |= 2u;
-	sub_tick->player_interp->m_nSomeFlag |= 4u;
-	sub_tick->player_interp->m_nSomeFlag |= 1u;
-
-	if ( !sub_tick->cl_interp )
-		sub_tick->cl_interp = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
-
-	sub_tick->cl_interp->m_nSomeFlag |= 2u;
-	sub_tick->cl_interp->m_nSomeFlag |= 4u;
-	sub_tick->cl_interp->m_nSomeFlag |= 1u;
-
-	sub_tick->m_nSomeFlag |= 0x40u;
-
-	if ( !sub_tick->sv_interp0 )
-		sub_tick->sv_interp0 = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
-
-	sub_tick->sv_interp0->m_nSomeFlag |= 2u;
-	sub_tick->sv_interp0->m_nSomeFlag |= 4u;
-	sub_tick->sv_interp0->m_nSomeFlag |= 1u;
-
-	sub_tick->m_nSomeFlag |= 0x80u;
-
-	if ( !sub_tick->sv_interp1 )
-		sub_tick->sv_interp1 = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
-
-	sub_tick->sv_interp1->m_nSomeFlag |= 2u;
-	sub_tick->sv_interp1->m_nSomeFlag |= 4u;
-	sub_tick->sv_interp1->m_nSomeFlag |= 1u;
-
-	//sub_tick->m_nSomeFlag |= 0x4000u;
-	//sub_tick->nTargetEntIndex = bestTarget.m_pEntry->m_iIndex;// bestTarget.m_pEntry->m_pPawn->m_pEntity( )->Index( );
-
-	//sub_tick->m_nSomeFlag |= 0x2000u;
-	//sub_tick->nFrameNumber = ctx.m_nFrameNumber;
-
-
-	if ( sub_tick->cl_interp && sub_tick->sv_interp0 && sub_tick->sv_interp1 && sub_tick->player_interp ) {
-		sub_tick->cl_interp->nSrcTick = record->m_nAddedTickCount;
-		sub_tick->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
-		sub_tick->cl_interp->flFraction = 0.f;
-
-		sub_tick->player_interp->nSrcTick = record->m_nAddedTickCount + 1;
-		sub_tick->player_interp->nDstTick = record->m_nAddedTickCount + 2;
-		sub_tick->player_interp->flFraction = 0.f;
-
-		sub_tick->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
-		sub_tick->sv_interp0->nDstTick = record->m_nAddedTickCount;
-		sub_tick->sv_interp0->flFraction = 0.f;
-
-		sub_tick->sv_interp1->nSrcTick = record->m_nAddedTickCount;
-		sub_tick->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
-		sub_tick->sv_interp1->flFraction = 0.f;
-	}
+	bestTarget.Attack( local, cmd );
 }
 
 bool CRageBot::CanFire( C_CSPlayerPawn* local ) {
@@ -215,7 +103,7 @@ void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
 	std::vector <int> hitgroups{ HITBOX_HEAD, HITBOX_RIGHT_UPPER_ARM, HITBOX_LEFT_UPPER_ARM, HITBOX_RIGHT_FOOT, HITBOX_LEFT_FOOT };//HITBOX_STOMACH
 
 	const auto damage{ QuickScan( oldestRecord, hitgroups ) };
-	if ( damage > 50 ) {
+	if ( damage > 100 ) {
 		this->m_iBestDamage = damage;
 		this->m_pRecord = oldestRecord;
 	}
@@ -265,7 +153,7 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 	if ( !model.IsValid( ) )
 		return 0.f;
 
-	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_LEFT_THIGH ] };
+	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
 	const auto& bone{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
 
 	const auto point{ record->m_arrBones[ bone ].m_vecPosition };
@@ -284,21 +172,146 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 	if ( !weaponData )
 		return 0.f;
 
+	CLagBackup backup{ this->m_pEntry->m_pPawn };
+
+	record->Apply( this->m_pEntry->m_pPawn );
+
 	const auto headPos{ ( localPawn->m_vOldOrigin( ) + localPawn->m_vecViewOffset( ) ) };
 	const auto success{ Features::Penetration.FireBullet( headPos, point, localPawn, this->m_pEntry->m_pPawn, weaponData, data ) };
 
-	//printf( "%Ii\n", hitboxSet->m_arrHitboxs[ 1 ].GetBoneIndex( skeleton->GetModel( ) ) );
-	//printf( "\n" );
-
-	//auto bone{ model->GetBoneFromHitbox( hitbox ) };
-
-	//ctx.DEBUGBacktrackBones[ 6 ].m_vecPosition = skeleton->m_modelState( ).m_pBones[ bone ].m_vecPosition;
-
-	//hitboxSet->m_arrHitbox[ 0 ].m_nBoneNameHash;
+	backup.Apply( this->m_pEntry->m_pPawn );
 
 	return data.m_flDamage;
 }
 
-void CRageBot::SetupAttack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
+void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	// rebuild of LagCompensation (called from createmove)
+
+	const auto gameSceneNode{ this->m_pEntry->m_pPawn->m_pGameSceneNode( ) };
+	if ( !gameSceneNode )
+		return;
+
+	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+	if ( !skeleton )
+		return;
+
+	const auto hitboxSet{ this->m_pEntry->m_pPawn->GetHitboxSet( skeleton->m_nHitboxSet( ) ) };
+
+	auto& model{ skeleton->m_modelState( ).m_hModel };
+	if ( !model.IsValid( ) )
+		return;
+
+	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
+	const auto& bone{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
+
+	const auto point{ this->m_pRecord->m_arrBones[ bone ].m_vecPosition };
+
+	//CCSGOInputHistoryEntryPB* subTickAttack{ };
+
+	//if ( cmd->cmd.inputHistoryField.pRep && cmd->cmd.inputHistoryField.nCurrentSize < cmd->cmd.inputHistoryField.pRep->nAllocatedSize ) {
+	//	subTickAttack = cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.inputHistoryField.nCurrentSize ];
+	//	cmd->cmd.inputHistoryField.nCurrentSize += 1;
+	//}
+
+	//if ( !subTickAttack )
+	//	return;
+
+	cmd->cmd.nAttackStartHistoryIndex = 0;
+	const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
+
+	const auto headPos{ ( local->m_vOldOrigin( ) + local->m_vecViewOffset( ) ) };
+
+	Vector angle{ };
+	Math::VectorAngles( point - headPos, angle );
+
+	cmd->cmd.pBase->pViewangles->angValue = angle;
+
+	//cmd->cmd.nAttackStartHistoryIndex = cmd->cmd.inputHistoryField.nCurrentSize - 1;
+	cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+	cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
+
+	if ( subTickAttack->pTargetViewCmd )
+		subTickAttack->pTargetViewCmd->angValue = angle;
+	if ( subTickAttack->pViewCmd )
+		subTickAttack->pViewCmd->angValue = angle;
+
+	auto& record{ this->m_pRecord };
+
+	std::memcpy( ctx.DEBUGBacktrackBones, record->m_arrBones, sizeof( record->m_arrBones ) );
+
+	cmd->cmd.pBase->nTickCount = record->m_nAddedTickCount;
+
+	subTickAttack->m_nSomeFlag |= 0x200u;
+	subTickAttack->m_nSomeFlag |= 0x400u;
+	subTickAttack->m_nSomeFlag |= 0x1u;
+
+	// this is used to calculate if you can shoot.
+	//subTickAttack->nPlayerTickCount = record->nRenderTickCount + 1;
+	//subTickAttack->flPlayerTickFraction = record->flRenderTickFraction + 0.0012f;
+
+	subTickAttack->nRenderTickCount = record->nRenderTickCount;
+	subTickAttack->flRenderTickFraction = record->flRenderTickFraction;
+
+	auto v58 = ( void** ) ( subTickAttack->m_nUnknown0 & 0xFFFFFFFFFFFFFFFCu );
+	if ( ( subTickAttack->m_nUnknown0 & 1 ) != 0 )
+		v58 = ( void** ) *v58;
+
+	subTickAttack->m_nSomeFlag |= 0x100u;
+
+	if ( !subTickAttack->player_interp )
+		subTickAttack->player_interp = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
+
+	subTickAttack->player_interp->m_nSomeFlag |= 2u;
+	subTickAttack->player_interp->m_nSomeFlag |= 4u;
+	subTickAttack->player_interp->m_nSomeFlag |= 1u;
+
+	if ( !subTickAttack->cl_interp )
+		subTickAttack->cl_interp = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
+
+	subTickAttack->cl_interp->m_nSomeFlag |= 2u;
+	subTickAttack->cl_interp->m_nSomeFlag |= 4u;
+	subTickAttack->cl_interp->m_nSomeFlag |= 1u;
+
+	subTickAttack->m_nSomeFlag |= 0x40u;
+
+	if ( !subTickAttack->sv_interp0 )
+		subTickAttack->sv_interp0 = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
+
+	subTickAttack->sv_interp0->m_nSomeFlag |= 2u;
+	subTickAttack->sv_interp0->m_nSomeFlag |= 4u;
+	subTickAttack->sv_interp0->m_nSomeFlag |= 1u;
+
+	subTickAttack->m_nSomeFlag |= 0x80u;
+
+	if ( !subTickAttack->sv_interp1 )
+		subTickAttack->sv_interp1 = ( CCSGOInterpolationInfo* ) Displacement::InitCSGOInterpolationInfoPB( ( __int64 ) v58 );
+
+	subTickAttack->sv_interp1->m_nSomeFlag |= 2u;
+	subTickAttack->sv_interp1->m_nSomeFlag |= 4u;
+	subTickAttack->sv_interp1->m_nSomeFlag |= 1u;
+
+	//subTickAttack->m_nSomeFlag |= 0x4000u;
+	//subTickAttack->nTargetEntIndex = bestTarget.m_pEntry->m_iIndex;// bestTarget.m_pEntry->m_pPawn->m_pEntity( )->Index( );
+
+	//subTickAttack->m_nSomeFlag |= 0x2000u;
+	//subTickAttack->nFrameNumber = ctx.m_nFrameNumber;
+
+
+	if ( subTickAttack->cl_interp && subTickAttack->sv_interp0 && subTickAttack->sv_interp1 && subTickAttack->player_interp ) {
+		subTickAttack->cl_interp->nSrcTick = record->m_nAddedTickCount;
+		subTickAttack->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
+		subTickAttack->cl_interp->flFraction = 0.f;
+
+		subTickAttack->player_interp->nSrcTick = record->m_nAddedTickCount + 1;
+		subTickAttack->player_interp->nDstTick = record->m_nAddedTickCount + 2;
+		subTickAttack->player_interp->flFraction = 0.f;
+
+		subTickAttack->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
+		subTickAttack->sv_interp0->nDstTick = record->m_nAddedTickCount;
+		subTickAttack->sv_interp0->flFraction = 0.f;
+
+		subTickAttack->sv_interp1->nSrcTick = record->m_nAddedTickCount;
+		subTickAttack->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
+		subTickAttack->sv_interp1->flFraction = 0.f;
+	}
 }

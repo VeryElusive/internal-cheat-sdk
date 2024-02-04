@@ -15,12 +15,14 @@ bool __fastcall Hooks::hkMouseInputEnabled( void* rcx ) {
 	return Menu::m_bOpened ? false : og( rcx );
 }
 
-bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3, bool morePasses ) {
+bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3, bool forSubTickFrame ) {
 	const auto og{ CreateMove.Original<decltype( &hkCreateMove )>( ) };
 
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
-	const auto result{ og( rcx, edx, a3, morePasses ) };
+	PRINT_PTR( &cmd->m_cButtonStates.m_iHeld );
+
+	const auto result{ og( rcx, edx, a3, forSubTickFrame ) };
 
 	ctx.GetLocal( );
 	if ( !ctx.m_pLocal 
@@ -34,7 +36,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	if ( !localPawn )
 		return result;
 
-	if ( !morePasses ) {
+	if ( !forSubTickFrame ) {
 		Features::LagCompensation.Main( );
 
 		Features::Movement.Main( localPawn, cmd );
@@ -46,7 +48,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 		Features::Movement.MoveMINTFix( localPawn, cmd, backupViewAngles );
 	}
 
-	Features::AntiAim.Main( localPawn, cmd, !morePasses );
+	Features::AntiAim.Main( localPawn, cmd, !forSubTickFrame );
 
 	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
@@ -54,7 +56,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( );
 	cmd->cmd.pBase->pViewangles->angValue.ClampAngle( );
 
-	if ( !morePasses )
+	if ( !forSubTickFrame )
 		ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
 
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
@@ -64,7 +66,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 		PRINT_PTR( &cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ]->cl_interp );
 	}
 
-	/*if ( !morePasses ) {
+	/*if ( !forSubTickFrame ) {
 
 		if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
 			const auto sub_tick = cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ];
@@ -167,7 +169,6 @@ void* __fastcall Hooks::hkLagcompensation( void* subTickData, void* inputHistory
 
 	ctx.m_flRenderTickFraction = std->m_flRenderTickFraction;
 	ctx.m_iRenderTick = std->m_iRenderTick;
-	ctx.m_nFrameNumber = std->m_nFrameNumber;
 
 	return og( subTickData, inputHistoryFieldCurrent, a3, a4, a5, a6 );
 }

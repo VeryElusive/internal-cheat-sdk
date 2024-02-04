@@ -32,7 +32,7 @@ public:
 	// TODO: this seems to be wrong. not sure why.
 	int m_nSplitScreenPlayers{ };//0xA0A0
 	MEM_PAD( 0x4 );//0xA0A4
-	CSubTickData m_arrSplitScreenPlayerSubTickData[ 2 ];//0xA0A8 (NOT SURE OF NUM OF ELEMENTS!) this is used alongside the inputHistoryField stuff. so probably same size as that. be cautious using this!
+	CSubTickData m_arrSplitScreenPlayerSubTickData[ 2 ];//0xA0A8
 
 	CUserCmd* GetUserCmd( ) {
 		return &m_arrCommands[ m_nSequenceNumber % MULTIPLAYER_BACKUP ];

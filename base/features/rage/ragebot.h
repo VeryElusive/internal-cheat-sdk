@@ -25,6 +25,7 @@ public:
 	void GetBestLagRecord( PlayerEntry_t& entry );
 	void SelectBetterTarget( const CAimTarget& compareTarget );
 	float QuickScan( const CLagRecord* record, std::vector <int> hitgroups );
+	void Attack( C_CSPlayerPawn* local, CUserCmd* cmd );
 };
 
 class CRageBot {
@@ -33,7 +34,6 @@ public:
 
 private:
 	bool CanFire( C_CSPlayerPawn* local );
-	void SetupAttack( C_CSPlayerPawn* local, CUserCmd* cmd );
 };
 
 namespace Features { inline CRageBot RageBot; };
