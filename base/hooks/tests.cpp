@@ -21,7 +21,7 @@ void __fastcall Hooks::hkCalcAnimationState( void* rcx, int flags ) {
 		og( rcx, flags );
 }
 
-void* __fastcall Hooks::hkSetTargetTime( int* output, int* input ) {
+/*void* __fastcall Hooks::hkSetTargetTime( int* output, int* input ) {
 	const auto og{ SetTargetTime.Original<decltype( &hkSetTargetTime )>( ) };
 
 	const auto ret{ og( output, input ) };
@@ -30,3 +30,18 @@ void* __fastcall Hooks::hkSetTargetTime( int* output, int* input ) {
 
 	return ret;
 }
+
+bool __fastcall Hooks::hkReadFrameInput( void* rcx, int edx ) {
+	const auto og{ ReadFrameInput.Original<decltype( &hkReadFrameInput )>( ) };
+	auto test= og( rcx, edx );
+
+	if ( Interfaces::Input->m_iAttackSlot >= 0 ) {
+		auto cmd{ Interfaces::Input->GetUserCmd( ) };
+
+		const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ Interfaces::Input->m_iAttackSlot ] };
+		PRINT_PTR( subTickAttack->cl_interp );
+		PRINT_PTR( subTickAttack );
+	}
+
+	return test;
+}*/

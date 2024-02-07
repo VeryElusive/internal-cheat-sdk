@@ -27,12 +27,18 @@ public:
 	bool m_bCameraInThirdPerson;//0x8E01
 	MEM_PAD( 0x22 );//0x8E02
 	int m_nSequenceNumber;//0x8E24
-	MEM_PAD( 0x1278 );//0x8E28
+	MEM_PAD( 0x1268 );//0x8E28
 
-	// TODO: this seems to be wrong. not sure why.
-	int m_nSplitScreenPlayers{ };//0xA0A0
-	MEM_PAD( 0x4 );//0xA0A4
-	CSubTickData m_arrSplitScreenPlayerSubTickData[ 2 ];//0xA0A8
+	int m_iAttackSlot{ };//0xA090
+	int m_Unk{ };//0xA094
+	int m_iAttackSlot2{ };//0xA098
+	int m_Unk2{ };//0xA09C
+	int m_nUnknownSlot{ };//0xA0A0
+	MEM_PAD( 0xc );//A0A4
+	int m_nUnknownSlot2{ };//0xA0B0
+
+	//MEM_PAD( 0x4 );//0xA0A4
+	//CSubTickData m_arrSplitScreenPlayerSubTickData[ 2 ];//0xA0A8
 
 	CUserCmd* GetUserCmd( ) {
 		return &m_arrCommands[ m_nSequenceNumber % MULTIPLAYER_BACKUP ];

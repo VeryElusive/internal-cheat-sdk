@@ -121,6 +121,9 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 	if ( !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
 		return;
 
+	if ( cmd->cmd.pBase->pViewangles->angValue.y == wishAngle )
+		return;
+
 	if ( wishAngle < 0.f )
 		wishAngle += 360.f;
 

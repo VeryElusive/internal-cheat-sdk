@@ -14,6 +14,14 @@ struct AimPoint_t {
 	bool m_bPenetrated{ };
 };
 
+struct PostCMoveData_t {
+	Vector m_vecPoint{ };
+
+	CLagRecord* m_pRecord{ };
+
+	bool m_bValid{ };
+};
+
 class CAimTarget {
 public:
 	CLagRecord* m_pRecord{ };
@@ -31,9 +39,11 @@ public:
 class CRageBot {
 public:
 	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
-
+	void PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd );
 private:
 	bool CanFire( C_CSPlayerPawn* local );
+
+	PostCMoveData_t m_cData{ };
 };
 
 namespace Features { inline CRageBot RageBot; };

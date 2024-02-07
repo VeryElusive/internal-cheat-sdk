@@ -85,6 +85,8 @@ struct Context_t {
 	float m_flSidemove{ };
 	float m_flUpmove{ };
 
+	__int64 a3;
+
 	void GetLocal( ) {
 		const int index{ Interfaces::Engine->GetLocalPlayer( ) };
 		m_pLocal = Interfaces::GameResourceService->m_pGameEntitySystem->Get<CCSPlayerController>( index );

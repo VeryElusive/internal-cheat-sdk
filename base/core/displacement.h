@@ -22,6 +22,7 @@ using fnGetTraceInfo = void( __fastcall* ) ( TraceData_t*, GameTrace_t*, float, 
 using fnHandleBulletPenetration = bool( __fastcall* ) ( TraceData_t*, HandleBulletPenetrationData_t*, UpdateValue_t*, void*, void*, void*, void*, void*, bool );
 using fnGetBoneIndexFromHitbox = __int64( __fastcall* ) ( void*, unsigned int );
 using fnInitCSGOInterpolationInfoPB = __int64( __fastcall* ) ( __int64 );
+using fnResetSubTickElement = __int64( __fastcall* ) ( __int64 );
 
 namespace Displacement {
 	void Init( );
@@ -49,6 +50,8 @@ namespace Displacement {
 	inline fnGetBoneIndexFromHitbox GetBoneIndexFromHitbox;
 
 	inline fnInitCSGOInterpolationInfoPB InitCSGOInterpolationInfoPB;
+	inline fnInitCSGOInterpolationInfoPB ResetSubTickElement;
+	inline fnInitCSGOInterpolationInfoPB SomethingBruh;
 
 	inline fnEventGetInt EventGetInt;
 

@@ -76,6 +76,7 @@ public:
 	float flFraction; // 0x18
 	int nSrcTick; // 0x1C
 	int nDstTick; // 0x20
+	int m_Unknown; // 0x24
 };
 
 // credits: @patoke [uc:3872928-post1311]

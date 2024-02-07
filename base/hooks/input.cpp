@@ -15,14 +15,39 @@ bool __fastcall Hooks::hkMouseInputEnabled( void* rcx ) {
 	return Menu::m_bOpened ? false : og( rcx );
 }
 
+__int64* sub_18074DE00( unsigned int edx ) {
+	auto v2 = *( DWORD* ) ( ((uintptr_t)Interfaces::Input) + 24 * edx + 0x8FB8 );
+	if ( v2 )
+		return ( __int64* ) ( ( ( uintptr_t ) Interfaces::Input ) + 24 * edx + 0x8FC0 ) + 264 * ( v2 - 1 );
+	else
+		return ( __int64* ) ( ( ( uintptr_t ) Interfaces::Input ) + 0x5F78 * edx + 0x8E38 );
+}
+
 bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3, bool forSubTickFrame ) {
 	const auto og{ CreateMove.Original<decltype( &hkCreateMove )>( ) };
 
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
-	PRINT_PTR( &cmd->m_cButtonStates.m_iHeld );
+	static auto test{ Memory::FindPattern( CLIENT_DLL, _( "40 55 53 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 8B DA 48 8B F9 E8 ? ? ? ? 48 85 C0 0F 84" ) ) };
+
+	PRINT_PTR( test );
+
+	if ( ctx.m_pLocal && ctx.m_pLocal->m_bPawnIsAlive( ) ) {
+		/*if ( Interfaces::Input->m_nUnknownSlot == Interfaces::Input->m_nUnknownSlot2 ) {
+			if ( Interfaces::Input->m_nUnknownSlot < 3 )
+				Interfaces::Input->m_nUnknownSlot += 1;
+			else
+				Interfaces::Input->m_nUnknownSlot -= 1;
+		}*/
+
+		auto res = sub_18074DE00( edx );
+
+		*res |= IN_ATTACK;
+	}
 
 	const auto result{ og( rcx, edx, a3, forSubTickFrame ) };
+
+	ctx.a3 = a3;
 
 	ctx.GetLocal( );
 	if ( !ctx.m_pLocal 
@@ -62,90 +87,10 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );
 
-	if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
-		PRINT_PTR( &cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ]->cl_interp );
-	}
-
-	/*if ( !forSubTickFrame ) {
-
+	if ( !forSubTickFrame ) {
 		if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
-			const auto sub_tick = cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ];
-
-			//if ( !sub_tick->pViewCmd || !sub_tick->sv_interp0 || !sub_tick->sv_interp1 )
-			//	return result;
-
-			CLagRecord* record{ nullptr };
-
-			for ( auto& e : ctx.m_mapPlayerEntries ) {
-				auto& entry{ e.second };
-				if ( entry.m_pPawn == localPawn )
-					continue;
-
-				if ( !entry.Animations.m_vecLagRecords.size( ) )
-					continue;
-
-				for ( auto& r : entry.Animations.m_vecLagRecords ) {
-					if ( r.IsRecordValid( ) ) {
-						record = &r;
-						break;
-					}
-				}
-
-				if ( record != nullptr )
-					break;
-			}
-
-			if ( !record )
-				return result;
-
-			std::memcpy( ctx.DEBUGBacktrackBones, record->m_arrBones, sizeof( record->m_arrBones ) );
-
-			cmd->cmd.pBase->nTickCount = record->m_nAddedTickCount;
-
-			sub_tick->nPlayerTickCount = record->nRenderTickCount + 1;
-			sub_tick->flPlayerTickFraction = record->flRenderTickFraction + 0.0012f;
-
-			sub_tick->nRenderTickCount = record->nRenderTickCount;
-			sub_tick->flRenderTickFraction = record->flRenderTickFraction;
-
-			//sub_tick->cl_interp = sub_tick->sv_interp0 = sub_tick->sv_interp1 = nullptr;
-
-			//PRINT_PTR( &( sub_tick->flRenderTickFraction ) );
-
-			if ( sub_tick->cl_interp && sub_tick->sv_interp0 && sub_tick->sv_interp1 ) {
-				sub_tick->cl_interp->nSrcTick = record->m_nAddedTickCount;
-				sub_tick->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
-				sub_tick->cl_interp->flFraction = 0.f;
-
-				sub_tick->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
-				sub_tick->sv_interp0->nDstTick = record->m_nAddedTickCount;
-				sub_tick->sv_interp0->flFraction = 0.f;
-
-				sub_tick->sv_interp1->nSrcTick = record->m_nAddedTickCount;
-				sub_tick->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
-				sub_tick->sv_interp1->flFraction = 0.f;
-			}
-
-			/*if ( cmd->cmd.pBase->subtickMovesField.pRep ) {
-				//PRINT_PTR( cmd->cmd.pBase->subtickMovesField.pRep );
-				cmd->cmd.pBase->subtickMovesField.nCurrentSize += 1;
-				cmd->cmd.pBase->subtickMovesField.nTotalSize += 1;
-				cmd->cmd.pBase->subtickMovesField.pRep->nAllocatedSize += 1;
-
-				auto& element{ cmd->cmd.pBase->subtickMovesField.pRep->tElements[ cmd->cmd.pBase->subtickMovesField.pRep->nAllocatedSize - 1 ] };
-				element = ( CSubtickMoveStep* )Interfaces::MemAlloc->Alloc( sizeof( CSubtickMoveStep ) );
-
-				//PRINT_PTR( &cmd->cmd.pBase->subtickMovesField.pRep->tElements[ 0 ] );
-
-				element->bPressed = true;
-				element->nButton = IN_ATTACK;
-				element->flWhen = record->flRenderTickFraction;
-			}
-
-			//ctx.m_flUpmove = sub_tick->cl_interp ? 1.f : 0.f;
 		}
-		
-	}*/
+	}
 
 	return result;
 }
