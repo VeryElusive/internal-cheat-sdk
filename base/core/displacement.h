@@ -23,6 +23,7 @@ using fnHandleBulletPenetration = bool( __fastcall* ) ( TraceData_t*, HandleBull
 using fnGetBoneIndexFromHitbox = __int64( __fastcall* ) ( void*, unsigned int );
 using fnInitCSGOInterpolationInfoPB = __int64( __fastcall* ) ( __int64 );
 using fnResetSubTickElement = __int64( __fastcall* ) ( __int64 );
+using fnGetButtonState = __int64*( __fastcall* ) ( void*, int );
 
 namespace Displacement {
 	void Init( );
@@ -49,9 +50,11 @@ namespace Displacement {
 
 	inline fnGetBoneIndexFromHitbox GetBoneIndexFromHitbox;
 
-	inline fnInitCSGOInterpolationInfoPB InitCSGOInterpolationInfoPB;
-	inline fnInitCSGOInterpolationInfoPB ResetSubTickElement;
-	inline fnInitCSGOInterpolationInfoPB SomethingBruh;
+	inline fnGetButtonState GetButtonState;
+
+	//inline fnInitCSGOInterpolationInfoPB InitCSGOInterpolationInfoPB;
+	//inline fnInitCSGOInterpolationInfoPB ResetSubTickElement;
+	//inline fnInitCSGOInterpolationInfoPB SomethingBruh;
 
 	inline fnEventGetInt EventGetInt;
 

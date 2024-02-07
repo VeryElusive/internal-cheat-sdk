@@ -40,10 +40,10 @@ class CRageBot {
 public:
 	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
 	void PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd );
-private:
-	bool CanFire( C_CSPlayerPawn* local );
 
 	PostCMoveData_t m_cData{ };
+private:
+	bool CanFire( C_CSPlayerPawn* local );
 };
 
 namespace Features { inline CRageBot RageBot; };

@@ -15,51 +15,34 @@ bool __fastcall Hooks::hkMouseInputEnabled( void* rcx ) {
 	return Menu::m_bOpened ? false : og( rcx );
 }
 
-__int64* sub_18074DE00( unsigned int edx ) {
-	auto v2 = *( DWORD* ) ( ((uintptr_t)Interfaces::Input) + 24 * edx + 0x8FB8 );
-	if ( v2 )
-		return ( __int64* ) ( ( ( uintptr_t ) Interfaces::Input ) + 24 * edx + 0x8FC0 ) + 264 * ( v2 - 1 );
-	else
-		return ( __int64* ) ( ( ( uintptr_t ) Interfaces::Input ) + 0x5F78 * edx + 0x8E38 );
-}
-
 bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3, bool forSubTickFrame ) {
 	const auto og{ CreateMove.Original<decltype( &hkCreateMove )>( ) };
 
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
-
-	static auto test{ Memory::FindPattern( CLIENT_DLL, _( "40 55 53 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 8B DA 48 8B F9 E8 ? ? ? ? 48 85 C0 0F 84" ) ) };
-
-	PRINT_PTR( test );
-
-	if ( ctx.m_pLocal && ctx.m_pLocal->m_bPawnIsAlive( ) ) {
-		/*if ( Interfaces::Input->m_nUnknownSlot == Interfaces::Input->m_nUnknownSlot2 ) {
-			if ( Interfaces::Input->m_nUnknownSlot < 3 )
-				Interfaces::Input->m_nUnknownSlot += 1;
-			else
-				Interfaces::Input->m_nUnknownSlot -= 1;
-		}*/
-
-		auto res = sub_18074DE00( edx );
-
-		*res |= IN_ATTACK;
-	}
-
-	const auto result{ og( rcx, edx, a3, forSubTickFrame ) };
 
 	ctx.a3 = a3;
 
 	ctx.GetLocal( );
 	if ( !ctx.m_pLocal 
 		|| !ctx.m_pLocal->m_bPawnIsAlive( ) )
-		return result;
+		return og( rcx, edx, a3, forSubTickFrame );
 
 	if ( !cmd->cmd.pBase )
-		return result;
+		return og( rcx, edx, a3, forSubTickFrame );
 
 	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
 	if ( !localPawn )
-		return result;
+		return og( rcx, edx, a3, forSubTickFrame );
+
+	const auto result{ og( rcx, edx, a3, forSubTickFrame ) };
+
+	Features::RageBot.Main( localPawn, cmd );
+
+	if ( Features::RageBot.m_cData.m_bValid ) {
+		auto res = Displacement::GetButtonState( Interfaces::Input, edx );
+
+		*res |= IN_ATTACK;
+	}
 
 	if ( !forSubTickFrame ) {
 		Features::LagCompensation.Main( );
@@ -68,7 +51,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 		const auto backupViewAngles{ cmd->cmd.pBase->pViewangles->angValue.y };
 
-		Features::RageBot.Main( localPawn, cmd );
+		Features::RageBot.PostCMove( localPawn, cmd );
 
 		Features::Movement.MoveMINTFix( localPawn, cmd, backupViewAngles );
 	}
