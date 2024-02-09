@@ -24,7 +24,7 @@ ViewMatrix_t* __fastcall Hooks::hkGetMatrixForView( void* pRenderGameSystem, IVi
 		if ( !classInfo )
 			continue;
 
-		const auto uHashedName{ FNV1A::Hash( classInfo->szNname ) };
+		const auto uHashedName{ FNV1A::Hash( classInfo->szName ) };
 
 		if ( uHashedName == FNV1A::HashConst( "CCSPlayerController" ) ) {
 			auto playerController{ static_cast< CCSPlayerController* >( ent ) };

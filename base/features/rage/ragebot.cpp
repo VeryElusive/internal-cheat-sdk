@@ -152,7 +152,7 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 		return 0.f;
 
 	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
-	const auto& bone{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
+	const auto& bone{ hitbox.GetBoneIndex( model.operator CModel * ( ) ) };
 
 	const auto point{ record->m_arrBones[ bone ].m_vecPosition };
 
@@ -223,10 +223,10 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Vector angle{ };
 	Math::VectorAngles( m_cData.m_vecPoint - headPos, angle );
 
-	cmd->cmd.pBase->pViewangles->angValue = angle;
-
 	if ( cmd->cmd.nAttackStartHistoryIndex < 0 )
 		return;
+
+	cmd->cmd.pBase->pViewangles->angValue = angle;
 
 	// magic bullet/rapidfire occured when i set cmd->cmd.nAttackStartHistoryIndex to the wrong index
 
@@ -251,19 +251,22 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	subTickAttack->nRenderTickCount = record->nRenderTickCount;
 	subTickAttack->flRenderTickFraction = record->flRenderTickFraction;
 
-	if ( subTickAttack->cl_interp && subTickAttack->sv_interp0 && subTickAttack->sv_interp1 && subTickAttack->player_interp ) {
+	if ( subTickAttack->cl_interp ) {
 		subTickAttack->cl_interp->nSrcTick = record->m_nAddedTickCount;
 		subTickAttack->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
 		subTickAttack->cl_interp->flFraction = record->flRenderTickFraction;
-
+	}
+	if ( subTickAttack->player_interp ) {
 		subTickAttack->player_interp->nSrcTick = record->m_nAddedTickCount + 1;
 		subTickAttack->player_interp->nDstTick = record->m_nAddedTickCount + 2;
 		subTickAttack->player_interp->flFraction = record->flRenderTickFraction;
-
+	}
+	if ( subTickAttack->sv_interp0 ) {
 		subTickAttack->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
 		subTickAttack->sv_interp0->nDstTick = record->m_nAddedTickCount;
 		subTickAttack->sv_interp0->flFraction = record->flRenderTickFraction;
-
+	}
+	if ( subTickAttack->sv_interp1 ) {
 		subTickAttack->sv_interp1->nSrcTick = record->m_nAddedTickCount;
 		subTickAttack->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
 		subTickAttack->sv_interp1->flFraction = record->flRenderTickFraction;

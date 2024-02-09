@@ -51,14 +51,14 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 		if ( !model.IsValid( ) )
 			return;
 
-		auto backupBones{ Interfaces::MemAlloc->Alloc( model->m_iBoneCount * sizeof( CBoneData ) ) };
-		std::memcpy( backupBones, &modelState.m_pBones[ 0 ], model->m_iBoneCount * sizeof( CBoneData ) );
+		auto backupBones{ Interfaces::MemAlloc->Alloc( 128 * sizeof( CBoneData ) ) };
+		std::memcpy( backupBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 
 		og( rcx, flags );
 
-		std::memcpy( &modelState.m_pBones[ 0 ], backupBones, model->m_iBoneCount * sizeof( CBoneData ) );
+		std::memcpy( &modelState.m_pBones[ 0 ], backupBones, 128 * sizeof( CBoneData ) );
 
-		for ( std::int32_t i = 0; i < model->m_iBoneCount; ++i )
+		for ( std::int32_t i = 0; i < 128; ++i )
 			modelState.m_pBones[ i ].m_vecPosition += delta;
 
 		Interfaces::MemAlloc->Free( backupBones );

@@ -9,43 +9,50 @@
 #include "../features/rage/ragebot.h"
 #include "../core/config.h"
 
+#include <intrin.h>
+
 bool __fastcall Hooks::hkMouseInputEnabled( void* rcx ) {
 	const auto og{ MouseInputEnabled.Original<decltype( &hkMouseInputEnabled )>( ) };
 
 	return Menu::m_bOpened ? false : og( rcx );
 }
 
-bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3, bool forSubTickFrame ) {
+bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a3 ) {
 	const auto og{ CreateMove.Original<decltype( &hkCreateMove )>( ) };
 
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
+
+	//printf( "0x%p\n", _AddressOfReturnAddress( ) );
 
 	ctx.a3 = a3;
 
 	ctx.GetLocal( );
 	if ( !ctx.m_pLocal 
 		|| !ctx.m_pLocal->m_bPawnIsAlive( ) )
-		return og( rcx, edx, a3, forSubTickFrame );
+		return og( rcx, edx, a3 );
 
 	if ( !cmd->cmd.pBase )
-		return og( rcx, edx, a3, forSubTickFrame );
+		return og( rcx, edx, a3 );
 
 	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
 	if ( !localPawn )
-		return og( rcx, edx, a3, forSubTickFrame );
+		return og( rcx, edx, a3 );
 
-	const auto result{ og( rcx, edx, a3, forSubTickFrame ) };
+	const auto result{ og( rcx, edx, a3 ) };
 
-	Features::RageBot.Main( localPawn, cmd );
-
-	if ( Features::RageBot.m_cData.m_bValid ) {
-		auto res = Displacement::GetButtonState( Interfaces::Input, edx );
-
-		*res |= IN_ATTACK;
-	}
-
-	if ( !forSubTickFrame ) {
+	/*if ( !forSubTickFrame )*/ {
 		Features::LagCompensation.Main( );
+
+		Features::RageBot.Main( localPawn, cmd );
+
+		if ( Features::RageBot.m_cData.m_bValid ) {
+			auto res = Displacement::GetButtonState( Interfaces::Input, edx );
+
+			*res |= IN_ATTACK;
+
+			//og( rcx, edx, a3, true );
+
+		}
 
 		Features::Movement.Main( localPawn, cmd );
 
@@ -54,9 +61,9 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 		Features::RageBot.PostCMove( localPawn, cmd );
 
 		Features::Movement.MoveMINTFix( localPawn, cmd, backupViewAngles );
-	}
 
-	Features::AntiAim.Main( localPawn, cmd, !forSubTickFrame );
+		Features::AntiAim.Main( localPawn, cmd );
+	}
 
 	ctx.m_flForwardmove = cmd->cmd.pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->cmd.pBase->flSideMove;
@@ -64,27 +71,21 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( );
 	cmd->cmd.pBase->pViewangles->angValue.ClampAngle( );
 
-	if ( !forSubTickFrame )
-		ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
+	ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
 
 	cmd->cmd.pBase->flForwardMove = std::clamp( cmd->cmd.pBase->flForwardMove, -1.f, 1.f );
 	cmd->cmd.pBase->flSideMove = std::clamp( cmd->cmd.pBase->flSideMove, -1.f, 1.f );
 
-	if ( !forSubTickFrame ) {
-		if ( cmd->cmd.nAttackStartHistoryIndex >= 0 ) {
-		}
-	}
-
 	return result;
 }
 
-void __fastcall Hooks::hkUnknown01( void* rcx, int edx, char a3, unsigned char a4 ) {
-	const auto og{ Unknown01.Original<decltype( &hkUnknown01 )>( ) };
+void __fastcall Hooks::hkUnknown02( void* rcx, int edx ) {
+	const auto og{ Unknown02.Original<decltype( &hkUnknown02 )>( ) };
 
 	Vector d;
 	Interfaces::Client->GetViewAngles( &d );
 
-	og( rcx, edx, a3, a4 );
+	og( rcx, edx );
 
 	Interfaces::Input->SetViewAngles( d );
 }

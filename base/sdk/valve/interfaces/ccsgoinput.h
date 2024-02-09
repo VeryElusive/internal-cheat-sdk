@@ -21,15 +21,15 @@ class CCSGOInput
 {
 public:
 	void* m_pVtable;//0x0
-	MEM_PAD( 0x3038 );//0x8
-	CUserCmd m_arrCommands[ MULTIPLAYER_BACKUP ];// 0x3040
-	MEM_PAD( 0x1 );//0x8E00
-	bool m_bCameraInThirdPerson;//0x8E01
-	MEM_PAD( 0x22 );//0x8E02
-	int m_nSequenceNumber;//0x8E24
-	MEM_PAD( 0x1268 );//0x8E28
+	MEM_PAD( 0x248 );//0x8
+	CUserCmd m_arrCommands[ MULTIPLAYER_BACKUP ];// 0x250
+	MEM_PAD( 0x1 );//0xB4D0
+	bool m_bCameraInThirdPerson;//0xB4D1
+	MEM_PAD( 0x22 );//0xB4D2
+	int m_nSequenceNumber;//0xB4F4
+	MEM_PAD( 0x1268 );//0xB4F8
 
-	int m_iAttackSlot{ };//0xA090
+	int m_iAttackSlot{ };//0xC760
 	int m_Unk{ };//0xA094
 	int m_iAttackSlot2{ };//0xA098
 	int m_Unk2{ };//0xA09C

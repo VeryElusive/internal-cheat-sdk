@@ -50,7 +50,7 @@ struct RepeatedPtrField_t
 
 class CBasePB
 {
-	void* pVTable; // 0x0
+	void* m_pVTable; // 0x0
 public:
 	int m_nUnknown0; // 0x8
 	int m_nUnknown1; // 0xC
@@ -166,5 +166,7 @@ public:
 	void* pVTable;
 	CCSGOUserCmdPB cmd;
 	CInButtonState m_cButtonStates;
-	char pad[ 48 ];
+	char pad[ 0x18 ];
 };
+
+static_assert( sizeof( CUserCmd ) == 0x88 );

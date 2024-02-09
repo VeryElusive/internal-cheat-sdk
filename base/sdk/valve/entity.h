@@ -43,7 +43,7 @@ public:
 	SCHEMA( CEntityIdentity*, m_pEntity );
 
 	void GetSchemaClassInfo( SchemaClassInfoData_t** pReturn ) {
-		return Memory::CallVFunc<void, 34U>( this, pReturn );
+		return Memory::CallVFunc<void, 36u>( this, pReturn );
 	}
 
 	CBaseHandle GetRefEHandle( ) {
@@ -233,12 +233,12 @@ public:
 	//https://github.com/neverlosecc/source2sdk/blob/cs2/sdk/client.hpp
 	VAR_AT_OFFSET( int32_t, m_iMaxClip1, 0x1fc );
 	VAR_AT_OFFSET( int32_t, m_iMaxClip2, 0x200 );
-	VAR_AT_OFFSET( int32_t, m_nDamage, 0xd30 );
-	VAR_AT_OFFSET( float, m_flRange, 0xd40 );
-	VAR_AT_OFFSET( float, m_flPenetration, 0xd3c );
-	VAR_AT_OFFSET( float, m_flRangeModifier, 0xd44 );
-	VAR_AT_OFFSET( float, m_flHeadshotMultiplier, 0xd34 );
-	VAR_AT_OFFSET( float, m_flArmorRatio, 0xd38 );
+	VAR_AT_OFFSET( int32_t, m_nDamage, 0xd40 );
+	VAR_AT_OFFSET( float, m_flRange, 0xd50 );
+	VAR_AT_OFFSET( float, m_flPenetration, 0xd4c );
+	VAR_AT_OFFSET( float, m_flRangeModifier, 0xd54 );
+	VAR_AT_OFFSET( float, m_flHeadshotMultiplier, 0xd44 );
+	VAR_AT_OFFSET( float, m_flArmorRatio, 0xd48 );
 
 public:
 	static void Initialise( );
@@ -247,7 +247,7 @@ public:
 class C_CSWeaponBase : public C_BasePlayerWeapon {
 public:
 	// you can find this in cheat engine by first printin out the pointer of the weapon, then use the structure dissect feature, the class name is exposed.
-	VAR_AT_OFFSET( CCSWeaponBaseVData*, m_pWeaponData, 0x360 );
+	VAR_AT_OFFSET( CCSWeaponBaseVData*, m_pWeaponData, 0x368 );
 	VAR_AT_OFFSET( std::uint32_t, Index, 0x10 );
 	SCHEMA( bool, m_bInReload );
 
@@ -465,14 +465,14 @@ enum EMoveType : int
 {
 	MOVETYPE_NONE = 0,
 	MOVETYPE_ISOMETRIC,
-	MOVETYPE_WALK,
+	MOVETYPE_WALK = 514,
 	MOVETYPE_STEP,
 	MOVETYPE_FLY, // no gravity, but still collides with stuff
 	MOVETYPE_FLYGRAVITY, // flies through the air and is affected by gravity
 	MOVETYPE_VPHYSICS,
 	MOVETYPE_PUSH, // no clip to world, push and crush
-	MOVETYPE_NOCLIP, // no gravity, no collisions, still do velocity/absvelocity
-	MOVETYPE_LADDER,
+	MOVETYPE_NOCLIP = 1801, // no gravity, no collisions, still do velocity/absvelocity
+	MOVETYPE_LADDER = 2313,
 	MOVETYPE_OBSERVER, // observer movement, depends on player's observer mode
 	MOVETYPE_CUSTOM,
 	MOVETYPE_LAST = MOVETYPE_CUSTOM,

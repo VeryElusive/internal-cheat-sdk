@@ -13,9 +13,9 @@ void Hooks::Init( ) {
 	INIT_HOOK( Present, Render::MethodsTable[ 8 ] );
 	//INIT_HOOK( ResizeBuffers, Render::MethodsTable[ 13 ] );
 
-	INIT_HOOK( MouseInputEnabled, Memory::GetVFunc( Interfaces::Input, 12 ) );
+	INIT_HOOK( MouseInputEnabled, Memory::GetVFunc( Interfaces::Input, 13 ) );
 
-	INIT_HOOK( CreateMove, Memory::GetVFunc( Interfaces::Input, 14 ) );
+	INIT_HOOK( CreateMove, Memory::GetVFunc( Interfaces::Input, 15 ) );
 
 	INIT_HOOK( FrameStageNotify, Memory::GetVFunc( Interfaces::Client, 33 ) );
 
@@ -29,7 +29,7 @@ void Hooks::Init( ) {
 	
 	INIT_HOOK( OverrideView, Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 01 48 8B DA" ) ) );
 
-	INIT_HOOK( Unknown01, Memory::FindPattern( CLIENT_DLL, _( "85 D2 0F 85 ? ? ? ? 48 8B C4 44 88" ) ) );
+	INIT_HOOK( Unknown02, Memory::FindPattern( CLIENT_DLL, _( "85 D2 0F 85 ? ? ? ? 57 48 83 EC 20 48 89 5C 24" ) ) );
 
 	INIT_HOOK( CalcWorldSpaceBones, Memory::FindPattern( CLIENT_DLL, _( "40 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8D 6C 24 ? 48 8B F1" ) ) );
 

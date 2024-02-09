@@ -15,7 +15,7 @@ public:
 	MEM_PAD( 0x38 );// 0x38
 
 	__int64 GetBoneIndex( void* model ) {
-		return Displacement::GetBoneIndexFromHitbox( reinterpret_cast< void* > ( reinterpret_cast< std::uintptr_t >( model ) + 0x128 ), m_nBoneNameHash );
+		return Displacement::GetBoneIndexFromHitbox( reinterpret_cast< void* > ( reinterpret_cast< std::uintptr_t >( model ) + 0x130 ), m_nBoneNameHash );
 	}
 
 }; // Size=0x70
@@ -49,10 +49,10 @@ public:
 	}
 
 public:
-	//std::uint8_t pad_0[ 0x170 ];
-	///std::int32_t m_iBoneCount;
+	MEM_PAD( 0x170 );
+	int m_iBoneCount;
 
-	const char* m_szName; // 0x8
+	/*const char* m_szName; // 0x8
 	MEM_PAD( 0x4 ); // 0x10
 	int m_nFlags; // 0x14
 	Vector m_vecHullMin; // 0x18
@@ -143,7 +143,7 @@ public:
 	MEM_PAD( 0x30 ); // 0x3E8
 	int N00000193; // 0x418
 	MEM_PAD( 0x4 ); // 0x41C
-	void* N00000194; // 0x420
+	void* N00000194; // 0x420*/
 };
 
 class CModelState {

@@ -6,7 +6,7 @@
 #include "../../utlvector.h"
 
 #define SCHEMASYSTEM_TYPE_SCOPES_OFFSET 0x190
-#define SCHEMASYSTEMTYPESCOPE_OFF1 0x47E
+#define SCHEMASYSTEMTYPESCOPE_OFF1 0x4B0
 #define SCHEMASYSTEMTYPESCOPE_OFF2 0x2808
 
 using SchemaString_t = const char*;
@@ -64,7 +64,7 @@ struct SchemaClassInfoData_t
 {
 	char pad0[ 0x8 ]; // 0x0000
 
-	const char* szNname; // 0x0008
+	const char* szName; // 0x0008
 	char* szModuleName; // 0x0010
 
 	int m_nSize; // 0x0018
@@ -150,9 +150,9 @@ public:
 	void* pVtable; // 0x0000
 	char szName[ 256U ]; // 0x0008
 	char pad0[ SCHEMASYSTEMTYPESCOPE_OFF1 ]; // 0x0108
-	CUtlTSHash<CSchemaClassBinding*, 256, unsigned int> hashClasses; // 0x0588
-	char pad1[ SCHEMASYSTEMTYPESCOPE_OFF2 ]; // 0x05C8
-	CUtlTSHash<CSchemaEnumBinding*, 256, unsigned int> hashEnumes; // 0x2DD0
+	CUtlTSHash<CSchemaClassBinding*, 256, unsigned int> hashClasses; // 0x05B8
+	char pad1[ SCHEMASYSTEMTYPESCOPE_OFF2 ]; // 0x5F8
+	CUtlTSHash<CSchemaEnumBinding*, 256, unsigned int> hashEnumes; // 0x2E00
 };
 
 class ISchemaSystem

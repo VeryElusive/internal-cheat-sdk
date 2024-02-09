@@ -6,10 +6,10 @@
 
 class CAntiAim {
 public:
-	void Main( C_CSPlayerPawn* local, CUserCmd* cmd, bool lastPass );
+	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
 
 private:
-	void Yaw( C_CSPlayerPawn* local, float& yaw, bool lastPass );
+	void Yaw( C_CSPlayerPawn* local, float& yaw );
 	bool Condition( C_CSPlayerPawn* local, CUserCmd* cmd );
 
 	bool m_bJitter{ };

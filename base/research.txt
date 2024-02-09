@@ -12,6 +12,8 @@ functions that modify bone position:
 getting commands:
 41 F7 ED C1 FA 04 8B C2 C1 E8 1F 03 D0 (all 3 functions that come up display same code)
 
+48 89 70 D8 45 33 F6 4C 89 78 C8 8B FA 44 8B B9 (NEW 7/02/2024)
+
 GetHitboxCount (inside IterateBonesAndReturnBoneCount):
 E8 ? ? ? ? 85 C0 0F 84 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 75 2D 49 8B CE
 

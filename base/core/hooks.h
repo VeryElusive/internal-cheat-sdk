@@ -38,7 +38,7 @@ namespace Hooks {
 	NEW_HOOK( GetMatrixForView, ViewMatrix_t*, __fastcall ) void* pRenderGameSystem, IViewRender* pViewRender, ViewMatrix_t* pOutWorldToView, ViewMatrix_t* pOutViewToProjection, ViewMatrix_t* pOutWorldToProjection, ViewMatrix_t* pOutWorldToPixels );
 	NEW_HOOK( MouseInputEnabled, bool, __fastcall ) void* rcx );
 	NEW_HOOK( FrameStageNotify, void, __fastcall ) void* rcx, int nFrameStage );
-	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3, bool active );
+	NEW_HOOK( CreateMove, bool, __fastcall ) void* rcx, unsigned int sequenceNumber, std::int64_t a3 );
 	NEW_HOOK( OverrideView, void, __fastcall ) void* rcx, CViewSetup* setup );
 	NEW_HOOK( HandleEvents, void, __fastcall ) void* rcx, Events_t* const event );
 
@@ -49,7 +49,8 @@ namespace Hooks {
 	NEW_HOOK( Lagcompensation, void*, __fastcall ) void* subTickData, void* inputHistoryFieldCurrent, char a3, __int64 a4, __int64 a5, __int64 a6 );
 
 	// part of CClientInput
-	NEW_HOOK( Unknown01, void, __fastcall ) void* rcx, int edx, char a3, unsigned char a4 );
+	//NEW_HOOK( Unknown01, void, __fastcall ) void* rcx, int edx, char a3, unsigned char a4 );
+	NEW_HOOK( Unknown02, void, __fastcall ) void* rcx, int edx );
 	//NEW_HOOK( SendMove, void*, __fastcall ) void* rcx, void* rdx );
 
 	//NEW_HOOK( SetTargetTime, void*, __fastcall ) int* output, int* input );

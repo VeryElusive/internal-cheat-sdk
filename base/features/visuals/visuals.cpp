@@ -24,7 +24,7 @@ void CVisuals::Main( ) {
 		if ( !classInfo )
 			continue;
 
-		const auto uHashedName{ FNV1A::Hash( classInfo->szNname ) };
+		const auto uHashedName{ FNV1A::Hash( classInfo->szName ) };
 
 		if ( uHashedName == FNV1A::HashConst( "CCSPlayerController" ) ) {
 			auto playerController{ static_cast< CCSPlayerController* >( ent ) };

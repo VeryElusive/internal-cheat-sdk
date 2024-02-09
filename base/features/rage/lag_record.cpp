@@ -20,7 +20,7 @@ void CLagCompensation::Main( ) {
 		if ( !classInfo )
 			continue;
 
-		const auto hashedName{ FNV1A::Hash( classInfo->szNname ) };
+		const auto hashedName{ FNV1A::Hash( classInfo->szName ) };
 
 		if ( hashedName == FNV1A::HashConst( "CCSPlayerController" ) ) {
 			auto playerController{ static_cast< CCSPlayerController* >( ent ) };
@@ -83,12 +83,12 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 
 	CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
 
-	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], model->m_iBoneCount * sizeof( CBoneData ) );
+	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 
 	/*if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecAbsOrigin( ) ) {
 		const auto delta{ gameSceneNode->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
-		for ( std::int32_t i = 0; i < model->m_iBoneCount; ++i )
+		for ( std::int32_t i = 0; i < 128; ++i )
 			record.m_arrBones[ i ].m_vecPosition += delta;
 	}*/
 
@@ -141,7 +141,7 @@ void CLagRecord::Apply( C_CSPlayerPawn* pawn ) const {
 
 	pawn->GetAbsOrigin( ) = this->m_vecOrigin;
 
-	std::memcpy( &modelState.m_pBones[ 0 ], this->m_arrBones, model->m_iBoneCount * sizeof( CBoneData ) );
+	std::memcpy( &modelState.m_pBones[ 0 ], this->m_arrBones, 128 * sizeof( CBoneData ) );
 }
 
 
@@ -162,7 +162,7 @@ CLagBackup::CLagBackup( C_CSPlayerPawn* pawn ) {
 
 	this->m_vecOrigin = pawn->GetAbsOrigin( );
 
-	std::memcpy( this->m_arrBones, &modelState.m_pBones[ 0 ], model->m_iBoneCount * sizeof( CBoneData ) );
+	std::memcpy( this->m_arrBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 }
 
 void CLagBackup::Apply( C_CSPlayerPawn* pawn ) const {
@@ -182,5 +182,5 @@ void CLagBackup::Apply( C_CSPlayerPawn* pawn ) const {
 
 	pawn->GetAbsOrigin( ) = this->m_vecOrigin;
 
-	std::memcpy( &modelState.m_pBones[ 0 ], this->m_arrBones, model->m_iBoneCount * sizeof( CBoneData ) );
+	std::memcpy( &modelState.m_pBones[ 0 ], this->m_arrBones, 128 * sizeof( CBoneData ) );
 }

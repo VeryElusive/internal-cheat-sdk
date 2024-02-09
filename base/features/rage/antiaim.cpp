@@ -4,8 +4,10 @@
 #include <random>
 
 bool CAntiAim::Condition( C_CSPlayerPawn* local, CUserCmd* cmd ) {
-	if ( local->m_MoveType( ) != MOVETYPE_WALK )
+	if ( local->m_MoveType( ) != MOVETYPE_WALK ) {
+		printf( "%i\n", local->m_MoveType( ) );
 		return false;
+	}
 
 	if ( cmd->m_cButtonStates.m_iHeld & IN_ATTACK )
 		return false;
@@ -20,7 +22,7 @@ bool CAntiAim::Condition( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 // TODO: set the sub tick angles to this aswell.
 
-void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw, bool lastPass ) {
+void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw ) {
 	const int& yawRange{ Configs::m_cConfig.m_iAntiAimYawRange };
 
 	static bool invert{ };
@@ -39,24 +41,20 @@ void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw, bool lastPass ) {
 		yaw += yawRange * ( m_bJitter ? 0.5f : -0.5f );
 		break;
 	case 2: {// rotate
-		if ( lastPass ) {
-			rotatedYaw -= invert ? Configs::m_cConfig.m_iAntiAimYawSpeed : -Configs::m_cConfig.m_iAntiAimYawSpeed;
+		rotatedYaw -= invert ? Configs::m_cConfig.m_iAntiAimYawSpeed : -Configs::m_cConfig.m_iAntiAimYawSpeed;
 
-			if ( rotatedYaw < yawRange * -0.5f )
-				invert = false;
-			else if ( rotatedYaw > yawRange * 0.5f )
-				invert = true;
+		if ( rotatedYaw < yawRange * -0.5f )
+			invert = false;
+		else if ( rotatedYaw > yawRange * 0.5f )
+			invert = true;
 
-			rotatedYaw = std::clamp<int>( rotatedYaw, yawRange * -0.5f, yawRange * 0.5f );
-		}
+		rotatedYaw = std::clamp<int>( rotatedYaw, yawRange * -0.5f, yawRange * 0.5f );
 
 		yaw += rotatedYaw;
 	}break;
 	case 3: {// spin
-		if ( lastPass ) {
-			rotatedYaw += Configs::m_cConfig.m_iAntiAimYawSpeed;
-			rotatedYaw = std::remainderf( rotatedYaw, 360.f );
-		}
+		rotatedYaw += Configs::m_cConfig.m_iAntiAimYawSpeed;
+		rotatedYaw = std::remainderf( rotatedYaw, 360.f );
 		yaw = rotatedYaw;
 		break;
 	}
@@ -68,13 +66,12 @@ void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw, bool lastPass ) {
 	}
 }
 
-void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd, bool lastPass ) {
+void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( !Configs::m_cConfig.m_bAntiAimEnable
 		|| !Condition( local, cmd ) )
 		return;
 
-	if ( lastPass )
-		m_bJitter = !m_bJitter;
+	m_bJitter = !m_bJitter;
 
 	switch ( Configs::m_cConfig.m_iAntiAimPitch ) {
 	case 0:
@@ -95,7 +92,7 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd, bool lastPass ) {
 
 	const auto old{ cmd->cmd.pBase->pViewangles->angValue };
 
-	Yaw( local, cmd->cmd.pBase->pViewangles->angValue.y, lastPass );
+	Yaw( local, cmd->cmd.pBase->pViewangles->angValue.y );
 
 	Features::Movement.MoveMINTFix( local, cmd, old.y );
 }
