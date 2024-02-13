@@ -77,22 +77,22 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	case 0:
 		break;
 	case 1: 
-		cmd->cmd.pBase->pViewangles->angValue.x -89.f; // up
+		cmd->pBase->pViewangles->angValue.x -89.f; // up
 		break;
 	case 2: 
-		cmd->cmd.pBase->pViewangles->angValue.x = 89.f; // down
+		cmd->pBase->pViewangles->angValue.x = 89.f; // down
 		break;
 	case 3: 
-		cmd->cmd.pBase->pViewangles->angValue.x = 0.f;  // zero
+		cmd->pBase->pViewangles->angValue.x = 0.f;  // zero
 		break;
 	//case 4: return rand( );  break;// random
 	default: 
 		break;
 	}
 
-	const auto old{ cmd->cmd.pBase->pViewangles->angValue };
+	const auto old{ cmd->pBase->pViewangles->angValue };
 
-	Yaw( local, cmd->cmd.pBase->pViewangles->angValue.y );
+	Yaw( local, cmd->pBase->pViewangles->angValue.y );
 
 	Features::Movement.MoveMINTFix( local, cmd, old.y );
 }

@@ -34,8 +34,6 @@ void CLagCompensation::Main( ) {
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );
 
-			entry.m_iIndex = i;
-
 			// TODO: do this properly (like flDeadTime from csgo)
 			for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); ) {
 				if ( entry.Animations.m_vecLagRecords.size( ) < 32 )
@@ -56,7 +54,7 @@ void CLagCompensation::Main( ) {
 void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
-	auto& record{ entry.Animations.m_vecLagRecords.emplace_back( entry.m_pPawn, ctx.m_iRenderTick, ctx.m_flRenderTickFraction, cmd->cmd.pBase->nTickCount ) };
+	auto& record{ entry.Animations.m_vecLagRecords.emplace_back( entry.m_pPawn, ctx.m_iRenderTick, ctx.m_flRenderTickFraction, cmd->pBase->nTickCount ) };
 
 	const auto gameSceneNode{ entry.m_pPawn->m_pGameSceneNode( ) };
 	if ( !gameSceneNode )
@@ -81,16 +79,16 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	if ( !CalcWorldSpaceBones )
 		return;
 
-	CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
+	//CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
 
 	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 
-	/*if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecAbsOrigin( ) ) {
+	if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecAbsOrigin( ) ) {
 		const auto delta{ gameSceneNode->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
 		for ( std::int32_t i = 0; i < 128; ++i )
 			record.m_arrBones[ i ].m_vecPosition += delta;
-	}*/
+	}
 
 	//skeleton->m_vecAbsOrigin( ) = entry.m_pPawn->GetAbsOrigin( ) = backupAbsOrigin;
 }

@@ -34,6 +34,7 @@ void Hooks::Init( ) {
 	INIT_HOOK( CalcWorldSpaceBones, Memory::FindPattern( CLIENT_DLL, _( "40 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8D 6C 24 ? 48 8B F1" ) ) );
 
 	INIT_HOOK( Lagcompensation, Memory::FindPattern( CLIENT_DLL, _( "48 8B C4 4C 89 48 20 55 56 41 56 48 8D 68 B1 48 81 EC" ) ) );
+	INIT_HOOK( CallsCreatemove, Memory::FindPattern( CLIENT_DLL, _( "48 89 5C 24 ? 57 48 83 EC 20 33 FF 48 8B D9 48 85 C9 75 37 B9" ) ) );
 
 
 	//INIT_HOOK( ReadFrameInput, Memory::FindPattern( CLIENT_DLL, _( "40 55 53 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 8B" ) ) );

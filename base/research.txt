@@ -21,10 +21,10 @@ E8 ? ? ? ? 85 C0 0F 84 ? ? ? ? 48 8B CF E8 ? ? ? ? 85 C0 75 2D 49 8B CE
 movement fix reversed from nexus (brazil paste)
 
 void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAngle ) {
-	if ( !cmd->cmd.pBase->flForwardMove && !cmd->cmd.pBase->flSideMove )
+	if ( !cmd->pBase->flForwardMove && !cmd->pBase->flSideMove )
 		return;
 
-	cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
+	cmd->pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( );
 
 	if ( cmd == nullptr )
 		return;
@@ -32,7 +32,7 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAn
 	float v56{ };
 
 	auto v55{ wishAngle.y };
-	auto v45{ cmd->cmd.pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( ).y };
+	auto v45{ cmd->pBase->pViewangles->angValue.NormalizeAngle( ).ClampAngle( ).y };
 
 	if ( v55 < 0.f )
 		v55 = v55 + 360.f;
@@ -45,15 +45,15 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAn
 	else
 		v56 = fabs( v45 - v55 );
 
-	auto v39{ cmd->cmd.pBase->flForwardMove };
-	auto v40{ cmd->cmd.pBase->flSideMove };
+	auto v39{ cmd->pBase->flForwardMove };
+	auto v40{ cmd->pBase->flSideMove };
 
 	auto v57 = ( 360.f - v56 ) * 0.017453292f;
 	auto v58 = ( ( 360.f - v56 ) + 90.f ) * 0.017453292f;
 
 	auto v59 = cosf( v57 ) * v39;
-	cmd->cmd.pBase->flForwardMove = v59 - ( cosf( v58 ) * v40 );
+	cmd->pBase->flForwardMove = v59 - ( cosf( v58 ) * v40 );
 
 	auto v60 = sinf( v58 ) * v40;
-	cmd->cmd.pBase->flSideMove = v60 - ( sinf( v57 ) * v39 );
+	cmd->pBase->flSideMove = v60 - ( sinf( v57 ) * v39 );
 }

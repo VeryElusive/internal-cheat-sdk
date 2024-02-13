@@ -23,6 +23,9 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	for ( auto& e : ctx.m_mapPlayerEntries ) {
 		auto& entry{ e.second };
+		if ( !entry.m_pPawn )
+			continue;
+
 		target.m_pEntry = &entry;
 		target.m_pRecord = nullptr;
 		target.m_iBestDamage = 0;
@@ -107,6 +110,8 @@ void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
 		this->m_iBestDamage = damage;
 		this->m_pRecord = oldestRecord;
 	}
+
+	//return;
 
 	for ( auto it{ entry.Animations.m_vecLagRecords.rbegin( ) }; it != entry.Animations.m_vecLagRecords.rend( ); it = std::next( it ) ) {
 		auto& record{ *it };
@@ -210,6 +215,10 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Features::RageBot.m_cData.m_vecPoint = point;// this->m_pPoint->m_vecPoint;
 	Features::RageBot.m_cData.m_pRecord = this->m_pRecord;
 	Features::RageBot.m_cData.m_bValid = true;
+
+	Interfaces::Input->AddButton( IN_ATTACK );
+
+	//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
 }
 
 void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
@@ -223,53 +232,56 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Vector angle{ };
 	Math::VectorAngles( m_cData.m_vecPoint - headPos, angle );
 
-	if ( cmd->cmd.nAttackStartHistoryIndex < 0 )
-		return;
-
-	cmd->cmd.pBase->pViewangles->angValue = angle;
-
-	// magic bullet/rapidfire occured when i set cmd->cmd.nAttackStartHistoryIndex to the wrong index
-
-	const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
-
-	//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
-	//cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
-
-	if ( subTickAttack->pTargetViewCmd )
-		subTickAttack->pTargetViewCmd->angValue = angle;
-	if ( subTickAttack->pViewCmd )
-		subTickAttack->pViewCmd->angValue = angle;
-
 	auto& record{ m_cData.m_pRecord };
 
-	cmd->cmd.pBase->nTickCount = record->m_nAddedTickCount;
+	cmd->pBase->pViewangles->angValue = angle;
+	cmd->pBase->nTickCount = record->m_nAddedTickCount;
 
-	// this is used to calculate if you can shoot.
-	//subTickAttack->nPlayerTickCount = ctx.m_iRenderTick + 1;
-	//subTickAttack->flPlayerTickFraction = ctx.m_flRenderTickFraction + 0.0012f;
+	for ( int i{ }; i < cmd->cmd.m_iSize; ++i ) {
+		const auto subTick{ cmd->cmd.GetInputHistoryEntry( i ) };
 
-	subTickAttack->nRenderTickCount = record->nRenderTickCount;
-	subTickAttack->flRenderTickFraction = record->flRenderTickFraction;
 
-	if ( subTickAttack->cl_interp ) {
-		subTickAttack->cl_interp->nSrcTick = record->m_nAddedTickCount;
-		subTickAttack->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
-		subTickAttack->cl_interp->flFraction = record->flRenderTickFraction;
-	}
-	if ( subTickAttack->player_interp ) {
-		subTickAttack->player_interp->nSrcTick = record->m_nAddedTickCount + 1;
-		subTickAttack->player_interp->nDstTick = record->m_nAddedTickCount + 2;
-		subTickAttack->player_interp->flFraction = record->flRenderTickFraction;
-	}
-	if ( subTickAttack->sv_interp0 ) {
-		subTickAttack->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
-		subTickAttack->sv_interp0->nDstTick = record->m_nAddedTickCount;
-		subTickAttack->sv_interp0->flFraction = record->flRenderTickFraction;
-	}
-	if ( subTickAttack->sv_interp1 ) {
-		subTickAttack->sv_interp1->nSrcTick = record->m_nAddedTickCount;
-		subTickAttack->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
-		subTickAttack->sv_interp1->flFraction = record->flRenderTickFraction;
-	}
+		// magic bullet/rapidfire occured when i set cmd->cmd.nAttackStartHistoryIndex to the wrong index
 
+		//const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
+
+		//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+		//cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
+
+		if ( subTick->pTargetViewCmd )
+			subTick->pTargetViewCmd->angValue = angle;
+		if ( subTick->pViewCmd )
+			subTick->pViewCmd->angValue = angle;
+
+
+		// this is used to calculate if you can shoot.
+		//subTick->nPlayerTickCount = ctx.m_iRenderTick + 1;
+		//subTick->flPlayerTickFraction = ctx.m_flRenderTickFraction + 0.0012f;
+
+		subTick->nRenderTickCount = record->nRenderTickCount;
+		subTick->flRenderTickFraction = record->flRenderTickFraction;
+
+		const auto tick{ TIME_TO_TICKS( record->m_flSimulationTime ) };
+
+		if ( subTick->cl_interp ) {
+			subTick->cl_interp->nSrcTick = record->m_nAddedTickCount;
+			subTick->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
+			subTick->cl_interp->flFraction = record->flRenderTickFraction;
+		}
+		if ( subTick->player_interp ) {
+			subTick->player_interp->nSrcTick = record->m_nAddedTickCount + 1;
+			subTick->player_interp->nDstTick = record->m_nAddedTickCount + 2;
+			subTick->player_interp->flFraction = record->flRenderTickFraction;
+		}
+		if ( subTick->sv_interp0 ) {
+			subTick->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
+			subTick->sv_interp0->nDstTick = record->m_nAddedTickCount;
+			subTick->sv_interp0->flFraction = record->flRenderTickFraction;
+		}
+		if ( subTick->sv_interp1 ) {
+			subTick->sv_interp1->nSrcTick = record->m_nAddedTickCount;
+			subTick->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
+			subTick->sv_interp1->flFraction = record->flRenderTickFraction;
+		}
+	}
 }

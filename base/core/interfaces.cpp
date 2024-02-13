@@ -95,7 +95,10 @@ bool Interfaces::Init( ) {
 	CHECK_AND_FAIL( GlobalVars );
 
 	Input = *reinterpret_cast< CCSGOInput** >( Memory::ResolveRelativeAddress( Memory::FindPattern( CLIENT_DLL, _( "48 8B 0D ? ? ? ? 48 8B 01 FF 50 ? 8B DF" ) ), 0x3, 0x7 ) );
-	CHECK_AND_FAIL( Input );
+	CHECK_AND_FAIL( Input );	
+	
+	Unknown = *reinterpret_cast< void** >( Memory::ResolveRelativeAddress( Memory::FindPattern( ENGINE2_DLL, _( "48 8B 05 ? ? ? ? 48 8D 54 24 ? 48 8D 0D ? ? ? ? FF 90 ? ? ? ? 8B 44 24 40 83 F8 FF" ) ), 0x3, 0x7 ) );
+	CHECK_AND_FAIL( Unknown );
 
 	return true;
 }

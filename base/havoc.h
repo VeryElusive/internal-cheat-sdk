@@ -47,7 +47,6 @@ struct PlayerEntry_t {
 
 	C_CSPlayerPawn* m_pPawn{ };
 
-	unsigned int m_iIndex{ };
 
 	void Reset( C_CSPlayerPawn* pawn ) {
 		m_pPawn = pawn;
@@ -84,8 +83,6 @@ struct Context_t {
 	float m_flForwardmove{ };
 	float m_flSidemove{ };
 	float m_flUpmove{ };
-
-	__int64 a3;
 
 	void GetLocal( ) {
 		const int index{ Interfaces::Engine->GetLocalPlayer( ) };

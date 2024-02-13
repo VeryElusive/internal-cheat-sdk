@@ -24,4 +24,5 @@ namespace Interfaces {
 	inline ILocalize* Localize{ };
 	inline IEngineCVar* Cvar{ };
 	inline IInputSystem* InputSystem{ };
+	inline void* Unknown{ };
 }

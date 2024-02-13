@@ -2,8 +2,10 @@
 #include "../sdk/matrix.h"
 #include "../sdk/valve/trace.h"
 
+#define RECAST_AT_OFFSET( type, base, offset ) *reinterpret_cast< type* >( ( reinterpret_cast< std::uintptr_t >( base ) + offset ) )
+
 #define VAR_AT_OFFSET( type, name, offset ) __forceinline type& name( ) const { \
-		return *reinterpret_cast< type* >( ( reinterpret_cast< std::uintptr_t >( this ) + offset ) ); \
+		return RECAST_AT_OFFSET( type, this, offset ); \
 	} \
 
 #define SCHEMA( type, name ) private: inline static uint32_t name##_OFFSET; \
@@ -30,7 +32,7 @@ namespace Displacement {
 
 	inline fnGetBaseEntity GetBaseEntity;
 
-	inline int( __stdcall* fnSetRelativeMouseMode )( int ) = nullptr;	
+	inline int( __stdcall* fnSetRelativeMouseMode )( int ) = nullptr;
 	
 	inline fnSetViewAngles SetViewAngles;
 
