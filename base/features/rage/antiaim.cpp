@@ -4,10 +4,8 @@
 #include <random>
 
 bool CAntiAim::Condition( C_CSPlayerPawn* local, CUserCmd* cmd ) {
-	if ( local->m_MoveType( ) != MOVETYPE_WALK ) {
-		printf( "%i\n", local->m_MoveType( ) );
+	if ( local->m_MoveType( ) != MOVETYPE_WALK )
 		return false;
-	}
 
 	if ( cmd->m_cButtonStates.m_iHeld & IN_ATTACK )
 		return false;
@@ -20,9 +18,7 @@ bool CAntiAim::Condition( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 // TODO: detected! look at nConsumedServerAngleChanges (pretty sure it is a checksum but havent reversed it)
 
-// TODO: set the sub tick angles to this aswell.
-
-void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw ) {
+void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw, bool newCmd ) {
 	const int& yawRange{ Configs::m_cConfig.m_iAntiAimYawRange };
 
 	static bool invert{ };
@@ -41,14 +37,16 @@ void CAntiAim::Yaw( C_CSPlayerPawn* local, float& yaw ) {
 		yaw += yawRange * ( m_bJitter ? 0.5f : -0.5f );
 		break;
 	case 2: {// rotate
-		rotatedYaw -= invert ? Configs::m_cConfig.m_iAntiAimYawSpeed : -Configs::m_cConfig.m_iAntiAimYawSpeed;
+		if ( newCmd ) {
+			rotatedYaw -= invert ? Configs::m_cConfig.m_iAntiAimYawSpeed : -Configs::m_cConfig.m_iAntiAimYawSpeed;
 
-		if ( rotatedYaw < yawRange * -0.5f )
-			invert = false;
-		else if ( rotatedYaw > yawRange * 0.5f )
-			invert = true;
+			if ( rotatedYaw < yawRange * -0.5f )
+				invert = false;
+			else if ( rotatedYaw > yawRange * 0.5f )
+				invert = true;
 
-		rotatedYaw = std::clamp<int>( rotatedYaw, yawRange * -0.5f, yawRange * 0.5f );
+			rotatedYaw = std::clamp<int>( rotatedYaw, yawRange * -0.5f, yawRange * 0.5f );
+		}
 
 		yaw += rotatedYaw;
 	}break;
@@ -71,7 +69,10 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		|| !Condition( local, cmd ) )
 		return;
 
-	m_bJitter = !m_bJitter;
+	if ( Interfaces::Input->m_iCommandPassCount == 1 )
+		m_bJitter = !m_bJitter;
+	else
+		printf( "what?\n" );
 
 	switch ( Configs::m_cConfig.m_iAntiAimPitch ) {
 	case 0:
@@ -90,9 +91,9 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		break;
 	}
 
-	const auto old{ cmd->pBase->pViewangles->angValue };
+	const auto old{ cmd->pBase->pViewangles->angValue.y };
 
-	Yaw( local, cmd->pBase->pViewangles->angValue.y );
+	Yaw( local, cmd->pBase->pViewangles->angValue.y, Interfaces::Input->m_iCommandPassCount == 1 );
 
-	Features::Movement.MoveMINTFix( local, cmd, old.y );
+	Features::Movement.MoveMINTFix( local, cmd, old );
 }

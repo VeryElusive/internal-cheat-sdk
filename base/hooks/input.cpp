@@ -34,6 +34,26 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	if ( !localPawn )
 		return og( rcx, edx, a3 );
 
+	static bool skipped[ 150 ]{ };
+
+	if ( !skipped[ Interfaces::Input->m_nSequenceNumber % MULTIPLAYER_BACKUP ] ) {
+		skipped[ Interfaces::Input->m_nSequenceNumber % MULTIPLAYER_BACKUP ] = true;
+		return false;
+	}
+
+	ctx.m_flUpmove = 1.f;
+	for ( int i{ }; i < 150; ++i ) {
+		if ( !skipped[ i ] ) {
+			ctx.m_flUpmove = 0;
+			break;
+		}
+	}
+
+	if ( !( cmd->m_cButtonStates.m_iHeld & IN_ATTACK ) )
+		return false;
+
+	skipped[ Interfaces::Input->m_nSequenceNumber % MULTIPLAYER_BACKUP ] = false;
+
 	//printf( "%i | %i\n", Interfaces::Input->m_nSequenceNumber, Interfaces::Input->m_iCommandPassCount );
 
 	Features::RageBot.Main( localPawn, cmd );
@@ -54,6 +74,24 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	Features::AntiAim.Main( localPawn, cmd );
 
+	if ( cmd->pBase->flForwardMove > 1.f ) {
+		cmd->pBase->flSideMove /= cmd->pBase->flForwardMove;
+		cmd->pBase->flForwardMove = 1.f;
+	}
+	else if ( cmd->pBase->flForwardMove < -1.f ) {
+		cmd->pBase->flSideMove /= -cmd->pBase->flForwardMove;
+		cmd->pBase->flForwardMove = -1.f;
+	}
+
+	if ( cmd->pBase->flSideMove > 1.f ) {
+		cmd->pBase->flForwardMove /= cmd->pBase->flSideMove;
+		cmd->pBase->flSideMove = 1.f;
+	}
+	else if ( cmd->pBase->flSideMove < -1.f ) {
+		cmd->pBase->flForwardMove /= -cmd->pBase->flSideMove;
+		cmd->pBase->flSideMove = -1.f;
+	}
+
 	ctx.m_flForwardmove = cmd->pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->pBase->flSideMove;
 
@@ -61,9 +99,6 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	cmd->pBase->pViewangles->angValue.ClampAngle( );
 
 	ctx.m_mapPlayerEntries[ localPawn->GetRefEHandle( ).m_nIndex ].Animations.m_bShouldUpdateBones = true;
-
-	cmd->pBase->flForwardMove = std::clamp( cmd->pBase->flForwardMove, -1.f, 1.f );
-	cmd->pBase->flSideMove = std::clamp( cmd->pBase->flSideMove, -1.f, 1.f );
 
 	return result;
 }
@@ -88,6 +123,8 @@ void* __fastcall Hooks::hkLagcompensation( void* subTickData, void* inputHistory
 
 	ctx.m_flRenderTickFraction = std->m_flRenderTickFraction;
 	ctx.m_iRenderTick = std->m_iRenderTick;
+	ctx.m_iPlayerTick = std->m_iPlayerTick;
+	ctx.m_flPlayerTickFraction = std->m_flPlayerTickFraction;
 
 	return og( subTickData, inputHistoryFieldCurrent, a3, a4, a5, a6 );
 }
@@ -95,5 +132,7 @@ void* __fastcall Hooks::hkLagcompensation( void* subTickData, void* inputHistory
 void* __fastcall Hooks::hkCallsCreatemove( void* rcx ) {
 	const auto og{ CallsCreatemove.Original<decltype( &hkCallsCreatemove )>( ) };
 
-	return og( rcx );
+	const auto result{ og( rcx ) };
+
+	return result;
 }

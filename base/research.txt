@@ -57,3 +57,105 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAn
 	auto v60 = sinf( v58 ) * v40;
 	cmd->pBase->flSideMove = v60 - ( sinf( v57 ) * v39 );
 }
+
+movement fix from william1337 cheat
+void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, Vector wishAngle ) {
+	cmd->pBase->pViewangles->angValue.NormalizeAngle( );
+
+	if ( !cmd->pBase->flForwardMove && !cmd->pBase->flSideMove )
+		return;
+
+	auto v2 = 1;
+	auto v6 = cmd->pBase->pViewangles->angValue.x;
+	if ( v6 > 89.0 )
+		v2 = -1;
+	if ( v6 >= -89.0 )
+	{
+		if ( v6 > 89.0 )
+			v6 = 89.0;
+	}
+	else
+	{
+		v6 = -89.0;
+	}
+
+	cmd->pBase->pViewangles->angValue.NormalizeAngle( );
+	auto v7{ cmd->pBase->pViewangles->angValue.ClampAngle( ).y };
+
+	auto v8 = wishAngle;
+	auto v9 = v6 * 0.017453292;
+	auto v10 = sinf( v9 );
+
+	auto v11 = v7 * 0.017453292;
+	auto v12 = cosf( v9 );
+
+
+	auto v13 = sinf( v11 );
+	auto v14 = cosf( v11 );
+	auto v15 = sinf( 0.0 );
+	auto v16 = cosf( 0.0 ) * -1.0;
+	auto v56 = v14 * v12;
+	auto v17 = v15 * v10;
+	auto v57 = v13 * v12;
+	auto v58 = ( float ) ( ( float ) -v13 * v16 ) - ( float ) ( v17 * v14 );
+	auto v55 = ( float ) ( v16 * v14 ) - ( float ) ( v17 * v13 );
+	auto v18 = sinf( v8.x * 0.017453292 );
+	auto v19 = cosf( v8.x * 0.017453292 );
+	auto v20 = v8.y * 0.017453292;
+	v8.x = sinf( v20 );
+	auto v21 = cosf( v20 );
+	auto v22 = v8.z * 0.017453292;
+	auto v23 = sinf( v22 );
+	auto v24 = cosf( v22 );
+	auto v25 = v21 * v19;
+	auto v26 = v8.x * v19;
+	auto v27 = v23 * v18;
+	auto v59 = ( float ) ( ( float ) -v8.x * ( float ) ( v24 * -1.0 ) ) - ( float ) ( v27 * v21 );
+	auto v28 = ( float ) ( v56 * v56 ) + ( float ) ( v57 * v57 );
+	auto v29 = ( float ) ( ( float ) ( v24 * -1.0 ) * v21 ) - ( float ) ( v27 * v8.x );
+	float v30;
+	v30 = sqrtf( v28 );
+
+	auto v31 = 1.0 / v30;
+	auto v32 = ( float ) ( v58 * v58 ) + ( float ) ( v55 * v55 );
+
+	auto v33 = sqrtf( v32 );
+
+	auto v34 = 1.0 / v33;
+	auto v35 = ( float ) ( v25 * v25 ) + ( float ) ( v26 * v26 );
+	auto v36 = sqrtf( v35 );
+
+	auto v37 = ( float ) ( 1.0 / v36 ) * v25;
+	auto v38 = ( float ) ( 1.0 / v36 ) * v26;
+	auto v39 = ( float ) ( v59 * v59 ) + ( float ) ( v29 * v29 );
+	auto v40 = sqrtf( v39 ); 
+
+	auto v41 = cmd->pBase->flSideMove;
+	auto v42 = ( float ) ( v34 * v58 ) * v41;
+	auto v43 = ( float ) ( v34 * v55 ) * v41;
+	auto v44 = v31;
+	auto v45 = ( float ) ( v41 * 0.0 ) * 0.0;
+	auto v46 = ( float ) ( 1.0 / v40 ) * v29;
+	auto v47 = cmd->pBase->flForwardMove;
+	auto v48 = ( float ) ( v31 * v57 ) * v47;
+	auto v49 = ( float ) ( v44 * v56 ) * v47;
+	auto v50 = ( float ) ( v47 * 0.0 ) * 0.0;
+	auto v51 = ( float ) ( ( float ) ( ( float ) ( v43 * v46 ) + ( float ) ( v42 * ( float ) ( ( float ) ( 1.0 / v40 ) * v59 ) ) ) + v45 )
+		+ ( float ) ( ( float ) ( ( float ) ( v48 * v46 ) + ( float ) ( v49 * ( float ) ( ( float ) ( 1.0 / v40 ) * v59 ) ) ) + v50 );
+	auto v52 = ( float ) ( ( float ) ( ( float ) ( ( float ) ( v43 * v38 ) + ( float ) ( v42 * v37 ) ) + v45 )
+		+ ( float ) ( ( float ) ( ( float ) ( v48 * v38 ) + ( float ) ( v49 * v37 ) ) + v50 ) )
+		* ( float ) v2;
+	auto v53 = v52;
+	if ( v52 > 1.0 )
+		v53 = 1.f;
+	if ( v52 < -1.0 )
+		v53 = -1.f;
+	cmd->pBase->flForwardMove = v53;
+	auto v54 = v51;
+	if ( v51 > 1.0 )
+		v54 = 1.f;
+	if ( v51 >= -1.0 )
+		cmd->pBase->flSideMove = v54;
+	else
+		cmd->pBase->flSideMove = -1.f;
+}

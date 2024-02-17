@@ -214,12 +214,15 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	// TODO: this->m_pPoint->m_vecPoint
 	Features::RageBot.m_cData.m_vecPoint = point;// this->m_pPoint->m_vecPoint;
 	Features::RageBot.m_cData.m_pRecord = this->m_pRecord;
+	Features::RageBot.m_cData.m_pEntry = this->m_pEntry;
 	Features::RageBot.m_cData.m_bValid = true;
 
 	Interfaces::Input->AddButton( IN_ATTACK );
 
 	//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
 }
+
+int cl_interp_SrcTick = -1, sv_interp0_SrcTick = -1, sv_interp1_SrcTick = -1;
 
 void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( !m_cData.m_bValid )
@@ -235,7 +238,21 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	auto& record{ m_cData.m_pRecord };
 
 	cmd->pBase->pViewangles->angValue = angle;
-	cmd->pBase->nTickCount = record->m_nAddedTickCount;
+	//cmd->pBase->nTickCount = record->m_nPlayerTickCount;
+
+	static auto loc{ Memory::FindPattern( CLIENT_DLL, "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 70 48 8B F9 48 8D 44 24" ) };
+
+	using fnFunc = bool( __fastcall* ) ( void*, void*, void*, void*, void* );
+	auto func = ( fnFunc )( loc );
+
+	int v35 = record->m_nPlayerTickCount;
+
+	cl_interp_SrcTick = -1, sv_interp0_SrcTick = -1, sv_interp1_SrcTick = -1;
+
+	if ( record->m_flPlayerTickFraction > 0.0099999998f )
+		v35 += 1;
+	func( m_cData.m_pEntry->m_pPawn->m_pGameSceneNode( ), &cl_interp_SrcTick, &sv_interp0_SrcTick, &sv_interp1_SrcTick, &v35 );
+
 
 	for ( int i{ }; i < cmd->cmd.m_iSize; ++i ) {
 		const auto subTick{ cmd->cmd.GetInputHistoryEntry( i ) };
@@ -254,33 +271,27 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 			subTick->pViewCmd->angValue = angle;
 
 
-		// this is used to calculate if you can shoot.
+		// this is used to calculate if you can shoot. it gets clamped between 2 ticks of the server tickcount.
 		//subTick->nPlayerTickCount = ctx.m_iRenderTick + 1;
 		//subTick->flPlayerTickFraction = ctx.m_flRenderTickFraction + 0.0012f;
 
 		subTick->nRenderTickCount = record->nRenderTickCount;
 		subTick->flRenderTickFraction = record->flRenderTickFraction;
 
-		const auto tick{ TIME_TO_TICKS( record->m_flSimulationTime ) };
-
 		if ( subTick->cl_interp ) {
-			subTick->cl_interp->nSrcTick = record->m_nAddedTickCount;
-			subTick->cl_interp->nDstTick = record->m_nAddedTickCount + 1;
+			subTick->cl_interp->nSrcTick = cl_interp_SrcTick;
+			subTick->cl_interp->nDstTick = cl_interp_SrcTick + 1;
 			subTick->cl_interp->flFraction = record->flRenderTickFraction;
 		}
-		if ( subTick->player_interp ) {
-			subTick->player_interp->nSrcTick = record->m_nAddedTickCount + 1;
-			subTick->player_interp->nDstTick = record->m_nAddedTickCount + 2;
-			subTick->player_interp->flFraction = record->flRenderTickFraction;
-		}
+
 		if ( subTick->sv_interp0 ) {
-			subTick->sv_interp0->nSrcTick = record->m_nAddedTickCount - 1;
-			subTick->sv_interp0->nDstTick = record->m_nAddedTickCount;
+			subTick->sv_interp0->nSrcTick = sv_interp0_SrcTick;
+			subTick->sv_interp0->nDstTick = sv_interp0_SrcTick + 1;
 			subTick->sv_interp0->flFraction = record->flRenderTickFraction;
 		}
 		if ( subTick->sv_interp1 ) {
-			subTick->sv_interp1->nSrcTick = record->m_nAddedTickCount;
-			subTick->sv_interp1->nDstTick = record->m_nAddedTickCount + 1;
+			subTick->sv_interp1->nSrcTick = sv_interp1_SrcTick;
+			subTick->sv_interp1->nDstTick = sv_interp1_SrcTick + 1;
 			subTick->sv_interp1->flFraction = record->flRenderTickFraction;
 		}
 	}

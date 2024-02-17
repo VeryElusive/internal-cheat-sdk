@@ -5,13 +5,14 @@ class CLagRecord {
 public:
 	CLagRecord( C_CSPlayerPawn* pawn, int nRenderTickCount,
 		float flRenderTickFraction,
-		int tickCount ) :
+		int tickCount, float tickFraction ) :
 
 		m_flSimulationTime( pawn->m_flSimulationTime( ) ),
 		m_vecOrigin( pawn->GetAbsOrigin( ) ),
 		nRenderTickCount( nRenderTickCount ),
 		flRenderTickFraction( flRenderTickFraction ),
-		m_nAddedTickCount( tickCount )
+		m_nPlayerTickCount( tickCount ),
+		m_flPlayerTickFraction( tickFraction )
 	{ };
 
 	bool IsRecordValid( ) const;
@@ -23,9 +24,10 @@ public:
 
 	float m_flSimulationTime{ };
 
-	int nRenderTickCount; // 0x60
-	float flRenderTickFraction; // 0x64
-	int m_nAddedTickCount{ };
+	int nRenderTickCount; //
+	float flRenderTickFraction; 
+	int m_nPlayerTickCount{ };
+	float m_flPlayerTickFraction{ };
 
 };
 
@@ -38,6 +40,7 @@ private:
 
 	CBoneData m_arrBones[ 128u ]{ };
 	Vector m_vecOrigin{ };
+	float m_flSimulationTime{ };
 };
 
 struct PlayerEntry_t;

@@ -3,18 +3,17 @@
 #include "../../utils/math.h"
 
 void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
-	const auto onGround{ ( local->m_fFlags( ) & FL_ONGROUND ) };
-	static int lastOnGround{ };
-	static bool wait{ };
-
 	if ( local->m_MoveType( ) != MOVETYPE_WALK )
 		return;
+
+	if ( Configs::m_cConfig.m_bBunnyhop ) {
+		if ( local->m_fFlags( ) & FL_ONGROUND )
+			cmd->m_cButtonStates.m_iHeld &= ~IN_JUMP;
+	}
 
 	if ( Configs::m_cConfig.m_bAutoStrafer )
 		AutoStrafer( local, cmd );
 	//ctx.m_flUpmove = cmd->pBase->flUpMove;
-
-	lastOnGround = onGround;
 }
 
 void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
@@ -77,7 +76,7 @@ void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		}
 	}
 
-	///MoveMINTFix( cmd, movementAngle.y );
+	//MoveMINTFix( local, cmd, movementAngle.y );
 
 	// my good friend philip gave me this code.
 	// THANK YOU PHILIP!!!!
@@ -103,12 +102,10 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 	if ( cmd->pBase->pViewangles->angValue.y == wishAngle )
 		return;
 
-	if ( wishAngle < 0.f )
-		wishAngle += 360.f;
+	wishAngle = std::remainderf( wishAngle, 360.f );
 
-	auto curAngles{ cmd->pBase->pViewangles->angValue.ClampAngle( ).y };
-	if ( curAngles < 0.f )
-		curAngles += 360.f;
+	auto& curAngles{ cmd->pBase->pViewangles->angValue.y };
+	curAngles = std::remainderf( curAngles, 360.f );
 
 	float rot{ std::fabs( curAngles - wishAngle ) };
 	if ( wishAngle <= curAngles )
@@ -119,15 +116,12 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 
 	// we do a little bit of l3d451r7ing...
 
-	auto v57 = ( 360.f - rot ) * 0.017453292f;
-	auto v58 = ( ( 360.f - rot ) + 90.f ) * 0.017453292f;
+	auto v57 = Math::DegreeToRadians( 360.f - rot );
+	auto v58 = Math::DegreeToRadians( ( 360.f - rot ) + 90.f );
 
-	auto v59 = cosf( v57 ) * forwardMove;
-	cmd->pBase->flForwardMove = v59 - ( cosf( v58 ) * sideMove );
+	auto v59 = std::cos( v57 ) * forwardMove;
+	cmd->pBase->flForwardMove = v59 - ( std::cos( v58 ) * sideMove );
 
-	auto v60 = sinf( v58 ) * sideMove;
-	cmd->pBase->flSideMove = v60 - ( sinf( v57 ) * forwardMove );
-
-	cmd->pBase->flForwardMove = std::clamp( cmd->pBase->flForwardMove, -1.f, 1.f );
-	cmd->pBase->flSideMove = std::clamp( cmd->pBase->flSideMove, -1.f, 1.f );
+	auto v60 = std::sin( v58 ) * sideMove;
+	cmd->pBase->flSideMove = v60 - ( std::sin( v57 ) * forwardMove );
 }

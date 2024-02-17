@@ -50,6 +50,7 @@
     <ClCompile Include="hooks\directx.cpp" />
     <ClCompile Include="hooks\event.cpp" />
     <ClCompile Include="hooks\input.cpp" />
+    <ClCompile Include="hooks\prediction.cpp" />
     <ClCompile Include="hooks\rendergamesystem.cpp" />
     <ClCompile Include="hooks\tests.cpp" />
     <ClCompile Include="main.cpp" />

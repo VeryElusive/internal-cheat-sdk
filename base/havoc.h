@@ -78,6 +78,8 @@ struct Context_t {
 
 	float m_flRenderTickFraction{ };
 	int m_iRenderTick{ };
+	float m_flPlayerTickFraction{ };
+	int m_iPlayerTick{ };
 	int m_nFrameNumber{ };
 
 	float m_flForwardmove{ };

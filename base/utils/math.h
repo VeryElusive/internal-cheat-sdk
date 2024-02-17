@@ -30,7 +30,7 @@ namespace Math {
 
 	
 	__forceinline float DegreeToRadians( float degrees ) {
-		return degrees * static_cast< float >( M_PI ) / 180.0f;
+		return degrees * M_PI / 180.0f;
 	}
 
 	__forceinline float RadiansToDegree( float fRadians ) noexcept {
@@ -91,5 +91,23 @@ namespace Math {
 
 		// set out angles.
 		angView = { pitch, yaw, roll };
+	}
+
+	__forceinline float AngleDiff( float srcAngle, float destAngle ) {
+		float delta; // xmm1_4
+
+		for ( ; destAngle > 180.f; destAngle = destAngle - 360.f )
+			;
+		for ( ; destAngle < -180.f; destAngle = destAngle + 360.f )
+			;
+		for ( ; srcAngle > 180.f; srcAngle = srcAngle - 360.f )
+			;
+		for ( ; srcAngle < -180.f; srcAngle = srcAngle + 360.f )
+			;
+		for ( delta = srcAngle - destAngle; delta > 180.f; delta = delta - 360.f )
+			;
+		for ( ; delta < -180.f; delta = delta + 360.f )
+			;
+		return delta;
 	}
 }

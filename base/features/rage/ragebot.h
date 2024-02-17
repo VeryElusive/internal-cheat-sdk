@@ -18,6 +18,7 @@ struct PostCMoveData_t {
 	Vector m_vecPoint{ };
 
 	CLagRecord* m_pRecord{ };
+	PlayerEntry_t* m_pEntry{ };
 
 	bool m_bValid{ };
 };

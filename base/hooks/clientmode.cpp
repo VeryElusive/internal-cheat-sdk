@@ -66,5 +66,41 @@ void __fastcall Hooks::hkOverrideView( void* rcx, CViewSetup* setup ) {
 		cam_idealdist->value.fl = 30;
 	}
 
+
+	/*ctx.GetLocal( );
+	if ( ctx.m_pLocal && ctx.m_pLocal->m_bPawnIsAlive( ) ) {
+		const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+		if ( localPawn ) {
+			const auto estViewOffset{ setup->m_vecOrigin - localPawn->m_pGameSceneNode( )->m_vecAbsOrigin( ) };
+
+			setup->m_vecOrigin.x -= estViewOffset.x;
+			setup->m_vecOrigin.y -= estViewOffset.y;
+
+			static auto old{ estViewOffset.z };
+			static int lastTickCount{ };
+
+			constexpr int smoothingAmount{ 5 };
+
+			static float prevOffsets[ smoothingAmount ]{ };
+			static int currentIndex = 0;
+
+			if ( lastTickCount != Interfaces::GlobalVars->m_nTickCount ) {
+				prevOffsets[ currentIndex ] = estViewOffset.z;
+				currentIndex = ( currentIndex + 1 ) % smoothingAmount;
+
+				lastTickCount = Interfaces::GlobalVars->m_nTickCount;
+			}
+
+			float sum{ };
+			for ( int i = 0; i < smoothingAmount; ++i )
+				sum += prevOffsets[ i ];
+
+			const auto average{ sum / smoothingAmount };
+
+			if ( std::abs( estViewOffset.z - average ) )
+				setup->m_vecOrigin.z += ( average - estViewOffset.z );
+		}
+	}*/
+
 	return og( rcx, setup );
 }

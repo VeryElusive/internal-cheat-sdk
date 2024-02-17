@@ -48,6 +48,8 @@ namespace Hooks {
 
 	NEW_HOOK( Lagcompensation, void*, __fastcall ) void* subTickData, void* inputHistoryFieldCurrent, char a3, __int64 a4, __int64 a5, __int64 a6 );
 
+	NEW_HOOK( PredictionUpdate, void, __fastcall ) void* rcx, int a2, int a3 );
+
 	// part of CClientInput
 	//NEW_HOOK( Unknown01, void, __fastcall ) void* rcx, int edx, char a3, unsigned char a4 );
 	NEW_HOOK( Unknown02, void, __fastcall ) void* rcx, int edx );
