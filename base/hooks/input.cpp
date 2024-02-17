@@ -34,25 +34,14 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	if ( !localPawn )
 		return og( rcx, edx, a3 );
 
-	static bool skipped[ 150 ]{ };
+	// RAPIDFIRE:
+	// TODO: investigate this!!!!
+	/*static int ticks{ };
 
-	if ( !skipped[ Interfaces::Input->m_nSequenceNumber % MULTIPLAYER_BACKUP ] ) {
-		skipped[ Interfaces::Input->m_nSequenceNumber % MULTIPLAYER_BACKUP ] = true;
+	ticks++;
+	if ( ticks < 64 )
 		return false;
-	}
-
-	ctx.m_flUpmove = 1.f;
-	for ( int i{ }; i < 150; ++i ) {
-		if ( !skipped[ i ] ) {
-			ctx.m_flUpmove = 0;
-			break;
-		}
-	}
-
-	if ( !( cmd->m_cButtonStates.m_iHeld & IN_ATTACK ) )
-		return false;
-
-	skipped[ Interfaces::Input->m_nSequenceNumber % MULTIPLAYER_BACKUP ] = false;
+	ticks = 0;*/
 
 	//printf( "%i | %i\n", Interfaces::Input->m_nSequenceNumber, Interfaces::Input->m_iCommandPassCount );
 
