@@ -16,7 +16,11 @@ void Menu::Register( ) {
 
 		}
 		auto otherGroup{ aimbot->AddGroup( "Other", 0.6f ) };
-		auto other2Group{ aimbot->AddGroup( "Other", 0.4f ) };
+		auto exploitsGroup{ aimbot->AddGroup( "Exploits", 0.4f ) };
+		{
+			exploitsGroup->Register( ( "Rapidfire" ), &Configs::m_cConfig.m_bRapidFire );
+
+		}
 	}
 
 	auto antiaim{ &m_cTabs[ 0 ].m_vecSubtabs.emplace_back( "Anti-aim", 2 ) };

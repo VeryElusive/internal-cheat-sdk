@@ -71,8 +71,6 @@ void CAntiAim::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	if ( Interfaces::Input->m_iCommandPassCount == 1 )
 		m_bJitter = !m_bJitter;
-	else
-		printf( "what?\n" );
 
 	switch ( Configs::m_cConfig.m_iAntiAimPitch ) {
 	case 0:

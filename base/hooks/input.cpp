@@ -36,12 +36,20 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	// RAPIDFIRE:
 	// TODO: investigate this!!!!
-	/*static int ticks{ };
 
-	ticks++;
-	if ( ticks < 64 )
-		return false;
-	ticks = 0;*/
+	if ( Configs::m_cConfig.m_bRapidFire ) {
+		static int ticks{ };
+
+		ticks++;
+		if ( ticks < 64 ) {
+			//Interfaces::Input->AddButton( IN_ATTACK );
+
+			//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+			return false;
+		}
+
+		ticks = 0;
+	}
 
 	//printf( "%i | %i\n", Interfaces::Input->m_nSequenceNumber, Interfaces::Input->m_iCommandPassCount );
 

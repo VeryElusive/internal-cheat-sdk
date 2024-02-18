@@ -61,6 +61,8 @@ struct Config_t {
 
 #pragma region ragebot
 	bool m_bRageBotEnable{ };
+
+	bool m_bRapidFire{ };
 #pragma endregion ragebot
 };
 
