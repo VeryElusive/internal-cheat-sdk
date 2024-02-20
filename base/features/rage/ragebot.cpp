@@ -217,6 +217,7 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Features::RageBot.m_cData.m_pEntry = this->m_pEntry;
 	Features::RageBot.m_cData.m_bValid = true;
 
+	// TODO: CHECK IF THE LAST FRAME THE BUTTON WAS DOWN
 	Interfaces::Input->AddButton( IN_ATTACK );
 
 	cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
@@ -236,25 +237,18 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	auto& record{ m_cData.m_pRecord };
 
 	cmd->pBase->pViewangles->angValue = angle;
-	//cmd->pBase->nTickCount = record->m_nPlayerTickCount;
+	cmd->pBase->nTickCount = record->m_nPlayerTickCount;
 
 	static auto loc{ Memory::FindPattern( CLIENT_DLL, "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 70 48 8B F9 48 8D 44 24" ) };
 
 	using fnFunc = bool( __fastcall* ) ( void*, void*, void*, void*, void* );
-	auto func = ( fnFunc )( loc );
-
-	//if ( record->m_flPlayerTickFraction > 0.0099999998f )
-	//	record->m_nPlayerTickCount += 1;
+	auto func = ( fnFunc ) ( loc );
 
 	const auto backupTick{ Interfaces::Input->m_pSubTickData->m_iPlayerTick };
 	const auto backupFrac{ Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction };
-	//const auto backuprPTFrac{ record->m_nPlayerTickCount };
-
-	//if ( record->m_flPlayerTickFraction > 0.0099999998f )
-	//	record->m_nPlayerTickCount = 0;
 
 	Interfaces::Input->m_pSubTickData->m_iPlayerTick = record->m_nPlayerTickCount;
-	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = record->m_flPlayerTickFraction;// ctx.m_flRenderTickFraction + 0.0012f;
+	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = 0.f;// record->m_flPlayerTickFraction;
 
 	if ( record->m_flPlayerTickFraction > 0.0099999998f )
 		++Interfaces::Input->m_pSubTickData->m_iPlayerTick;
@@ -269,13 +263,8 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	func( m_cData.m_pEntry->m_pPawn->m_pGameSceneNode( ), &cl_interp, &sv_interp0, &sv_interp1, &Interfaces::Input->m_pSubTickData->m_iPlayerTick );
 
-	//record->m_nPlayerTickCount = backuprPTFrac;
-
-	//Interfaces::Input->m_pSubTickData->m_iPlayerTick -= 5;
-	//func( m_cData.m_pEntry->m_pPawn->m_pGameSceneNode( ), &cl_interp, &sv_interp0, &sv_interp1, &Interfaces::Input->m_pSubTickData->m_iPlayerTick );
-
 	Interfaces::Input->m_pSubTickData->m_iPlayerTick = backupTick;
-	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;
+	//Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;
 
 	for ( int i{ }; i < cmd->cmd.m_iSize; ++i ) {
 		const auto subTick{ cmd->cmd.GetInputHistoryEntry( i ) };
@@ -295,19 +284,63 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 		if ( subTick->cl_interp ) {
 			subTick->cl_interp->nSrcTick = cl_interp.nSrcTick;
-			subTick->cl_interp->nDstTick = cl_interp.nDstTick;
-			subTick->cl_interp->flFraction = 0.f;
+			//subTick->cl_interp->nDstTick = cl_interp.nDstTick;
+			subTick->cl_interp->flFraction = cl_interp.flFraction;
 		}
 
 		if ( subTick->sv_interp0 ) {
 			subTick->sv_interp0->nSrcTick = sv_interp0.nSrcTick;
-			subTick->sv_interp0->nDstTick = sv_interp0.nDstTick;
-			subTick->sv_interp0->flFraction = 0.f;
+			//subTick->sv_interp0->nDstTick = sv_interp0.nDstTick;
+			subTick->sv_interp0->flFraction = sv_interp0.flFraction;
 		}
 		if ( subTick->sv_interp1 ) {
 			subTick->sv_interp1->nSrcTick = sv_interp1.nSrcTick;
-			subTick->sv_interp1->nDstTick = sv_interp1.nDstTick;
-			subTick->sv_interp1->flFraction = 0.f;
+			//subTick->sv_interp1->nDstTick = sv_interp1.nDstTick;
+			subTick->sv_interp1->flFraction = sv_interp1.flFraction;
 		}
+
+		/*if ( subTick->cl_interp ) {
+			subTick->cl_interp->nSrcTick = record->m_nPlayerTickCount;
+			//subTick->cl_interp->nDstTick = record->m_nPlayerTickCount + 1;
+			subTick->cl_interp->flFraction = 1.f;
+
+			subTick->sv_interp0->nSrcTick = record->m_nPlayerTickCount - 1;
+			//subTick->sv_interp0->nDstTick = record->m_nPlayerTickCount;
+			subTick->sv_interp0->flFraction = record->flRenderTickFraction;
+
+			subTick->sv_interp1->nSrcTick = record->m_nPlayerTickCount;
+			//subTick->sv_interp1->nDstTick = record->m_nPlayerTickCount + 1;
+			subTick->sv_interp1->flFraction = record->flRenderTickFraction;
+		}*/
 	}
 }
+
+/*	static auto loc{ Memory::FindPattern( CLIENT_DLL, "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 70 48 8B F9 48 8D 44 24" ) };
+
+	using fnFunc = bool( __fastcall* ) ( void*, void*, void*, void*, void* );
+	auto func = ( fnFunc )( loc );
+
+	//if ( record->m_flPlayerTickFraction > 0.0099999998f )
+	//	record->m_nPlayerTickCount += 1;
+
+	const auto backupTick{ Interfaces::Input->m_pSubTickData->m_iPlayerTick };
+	const auto backupFrac{ Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction };
+
+	Interfaces::Input->m_pSubTickData->m_iPlayerTick = record->m_nPlayerTickCount;
+	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = record->m_flPlayerTickFraction;// ctx.m_flRenderTickFraction + 0.0012f;
+
+	//if ( record->m_flPlayerTickFraction > 0.0099999998f )
+	//	++Interfaces::Input->m_pSubTickData->m_iPlayerTick;
+
+	struct data_t {
+		int nSrcTick = -1; // 0x1C
+		int nDstTick = -1; // 0x20
+		float flFraction = 0.f; // 0x18
+	};
+
+	data_t cl_interp, sv_interp0, sv_interp1;
+
+	func( m_cData.m_pEntry->m_pPawn->m_pGameSceneNode( ), &cl_interp, &sv_interp0, &sv_interp1, &Interfaces::Input->m_pSubTickData->m_iPlayerTick );
+
+	Interfaces::Input->m_pSubTickData->m_iPlayerTick = backupTick;
+	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;*/

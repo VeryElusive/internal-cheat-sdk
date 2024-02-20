@@ -6,9 +6,13 @@
 #include "../../sdk/valve/entity.h"
 #include "../../sdk/valve/interfaces/ienginecvar.h"
 
-// TODO: MOVE THIS TO CREATEMOVE!!!!
 
 void CLagCompensation::Main( ) {
+	// TODO: make this calc the server curtime.
+	// on server it is: TIME_TO_TICKS( Interfaces::GlobalVars->m_flCurTime - sv_maxunlag->value.fl )
+	CVAR( sv_maxunlag );
+	const auto deadTicks{ Interfaces::GlobalVars->m_nTickCount - TIME_TO_TICKS( sv_maxunlag->value.fl ) };
+
 	for ( int i{ 1 }; i < Interfaces::Engine->GetMaxClients( ); ++i ) {
 		const auto ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
 		if ( !ent
@@ -34,9 +38,9 @@ void CLagCompensation::Main( ) {
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );
 
-			// TODO: do this properly (like flDeadTime from csgo)
 			for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); ) {
-				if ( entry.Animations.m_vecLagRecords.size( ) < 32 )
+				const auto ticks{ it->m_nPlayerTickCount };
+				if ( ticks >= deadTicks )
 					break;
 
 				it = entry.Animations.m_vecLagRecords.erase( it );
@@ -54,7 +58,7 @@ void CLagCompensation::Main( ) {
 void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
-	auto& record{ entry.Animations.m_vecLagRecords.emplace_back( entry.m_pPawn, ctx.m_iRenderTick, ctx.m_flRenderTickFraction, ctx.m_iPlayerTick, ctx.m_flPlayerTickFraction ) };
+	auto& record{ entry.Animations.m_vecLagRecords.emplace_back( entry.m_pPawn, ctx.m_iRenderTick, ctx.m_flRenderTickFraction, Interfaces::GlobalVars->m_nTickCount, ctx.m_flPlayerTickFraction ) };
 
 	const auto gameSceneNode{ entry.m_pPawn->m_pGameSceneNode( ) };
 	if ( !gameSceneNode )
@@ -84,7 +88,7 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 
 	if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecOrigin( ) ) {
-		const auto delta{ gameSceneNode->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
+		const auto delta{ gameSceneNode->m_vecOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
 		for ( std::int32_t i = 0; i < 128; ++i )
 			record.m_arrBones[ i ].m_vecPosition += delta;
