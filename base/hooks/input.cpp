@@ -57,9 +57,10 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	const auto result{ og( rcx, edx, a3 ) };
 
-	ctx.m_flRenderTickFraction = Interfaces::Input->m_pSubTickData->m_flRenderTickFraction;
-	ctx.m_iRenderTick = Interfaces::Input->m_pSubTickData->m_iRenderTick;
-	Features::LagCompensation.Main( );
+	//ctx.m_flRenderTickFraction = Interfaces::Input->m_pSubTickData->m_flRenderTickFraction;
+	//ctx.m_iRenderTick = Interfaces::Input->m_pSubTickData->m_iRenderTick;
+	if ( Interfaces::Input->m_iCommandPassCount == 1 )
+		Features::LagCompensation.Main( );
 
 	Features::Movement.Main( localPawn, cmd );
 
@@ -71,23 +72,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	Features::AntiAim.Main( localPawn, cmd );
 
-	if ( cmd->pBase->flForwardMove > 1.f ) {
-		cmd->pBase->flSideMove /= cmd->pBase->flForwardMove;
-		cmd->pBase->flForwardMove = 1.f;
-	}
-	else if ( cmd->pBase->flForwardMove < -1.f ) {
-		cmd->pBase->flSideMove /= -cmd->pBase->flForwardMove;
-		cmd->pBase->flForwardMove = -1.f;
-	}
-
-	if ( cmd->pBase->flSideMove > 1.f ) {
-		cmd->pBase->flForwardMove /= cmd->pBase->flSideMove;
-		cmd->pBase->flSideMove = 1.f;
-	}
-	else if ( cmd->pBase->flSideMove < -1.f ) {
-		cmd->pBase->flForwardMove /= -cmd->pBase->flSideMove;
-		cmd->pBase->flSideMove = -1.f;
-	}
+	//Features::Movement.ClampMovement( cmd );
 
 	ctx.m_flForwardmove = cmd->pBase->flForwardMove;
 	ctx.m_flSidemove = cmd->pBase->flSideMove;

@@ -83,7 +83,7 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	if ( !CalcWorldSpaceBones )
 		return;
 
-	//CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
+	CalcWorldSpaceBones( skeleton, FLAG_HITBOX );
 
 	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 

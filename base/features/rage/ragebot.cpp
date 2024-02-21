@@ -156,13 +156,6 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 	if ( !model.IsValid( ) )
 		return 0.f;
 
-	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
-	const auto& bone{ hitbox.GetBoneIndex( model.operator CModel * ( ) ) };
-
-	const auto point{ record->m_arrBones[ bone ].m_vecPosition };
-
-	PenetrationData_t data{ };
-
 	const auto weaponServices{ localPawn->m_pWeaponServices( ) };
 	if ( !weaponServices )
 		return 0.f;
@@ -175,16 +168,38 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 	if ( !weaponData )
 		return 0.f;
 
+	int dmg{ };
+
 	CLagBackup backup{ this->m_pEntry->m_pPawn };
 
-	record->Apply( this->m_pEntry->m_pPawn );
+	for ( const auto& hb : hitgroups ) {
+		auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
+		const auto& bone{ hitbox.GetBoneIndex( model.operator CModel * ( ) ) };
 
-	const auto headPos{ ( localPawn->m_vOldOrigin( ) + localPawn->m_vecViewOffset( ) ) };
-	const auto success{ Features::Penetration.FireBullet( headPos, point, localPawn, this->m_pEntry->m_pPawn, weaponData, data ) };
+		const auto point{ record->m_arrBones[ bone ].m_vecPosition };
+
+		PenetrationData_t data{ };
+
+		record->Apply( this->m_pEntry->m_pPawn );
+
+		const auto headPos{ ( localPawn->GetAbsOrigin( ) + localPawn->m_vecViewOffset( ) ) };
+
+		const auto success{ 
+			Features::Penetration.FireBullet( headPos, point, localPawn, this->m_pEntry->m_pPawn, weaponData, data ) 
+		};
+		if ( !success )
+			continue;
+
+		if ( data.m_flDamage > dmg )
+			dmg = data.m_flDamage;
+
+		if ( data.m_iHitGroup == HITGROUP_HEAD )
+			break;
+	}
 
 	backup.Apply( this->m_pEntry->m_pPawn );
 
-	return data.m_flDamage;
+	return dmg;
 }
 
 void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
@@ -236,7 +251,7 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	auto& record{ m_cData.m_pRecord };
 
-	cmd->pBase->pViewangles->angValue = angle;
+	//cmd->pBase->pViewangles->angValue = angle;
 	cmd->pBase->nTickCount = record->m_nPlayerTickCount;
 
 	static auto loc{ Memory::FindPattern( CLIENT_DLL, "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 70 48 8B F9 48 8D 44 24" ) };

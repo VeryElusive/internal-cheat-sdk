@@ -86,8 +86,8 @@ void CMovement::AutoStrafer( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	const float newSide{ std::sin( rot ) * cmd->pBase->flForwardMove + std::cos( rot ) * cmd->pBase->flSideMove };
 
 	// TODO: properly do toggle.
-	cmd->m_cButtonStates.m_iHeld &= ~( IN_BACK | IN_FORWARD | IN_MOVELEFT | IN_MOVERIGHT );
-	cmd->m_cButtonStates.m_iToggle &= ~( IN_BACK | IN_FORWARD | IN_MOVELEFT | IN_MOVERIGHT );
+	//cmd->m_cButtonStates.m_iHeld &= ~( IN_BACK | IN_FORWARD | IN_MOVELEFT | IN_MOVERIGHT );
+	//cmd->m_cButtonStates.m_iToggle &= ~( IN_BACK | IN_FORWARD | IN_MOVELEFT | IN_MOVERIGHT );
 
 	cmd->pBase->flForwardMove = std::clamp( newForward, -1.f, 1.f );
 	cmd->pBase->flSideMove = std::clamp( newSide * -1.f, -1.f, 1.f );
@@ -101,6 +101,8 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 
 	if ( cmd->pBase->pViewangles->angValue.y == wishAngle )
 		return;
+
+	const auto oldMovementLength{ cmd->pBase->flForwardMove * cmd->pBase->flForwardMove + cmd->pBase->flSideMove * cmd->pBase->flSideMove };
 
 	wishAngle = std::remainderf( wishAngle, 360.f );
 
@@ -124,4 +126,17 @@ void CMovement::MoveMINTFix( C_CSPlayerPawn* local, CUserCmd* cmd, float wishAng
 
 	auto v60 = std::sin( v58 ) * sideMove;
 	cmd->pBase->flSideMove = v60 - ( std::sin( v57 ) * forwardMove );
+
+	ClampMovement( cmd, oldMovementLength );
+}
+
+void CMovement::ClampMovement( CUserCmd* cmd, const float oldMovementLength ) {
+	const auto curLength{ ( cmd->pBase->flForwardMove * cmd->pBase->flForwardMove + cmd->pBase->flSideMove * cmd->pBase->flSideMove ) };
+	if ( curLength ) {
+		float scale = oldMovementLength / curLength;
+		if ( scale != 1.f ) {
+			cmd->pBase->flForwardMove *= scale;
+			cmd->pBase->flSideMove *= scale;
+		}
+	}
 }
