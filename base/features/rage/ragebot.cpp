@@ -184,8 +184,8 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 
 		const auto headPos{ ( localPawn->GetAbsOrigin( ) + localPawn->m_vecViewOffset( ) ) };
 
-		const auto success{ 
-			Features::Penetration.FireBullet( headPos, point, localPawn, this->m_pEntry->m_pPawn, weaponData, data ) 
+		const auto success{
+			Features::Penetration.FireBullet( headPos, point, localPawn, this->m_pEntry->m_pPawn, weaponData, data )
 		};
 		if ( !success )
 			continue;
@@ -251,8 +251,10 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	auto& record{ m_cData.m_pRecord };
 
-	//cmd->pBase->pViewangles->angValue = angle;
+	cmd->pBase->pViewangles->angValue = angle;
 	cmd->pBase->nTickCount = record->m_nPlayerTickCount;
+
+	//Interfaces::Input->SetViewAngles( angle );
 
 	static auto loc{ Memory::FindPattern( CLIENT_DLL, "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 70 48 8B F9 48 8D 44 24" ) };
 
@@ -265,7 +267,7 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Interfaces::Input->m_pSubTickData->m_iPlayerTick = record->m_nPlayerTickCount;
 	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = 0.f;// record->m_flPlayerTickFraction;
 
-	if ( record->m_flPlayerTickFraction > 0.0099999998f )
+	if ( record->m_flPlayerTickFraction > 0.01f )
 		++Interfaces::Input->m_pSubTickData->m_iPlayerTick;
 
 	struct data_t {
@@ -279,15 +281,15 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	func( m_cData.m_pEntry->m_pPawn->m_pGameSceneNode( ), &cl_interp, &sv_interp0, &sv_interp1, &Interfaces::Input->m_pSubTickData->m_iPlayerTick );
 
 	Interfaces::Input->m_pSubTickData->m_iPlayerTick = backupTick;
-	//Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;
+	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;
+
+	//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+	//cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
 
 	for ( int i{ }; i < cmd->cmd.m_iSize; ++i ) {
 		const auto subTick{ cmd->cmd.GetInputHistoryEntry( i ) };
 
 		//const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
-
-		//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
-		//cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
 
 		if ( subTick->pTargetViewCmd )
 			subTick->pTargetViewCmd->angValue = angle;

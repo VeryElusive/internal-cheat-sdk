@@ -59,7 +59,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	//ctx.m_flRenderTickFraction = Interfaces::Input->m_pSubTickData->m_flRenderTickFraction;
 	//ctx.m_iRenderTick = Interfaces::Input->m_pSubTickData->m_iRenderTick;
-	if ( Interfaces::Input->m_iCommandPassCount == 1 )
+	//if ( Interfaces::Input->m_iCommandPassCount == 1 )
 		Features::LagCompensation.Main( );
 
 	Features::Movement.Main( localPawn, cmd );

@@ -2,7 +2,7 @@
 #include <cinttypes>
 
 #define TICKS_TO_TIME( ticks ) ( static_cast< float >( ticks ) / 64.f )
-#define TIME_TO_TICKS( timez ) static_cast< int >( ( timez * 64 ) + 0.5f )
+#define TIME_TO_TICKS( timez ) static_cast< int >( ( timez * 64.f ) + 0.5f )
 
 class CGlobalVarsBase {
 public:

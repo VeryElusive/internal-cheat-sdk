@@ -97,33 +97,28 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	//skeleton->m_vecAbsOrigin( ) = entry.m_pPawn->GetAbsOrigin( ) = backupAbsOrigin;
 }
 
-float calc_lerp( ) noexcept {
-	//CVAR( cl_interp );
-
-	const auto cl_interp_val{ 0.03125f };
-
-	auto lerp = cl_interp_val / 64.f;
-
-	if ( lerp <= cl_interp_val )
-		lerp = cl_interp_val;
-
-	return lerp;
-}
-
-
 bool CLagRecord::IsRecordValid( ) const {
-	//return Interfaces::GlobalVars->m_nTickCount - 12 <= this->m_nAddedTickCount;
-
 	CVAR( sv_maxunlag );
-	//const auto nci = Interfaces::Engine->GetNetChannelInfo( );
-	//if ( !nci )
-	//	return std::numeric_limits<float>::max( );
 
-	const auto latency = 0.f;// nci->get_latency( se::flow::FLOW_OUTGOING ) + nci->get_latency( se::flow::FLOW_INCOMING );
-	const float correct = std::clamp( latency + calc_lerp( ), 0.0f, sv_maxunlag->value.fl );
-	const float max_delta = sv_maxunlag->value.fl - correct;
+	// this will return 0 unless the server is retarded and modifies sv_maxunlag
+	const auto mod{ fmodf( sv_maxunlag->value.fl, 0.2f ) };
 
-	return Interfaces::GlobalVars->m_flCurTime - max_delta <= this->m_flSimulationTime;
+	const auto maxDelta{ TIME_TO_TICKS( sv_maxunlag->value.fl - mod ) };
+
+	const auto overlap{ 64.f * mod };
+	auto lastValid{ TIME_TO_TICKS( Interfaces::GlobalVars->m_flCurTime ) - maxDelta };
+	if ( overlap < 1.f - 0.01f ) {
+		if ( overlap <= 0.01f )
+			lastValid++;
+	}
+	//else
+	//	lastValid--;
+
+	lastValid--;
+
+	const auto simticks{ TIME_TO_TICKS( this->m_flSimulationTime ) };
+
+	return lastValid < simticks;
 }
 
 void CLagRecord::Apply( C_CSPlayerPawn* pawn ) const {
