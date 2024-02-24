@@ -116,9 +116,7 @@ bool CLagRecord::IsRecordValid( ) const {
 
 	lastValid--;
 
-	const auto simticks{ TIME_TO_TICKS( this->m_flSimulationTime ) };
-
-	return lastValid < simticks;
+	return lastValid < TIME_TO_TICKS( this->m_flSimulationTime );
 }
 
 void CLagRecord::Apply( C_CSPlayerPawn* pawn ) const {

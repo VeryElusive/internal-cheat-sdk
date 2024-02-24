@@ -26,6 +26,7 @@ using fnGetBoneIndexFromHitbox = __int64( __fastcall* ) ( void*, unsigned int );
 using fnInitCSGOInterpolationInfoPB = __int64( __fastcall* ) ( __int64 );
 using fnResetSubTickElement = __int64( __fastcall* ) ( __int64 );
 using fnGetButtonState = __int64*( __fastcall* ) ( void*, int );
+using fnSetupInterpolationFractions = bool( __fastcall* ) ( void*, void*, void*, void*, void* );
 
 namespace Displacement {
 	void Init( );
@@ -53,6 +54,8 @@ namespace Displacement {
 	inline fnGetBoneIndexFromHitbox GetBoneIndexFromHitbox;
 
 	inline fnGetButtonState GetButtonState;
+
+	inline fnSetupInterpolationFractions SetupInterpolationFractions;
 
 	//inline fnInitCSGOInterpolationInfoPB InitCSGOInterpolationInfoPB;
 	//inline fnInitCSGOInterpolationInfoPB ResetSubTickElement;

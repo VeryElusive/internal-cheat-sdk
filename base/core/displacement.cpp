@@ -16,6 +16,7 @@ void Displacement::Init( ) {
 	HandleBulletPenetration = reinterpret_cast< fnHandleBulletPenetration >( Memory::FindPattern( CLIENT_DLL, _( "48 8B C4 44 89 48 20 55 57 41 55" ) ) );
 	GetBoneIndexFromHitbox = reinterpret_cast< fnGetBoneIndexFromHitbox >( Memory::FindPattern( CLIENT_DLL, _( "48 83 EC 08 83 79 10 00 44 8B D2 4C 8B C9 75 0A B8" ) ) );// first, not unique.
 	GetButtonState = reinterpret_cast< fnGetButtonState >( Memory::FindPattern( CLIENT_DLL, _( "4C 63 C2 4B 8D 04 40 8B 84 C1 ? ? ? ? 85 C0 74 19" ) ) );
+	SetupInterpolationFractions = reinterpret_cast< fnSetupInterpolationFractions >( Memory::FindPattern( CLIENT_DLL, "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC 70 48 8B F9 48 8D 44 24" ) ) );
 	FindVarMaterial = reinterpret_cast< fnFindVarMaterial >( Memory::FindPattern( PARTICLES_DLL, _( "48 89 5C 24 08 57 48 81 EC C0 00 00 00 33 C0 8B" ) ) );
 
 
