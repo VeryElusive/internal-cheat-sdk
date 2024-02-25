@@ -1,6 +1,8 @@
 #include "menu.h"
 #include "abuse.h"
 
+int weaponGroup{ };
+
 void Menu::Register( ) {
 	m_cTabs[ 0 ].m_szName = "A";
 	m_cTabs[ 1 ].m_szName = "F";
@@ -13,9 +15,33 @@ void Menu::Register( ) {
 		auto generalGroup{ aimbot->AddGroup( "General", 1.f ) };
 		{
 			generalGroup->Register( ( "Enable" ), &Configs::m_cConfig.m_bRageBotEnable );
+			//generalGroup->Register( ( "Weapon group" ), &weaponGroup, 9, RagebotWeaponGroups );
+			generalGroup->Register( ( "Auto fire" ), &Configs::m_cConfig.m_bRageBotAutoFire );
+			generalGroup->Register( ( "Auto scope" ), &Configs::m_cConfig.m_bRageBotAutoScope );
+			generalGroup->Register( ( "Silent aim" ), &Configs::m_cConfig.m_bRageBotSilentAim );
 
+			generalGroup->Register( ( "Hitchance" ), &Configs::m_cConfig.m_iRageBotHitchance, 0, 100 );
+
+			generalGroup->Register( ( "Minimum damage" ), &Configs::m_cConfig.m_iRageBotMinimumDamage, 0, 100 );
+			generalGroup->Register( ( "Scale damage" ), &Configs::m_cConfig.m_bRageBotScaleDamage );
+			generalGroup->Register( ( "Penetrate walls" ), &Configs::m_cConfig.m_bRageBotAutowall );
+			generalGroup->Register( ( "Minimum penetration damage" ), &Configs::m_cConfig.m_iRageBotMinimumPenetrationDamage, 0, 100, SHOW( Configs::m_cConfig.m_bRageBotAutowall ) );
+			generalGroup->Register( ( "Minimum damage overide" ), &Configs::m_cConfig.m_bRageBotOverrideDamage );
+			generalGroup->Register( &Configs::m_cConfig.m_kRageBotOverrideDamage );
+			generalGroup->Register( ( "Minimum damage override" ), &Configs::m_cConfig.m_iRageBotMinimumOverrideDamage, 0, 100 );
+
+			generalGroup->Register( ( "Auto stop" ), &Configs::m_cConfig.m_bRageBotAutostop );
+			generalGroup->Register( ( "Move between shots" ), &Configs::m_cConfig.m_bRageBotAutostopMoveBetweenShots );
 		}
-		auto otherGroup{ aimbot->AddGroup( "Other", 0.6f ) };
+		auto selectionGroup{ aimbot->AddGroup( "Selection", 0.6f ) };
+		{
+			selectionGroup->Register( ( "Hitboxes" ), 9, hitboxes );
+			selectionGroup->Register( ( "Multipoint hitboxes" ), 9, multipoints );
+
+			generalGroup->Register( ( "Static point scale" ), &Configs::m_cConfig.m_bRageBotStaticPoints );
+			generalGroup->Register( ( "Head point scale" ), &Configs::m_cConfig.m_iRageBotHeadPointScale, 0, 100, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
+			generalGroup->Register( ( "Body point scale" ), &Configs::m_cConfig.m_iRageBotBodyPointScale, 0, 100, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
+		}
 		auto exploitsGroup{ aimbot->AddGroup( "Exploits", 0.4f ) };
 		{
 			exploitsGroup->Register( ( "Rapidfire" ), &Configs::m_cConfig.m_bRapidFire );

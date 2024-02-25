@@ -90,6 +90,109 @@ void CAimTarget::SelectBetterTarget( const CAimTarget& compareTarget ) {
 		*this = compareTarget;
 }
 
+void SetupHitboxes( std::vector< int >& hitboxes ) {
+	int hitboxCount{ };
+	for ( int i{ }; i < 9; ++i ) {
+		if ( Configs::m_cConfig.m_bRageBotHitboxes[ i ] ) {
+			if ( i == 6 )
+				hitboxCount += 4;
+			else if ( i == 7
+				|| i == 8 )
+				hitboxCount += 2;
+			else
+				++hitboxCount;
+		}
+	}
+
+	hitboxes.resize( hitboxCount );
+
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 1 ] )
+		hitboxes.push_back( HITBOX_UPPER_CHEST );
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 2 ] )
+		hitboxes.push_back( HITBOX_CHEST );
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 3 ] )
+		hitboxes.push_back( HITBOX_LOWER_CHEST );
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 4 ] )
+		hitboxes.push_back( HITBOX_STOMACH );
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 5 ] )
+		hitboxes.push_back( HITBOX_PELVIS );
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 6 ] ) {
+		hitboxes.push_back( HITBOX_RIGHT_UPPER_ARM );
+		hitboxes.push_back( HITBOX_RIGHT_FOREARM );
+		hitboxes.push_back( HITBOX_LEFT_UPPER_ARM );
+		hitboxes.push_back( HITBOX_LEFT_FOREARM );
+	}
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 7 ] ) {
+		hitboxes.push_back( HITBOX_RIGHT_CALF );
+		hitboxes.push_back( HITBOX_LEFT_CALF );
+	}
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 8 ] ) {
+		hitboxes.push_back( HITBOX_RIGHT_FOOT );
+		hitboxes.push_back( HITBOX_LEFT_FOOT );
+	}
+
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 0 ] )
+		hitboxes.push_back( HITBOX_HEAD );
+}
+
+void CAimTarget::ScanTarget( C_CSPlayerPawn* local ) {
+	std::vector< int > hitboxes{ };
+	SetupHitboxes( hitboxes );
+
+	const auto gameSceneNode{ this->m_pEntry->m_pPawn->m_pGameSceneNode( ) };
+	if ( !gameSceneNode )
+		return;
+
+	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+	if ( !skeleton )
+		return;
+
+	const auto hitboxSet{ this->m_pEntry->m_pPawn->GetHitboxSet( skeleton->m_nHitboxSet( ) ) };
+	if ( !hitboxSet
+		|| !hitboxSet->m_arrHitboxs )
+		return;
+
+	auto& model{ skeleton->m_modelState( ).m_hModel };
+	if ( !model.IsValid( ) )
+		return;
+
+	const auto weaponData{ ctx.GetWeaponData( ) };
+	if ( !weaponData )
+		return;
+
+	int mindmg{ std::max( Configs::m_cConfig.m_iRageBotMinimumPenetrationDamage, Configs::m_cConfig.m_iRageBotMinimumDamage ) };
+
+	if ( Configs::m_cConfig.m_bRageBotOverrideDamage
+		&& Configs::m_cConfig.m_kRageBotOverrideDamage.m_bEnabled )
+		mindmg = Configs::m_cConfig.m_iRageBotMinimumOverrideDamage;
+	else if ( Configs::m_cConfig.m_bRageBotScaleDamage )
+		mindmg *= this->m_pEntry->m_pPawn->m_iHealth( ) / 100.f;
+
+	for ( const auto& hb : hitboxes ) {
+		auto& hitbox{ hitboxSet->m_arrHitboxs[ hb ] };
+		const auto boneIndex{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
+
+		// TODO: prefer baim conditions
+		//if ( hb == HITBOX_HEAD && this->m_cPoint.m_bValid ) {
+
+		//}
+
+		auto damage{ static_cast< float >( weaponData->m_nDamage( ) ) };
+		Features::Penetration.ScaleDamage( hitbox.m_nGroupId, local, weaponData, damage );
+		if ( damage < mindmg )
+			continue;
+
+		int scale{ ( hb ? Configs::m_cConfig.m_iRageBotBodyPointScale : Configs::m_cConfig.m_iRageBotHeadPointScale ) };
+		if ( !Configs::m_cConfig.m_bRageBotStaticPoints ) {
+			// TODO:
+			scale = 100;
+		}
+
+		const auto scaleFloat{ static_cast< float >( scale ) / 100.f };
+		const auto bone{ this->m_pRecord->m_arrBones[ boneIndex ] };
+	}
+}
+
 void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
 	CLagRecord* oldestRecord{ };
 
@@ -138,7 +241,7 @@ void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
 }
 
 float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroups ) {
-	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+	const auto localPawn{ ctx.GetLocalPawn( ) };
 	if ( !localPawn )
 		return 0.f;
 
@@ -156,15 +259,7 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 	if ( !model.IsValid( ) )
 		return 0.f;
 
-	const auto weaponServices{ localPawn->m_pWeaponServices( ) };
-	if ( !weaponServices )
-		return 0.f;
-
-	const auto weapon{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSWeaponBase>( weaponServices->m_hActiveWeapon( ) ) };
-	if ( !weapon )
-		return 0.f;
-
-	const auto weaponData{ weapon->m_pWeaponData( ) };
+	const auto weaponData{ ctx.GetWeaponData( ) };
 	if ( !weaponData )
 		return 0.f;
 

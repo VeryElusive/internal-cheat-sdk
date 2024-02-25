@@ -12,13 +12,14 @@ public:
 	Vector m_vecMaxs{ };//0x24
 	MEM_PAD( 0x4 );//0x30
 	unsigned int m_nBoneNameHash{ };//0x34
-	MEM_PAD( 0x38 );// 0x38
+	int m_nGroupId{ };//0x38
+	MEM_PAD( 0x34 );// 0x3C
 
 	__int64 GetBoneIndex( void* model ) {
-		return Displacement::GetBoneIndexFromHitbox( reinterpret_cast< void* > ( reinterpret_cast< std::uintptr_t >( model ) + 0x130 ), m_nBoneNameHash );
+		return Displacement::GetBoneIndexFromHitbox( RECAST_AT_OFFSET( void*, model, 0x130 ), m_nBoneNameHash );
 	}
-
-}; // Size=0x70
+};
+static_assert ( sizeof( CHitbox ) == 0x70 );
 
 class CHitboxSet
 {

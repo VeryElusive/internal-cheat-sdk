@@ -9,6 +9,7 @@
 
 class C_CSPlayerPawn;
 class CCSPlayerController;
+class CCSWeaponBaseVData;
 
 struct BBox_t {
 	float x{ }, y{ }, w{}, h{ };
@@ -61,7 +62,7 @@ struct PlayerEntry_t {
 struct Context_t {
 	float m_flFrameTime{ };
 
-	CCSPlayerController* m_pLocal{ };
+	//CCSPlayerController* m_pLocal{ };
 
 	ViewMatrix_t m_matViewMatrix{ };
 
@@ -86,10 +87,13 @@ struct Context_t {
 	float m_flSidemove{ };
 	float m_flUpmove{ };
 
-	void GetLocal( ) {
-		const int index{ Interfaces::Engine->GetLocalPlayer( ) };
-		m_pLocal = Interfaces::GameResourceService->m_pGameEntitySystem->Get<CCSPlayerController>( index );
-	}
+	__forceinline CCSPlayerController* GetLocal( );
+	__forceinline C_CSPlayerPawn* GetPlayerPawn( CCSPlayerController* player );
+	__forceinline C_CSPlayerPawn* GetLocalPawn( );
+	__forceinline CCSWeaponBaseVData* GetWeaponData( C_CSPlayerPawn* local );
+	__forceinline CCSWeaponBaseVData* GetWeaponData( );
 };
 
 inline Context_t ctx;
+
+#include "havoc.inl"

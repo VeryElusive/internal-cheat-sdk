@@ -12,6 +12,8 @@ struct AimPoint_t {
 	float m_flDamage{ };
 
 	bool m_bPenetrated{ };
+
+	bool m_bValid{ };
 };
 
 struct PostCMoveData_t {
@@ -26,7 +28,7 @@ struct PostCMoveData_t {
 class CAimTarget {
 public:
 	CLagRecord* m_pRecord{ };
-	AimPoint_t* m_pPoint{ };
+	AimPoint_t m_cPoint{ };
 	PlayerEntry_t* m_pEntry{ };
 
 	int m_iBestDamage{ };
@@ -35,6 +37,7 @@ public:
 	void SelectBetterTarget( const CAimTarget& compareTarget );
 	float QuickScan( const CLagRecord* record, std::vector <int> hitgroups );
 	void Attack( C_CSPlayerPawn* local, CUserCmd* cmd );
+	void ScanTarget( C_CSPlayerPawn* local );
 };
 
 class CRageBot {

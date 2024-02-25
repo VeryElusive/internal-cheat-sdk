@@ -61,6 +61,24 @@ struct Config_t {
 
 #pragma region ragebot
 	bool m_bRageBotEnable{ };
+	bool m_bRageBotAutoFire{ };
+	bool m_bRageBotAutoScope{ };
+	bool m_bRageBotSilentAim{ };
+	int m_iRageBotHitchance{ };
+	int m_iRageBotMinimumDamage{ };
+	bool m_bRageBotAutowall{ };
+	int m_iRageBotMinimumPenetrationDamage{ };
+	bool m_bRageBotScaleDamage{ };
+	bool m_bRageBotOverrideDamage{ };
+	Keybind_t m_kRageBotOverrideDamage{ };
+	int m_iRageBotMinimumOverrideDamage{ };
+	bool m_bRageBotAutostop{ };
+	bool m_bRageBotAutostopMoveBetweenShots{ };
+	bool m_bRageBotHitboxes[ 9 ];
+	bool m_bRageBotMultipoint[ 9 ];
+	bool m_bRageBotStaticPoints{ };
+	int m_iRageBotHeadPointScale{ };
+	int m_iRageBotBodyPointScale{ };
 
 	bool m_bRapidFire{ };
 #pragma endregion ragebot

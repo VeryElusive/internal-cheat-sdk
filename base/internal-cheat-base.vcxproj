@@ -44,6 +44,7 @@
     <ClCompile Include="features\rage\ragebot.cpp" />
     <ClCompile Include="features\visuals\player_esp.cpp" />
     <ClCompile Include="features\visuals\visuals.cpp" />
+    <ClCompile Include="havoc.inl" />
     <ClCompile Include="hooks\bones.cpp" />
     <ClCompile Include="hooks\client.cpp" />
     <ClCompile Include="hooks\clientmode.cpp" />
