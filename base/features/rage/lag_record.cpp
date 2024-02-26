@@ -13,10 +13,12 @@ void CLagCompensation::Main( ) {
 	CVAR( sv_maxunlag );
 	const auto deadTicks{ Interfaces::GlobalVars->m_nTickCount - TIME_TO_TICKS( sv_maxunlag->value.fl ) };
 
+	const auto local{ ctx.GetLocal( ) };
+
 	for ( int i{ 1 }; i < Interfaces::Engine->GetMaxClients( ); ++i ) {
 		const auto ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
 		if ( !ent
-			|| ent == ctx.m_pLocal )
+			|| ent == local )
 			continue;
 
 		SchemaClassInfoData_t* classInfo{ };

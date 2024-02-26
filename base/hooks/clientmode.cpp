@@ -67,9 +67,11 @@ void __fastcall Hooks::hkOverrideView( void* rcx, CViewSetup* setup ) {
 	}
 
 
-	/*ctx.GetLocal( );
-	if ( ctx.m_pLocal && ctx.m_pLocal->m_bPawnIsAlive( ) ) {
-		const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+	const auto local{ ctx.GetLocal( ) };
+	if ( local 
+		&& local->m_bPawnIsAlive( )
+		&& Interfaces::Input->m_bCameraInThirdPerson ) {
+		const auto localPawn{ ctx.GetPlayerPawn( local ) };
 		if ( localPawn ) {
 			const auto estViewOffset{ setup->m_vecOrigin - localPawn->m_pGameSceneNode( )->m_vecAbsOrigin( ) };
 
@@ -100,7 +102,7 @@ void __fastcall Hooks::hkOverrideView( void* rcx, CViewSetup* setup ) {
 			if ( std::abs( estViewOffset.z - average ) )
 				setup->m_vecOrigin.z += ( average - estViewOffset.z );
 		}
-	}*/
+	}
 
 	return og( rcx, setup );
 }

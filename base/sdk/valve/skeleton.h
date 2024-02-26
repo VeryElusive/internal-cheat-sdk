@@ -16,7 +16,7 @@ public:
 	MEM_PAD( 0x34 );// 0x3C
 
 	__int64 GetBoneIndex( void* model ) {
-		return Displacement::GetBoneIndexFromHitbox( RECAST_AT_OFFSET( void*, model, 0x130 ), m_nBoneNameHash );
+		return Displacement::GetBoneIndexFromHitbox( reinterpret_cast< void* > ( reinterpret_cast< std::uintptr_t >( model ) + 0x130 ), m_nBoneNameHash );
 	}
 };
 static_assert ( sizeof( CHitbox ) == 0x70 );

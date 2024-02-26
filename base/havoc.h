@@ -87,13 +87,13 @@ struct Context_t {
 	float m_flSidemove{ };
 	float m_flUpmove{ };
 
-	__forceinline CCSPlayerController* GetLocal( );
-	__forceinline C_CSPlayerPawn* GetPlayerPawn( CCSPlayerController* player );
-	__forceinline C_CSPlayerPawn* GetLocalPawn( );
-	__forceinline CCSWeaponBaseVData* GetWeaponData( C_CSPlayerPawn* local );
-	__forceinline CCSWeaponBaseVData* GetWeaponData( );
+	CCSPlayerController* GetLocal( );
+	C_CSPlayerPawn* GetPlayerPawn( CCSPlayerController* player );
+	C_CSPlayerPawn* GetLocalPawn( );
+	CCSWeaponBaseVData* GetWeaponData( C_CSPlayerPawn* local );
+	CCSWeaponBaseVData* GetWeaponData( );
 };
 
 inline Context_t ctx;
 
-#include "havoc.inl"
+//#include "havoc.inl"

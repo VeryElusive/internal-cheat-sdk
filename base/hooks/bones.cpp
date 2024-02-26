@@ -18,8 +18,7 @@ void __fastcall Hooks::hkCalcWorldSpaceBones( void* rcx, int flags ) {
 
 	auto skeleton{ ( ( CSkeletonInstance* ) rcx ) };
 
-	ctx.GetLocal( );
-	if ( !ctx.m_pLocal )
+	if ( !ctx.GetLocal( ) )
 		return og( rcx, flags );
 
 	const auto pawn{ skeleton->m_pPawn( ) };

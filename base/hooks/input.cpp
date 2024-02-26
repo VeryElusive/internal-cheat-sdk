@@ -22,15 +22,15 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
-	ctx.GetLocal( );
-	if ( !ctx.m_pLocal 
-		|| !ctx.m_pLocal->m_bPawnIsAlive( ) )
+	const auto local{ ctx.GetLocal( ) };
+	if ( !local
+		|| !local->m_bPawnIsAlive( ) )
 		return og( rcx, edx, a3 );
 
 	if ( !cmd->pBase )
 		return og( rcx, edx, a3 );
 
-	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+	const auto localPawn{ ctx.GetPlayerPawn( local ) };
 	if ( !localPawn )
 		return og( rcx, edx, a3 );
 

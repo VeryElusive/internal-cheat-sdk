@@ -16,11 +16,7 @@ void __fastcall Hooks::hkFrameStageNotify( void* rcx, int frameStage ) {
 		break;
 	}
 
-	ctx.GetLocal( );
-	if ( !ctx.m_pLocal )
-		return og( rcx, frameStage );
-
-	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+	const auto localPawn{ ctx.GetLocalPawn( ) };
 	if ( !localPawn )
 		return og( rcx, frameStage );
 

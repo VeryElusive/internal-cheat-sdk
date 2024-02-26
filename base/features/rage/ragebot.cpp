@@ -254,6 +254,8 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 		return 0.f;
 
 	const auto hitboxSet{ this->m_pEntry->m_pPawn->GetHitboxSet( skeleton->m_nHitboxSet( ) ) };
+	if ( !hitboxSet )
+		return 0.f;
 
 	auto& model{ skeleton->m_modelState( ).m_hModel };
 	if ( !model.IsValid( ) )
@@ -268,8 +270,10 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 	CLagBackup backup{ this->m_pEntry->m_pPawn };
 
 	for ( const auto& hb : hitgroups ) {
-		auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
-		const auto& bone{ hitbox.GetBoneIndex( model.operator CModel * ( ) ) };
+		auto& hitbox{ hitboxSet->m_arrHitboxs[ hb ] };
+		const auto bone{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
+		if ( bone > 128 || bone < 0 )
+			continue;
 
 		const auto point{ record->m_arrBones[ bone ].m_vecPosition };
 

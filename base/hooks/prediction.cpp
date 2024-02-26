@@ -6,7 +6,7 @@
 void Hooks::hkPredictionUpdate( void* rcx, int a2, int a3 ) {
 	const auto og{ PredictionUpdate.Original<decltype( &hkPredictionUpdate )>( ) };
 
-	const auto localPawn{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+	const auto localPawn{ ctx.GetLocalPawn( ) };
 	if ( !localPawn )
 		return;
 

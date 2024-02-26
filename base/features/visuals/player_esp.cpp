@@ -78,7 +78,7 @@ bool CVisuals::GetBBox( const C_CSPlayerPawn* pawn, BBox_t& bbox ) {
 }
 
 void CVisuals::HandlePlayer( PlayerEntry_t& entry ) {
-	const C_CSPlayerPawn* local{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSPlayerPawn>( ctx.m_pLocal->m_hPawn( ) ) };
+	const auto local{ ctx.GetLocalPawn( ) };
 
 	uint8_t type{ ESP_TYPE::ENEMY };
 

@@ -6,7 +6,7 @@
 #include "../../utils/render/render.h"
 
 void CVisuals::Main( ) {
-	if ( !ctx.m_pLocal )
+	if ( !ctx.GetLocal( ) )
 		return;
 
 	Render::Text( { 300, 500 }, ( "fw: " + std::to_string( ctx.m_flForwardmove ) ).c_str( ), Color( 255,255,255 ), 0, 13, Render::Fonts.NameESP );
