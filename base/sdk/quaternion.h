@@ -55,6 +55,46 @@ struct Quaternion
 		return matOut;
 	}
 
+	Quaternion Conjugate( ) const {
+		return Quaternion( w, -x, -y, -z );
+	}
+
+	Quaternion operator*( const Vector& v ) const {
+		// Efficiently calculate using Hamilton product
+		float wx = w * x;
+		float wy = w * y;
+		float wz = w * z;
+		float xx = x * x;
+		float xy = x * y;
+		float xz = x * z;
+		float yx = y * x;
+		float yy = y * y;
+		float yz = y * z;
+		float zx = z * x;
+		float zy = z * y;
+		float zz = z * z;
+
+		return Quaternion(
+			w * v.x - wy - xz + zy,
+			wx + xy - yz - zz,
+			wx + yx - zx - zy,
+			wz + yz + xy - xx );
+	};
+
+	Quaternion operator*( const Quaternion& other ) const {
+		// Efficiently calculate using Hamilton product
+		float w1 = w, x1 = x, y1 = y, z1 = z;
+		float w2 = other.w, x2 = other.x, y2 = other.y, z2 = other.z;
+
+		return Quaternion(
+			w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2,
+			w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
+			w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
+			w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2 );
+	}
+
+
+
 	float x, y, z, w;
 };
 

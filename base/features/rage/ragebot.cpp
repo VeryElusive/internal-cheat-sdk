@@ -42,7 +42,7 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( !bestTarget.m_pRecord )
 		return;
 
-	bestTarget.Attack( local, cmd );
+	bestTarget.ScanTarget( local );
 }
 
 bool CRageBot::CanFire( C_CSPlayerPawn* local ) {
@@ -210,98 +210,29 @@ void CAimTarget::ScanTarget( C_CSPlayerPawn* local ) {
 	}
 }
 
+Vector rotateAroundCenter( const Vector& center, float radius, float angleDegrees, Vector4D rotation ) {
+	// Convert angle from degrees to radians
+	float angleRadians = angleDegrees * M_PI / 180.0;
+
+	// Calculate new position
+	float newX = center.x + radius * cos( angleRadians + rotation.y * M_PI / 180.0 );
+	float newY = center.y + radius * sin( angleRadians + rotation.y * M_PI / 180.0 );
+	float newZ = center.z + rotation.z; // Add rotation around Z-axis
+
+	return { newX, newY, newZ };
+}
+
 void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, const float scale, std::vector< int > hitboxes ) {
+	const auto local{ ctx.GetLocalPawn( ) };
 
-	const auto localPawn{ ctx.GetLocalPawn( ) };
+	const auto radius{ hitbox.m_flShapeRadius * scale };
 
-	const auto eyePos{ ( localPawn->GetAbsOrigin( ) + localPawn->m_vecViewOffset( ) ) };
+	const auto center{ bone.m_vecPosition + ( ( hitbox.m_vecMins + hitbox.m_vecMaxs ) / 2.f ) };
 
-	const auto hitbox_min{ bone.m_vecPosition + hitbox.m_vecMins };
-	const auto hitbox_max{ bone.m_vecPosition + hitbox.m_vecMaxs };
+	Vector angleForward{ };
+	Math::VectorAngles( center - local->GetAbsOrigin( ), angleForward );
 
-	auto forward_dir = ( bone.m_vecPosition - eyePos ).Normalized( );
-	auto cylinder_dir = ( hitbox_max - hitbox_min ).Normalized( );
-
-	auto cross = cylinder_dir.Cross( forward_dir );
-	Vector forward_ang;
-	Math::VectorAngles( forward_dir, forward_ang );
-
-	Vector right, up;
-
-	if ( hitboxIndex == HITBOX_HEAD ) {
-		Vector cross_ang;
-		Math::VectorAngles( cross, cross_ang );
-		Math::AngleVectors( cross_ang, nullptr, &right, &up );
-		cross_ang.z = forward_ang.x;
-
-		auto tmp{ cross };
-		cross = right;
-		right = tmp;
-	}
-	else
-		Math::VectorVectors( forward_dir, up, right );
-
-	RayTracer::Hitbox box( hitbox_min, hitbox_max, hitbox.m_flShapeRadius );
-	RayTracer::Trace trace;
-
-	if ( hitboxIndex == HITBOX_HEAD ) {
-		Vector middle = ( right.Normalized( ) + up.Normalized( ) ) * 0.5f;
-		Vector middle0 = ( right.Normalized( ) - up.Normalized( ) ) * 0.5f;
-
-		// bottom
-		RayTracer::Ray ray = RayTracer::Ray( eyePos, bone.m_vecPosition - ( up * 1000.0f ) );
-		RayTracer::TraceFromCenter( ray, box, trace, RayTracer::Flags_RETURNEND );
-
-		ScanPoint( ( ( trace.m_traceEnd - bone.m_vecPosition ) * scale ) + bone.m_vecPosition, 
-			hitbox, hitboxes );
-
-		// top
-		ray = RayTracer::Ray( eyePos, bone.m_vecPosition + ( up * 1000.0f ) );
-		RayTracer::TraceFromCenter( ray, box, trace, RayTracer::Flags_RETURNEND );
-
-		ScanPoint( ( ( trace.m_traceEnd - bone.m_vecPosition ) * scale ) + bone.m_vecPosition,
-			hitbox, hitboxes );
-
-		ScanPoint( bone.m_vecPosition, hitbox, hitboxes );
-
-		// left
-		ray = RayTracer::Ray( eyePos, bone.m_vecPosition + ( middle * 1000.0f ) );
-		RayTracer::TraceFromCenter( ray, box, trace, RayTracer::Flags_RETURNEND );
-
-		ScanPoint( ( ( trace.m_traceEnd - bone.m_vecPosition ) * scale ) + bone.m_vecPosition,
-			hitbox, hitboxes );
-
-		// right
-		ray = RayTracer::Ray( eyePos, bone.m_vecPosition - ( middle0 * 1000.0f ) );
-		RayTracer::TraceFromCenter( ray, box, trace, RayTracer::Flags_RETURNEND );
-
-		ScanPoint( ( ( trace.m_traceEnd - bone.m_vecPosition ) * scale ) + bone.m_vecPosition,
-			hitbox, hitboxes );
-	}
-	else {
-		ScanPoint( bone.m_vecPosition, hitbox, hitboxes );
-
-		// left
-		RayTracer::Ray ray = RayTracer::Ray( eyePos, bone.m_vecPosition - ( up * 1000.0f ) );
-		RayTracer::TraceFromCenter( ray, box, trace, RayTracer::Flags_RETURNEND );
-
-		ScanPoint( ( ( trace.m_traceEnd - bone.m_vecPosition ) * scale ) + bone.m_vecPosition,
-			hitbox, hitboxes );
-
-		// right
-		ray = RayTracer::Ray( eyePos, bone.m_vecPosition + ( up * 1000.0f ) );
-		RayTracer::TraceFromCenter( ray, box, trace, RayTracer::Flags_RETURNEND );
-
-		ScanPoint( ( ( trace.m_traceEnd - bone.m_vecPosition ) * scale ) + bone.m_vecPosition,
-			hitbox, hitboxes );
-	}
-
-	const auto r{ hitbox.m_flShapeRadius * scale };
-
-	// rotation matrix 45 degrees.
-	// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
-	// std::cos( deg_to_rad( 45.f ) )
-	constexpr float rotation{ 0.70710678f };
+	Vector angleTmp{ };
 
 	switch ( hitboxIndex ) {
 	case HITBOX_HEAD:
@@ -315,13 +246,27 @@ void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbo
 			hitbox, hitboxes
 		);*/
 
-		ScanPoint( {
+		// left.
+		angleTmp = angleForward;
+		angleTmp.y += 90.f;
+
+		ScanPoint( rotateAroundCenter( center, radius, angleTmp.y, bone.m_vecRotation ),
+			hitbox, hitboxes );
+
+		// right.
+		angleTmp = angleForward;
+		angleTmp.y -= 90.f;
+
+		ScanPoint( rotateAroundCenter( center, radius, angleTmp.y, bone.m_vecRotation ),
+			hitbox, hitboxes );
+
+		/*ScanPoint( {
 				bone.m_vecPosition.x + hitbox.m_vecMaxs.x,
 				bone.m_vecPosition.y + hitbox.m_vecMaxs.y,
 				bone.m_vecPosition.z + hitbox.m_vecMaxs.z - r
 			},
 			hitbox, hitboxes
-		);
+		);*/
 
 		// left.
 		/*ScanPoint(

@@ -13,7 +13,7 @@ struct Vector {
 
 	float Dot( const Vector& v ) const {
 		return ( this->x * v.x +
-			this->y * v.y );
+			this->y * v.y + this->z * v.z );
 	}
 
 	float LengthSquared( ) const {
