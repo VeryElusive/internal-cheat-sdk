@@ -93,6 +93,27 @@ namespace Math {
 		angView = { pitch, yaw, roll };
 	}
 
+	__forceinline void VectorVectors( const Vector& forward, Vector& right, Vector& up ) {
+		Vector tmp;
+
+		if ( fabs( forward.x ) < 1e-6 && fabs( forward.y ) < 1e-6 ) {
+			// pitch 90 degrees up/down from identity
+			right.x = 0;
+			right.y = -1;
+			right.z = 0;
+			up.x = -forward.z;
+			up.y = 0;
+			up.z = 0;
+		}
+		else {
+			tmp.x = 0; tmp.y = 0; tmp.z = 1.0;
+			right = forward.Cross( tmp );
+			right = right.Normalized( );
+			up = right.Cross( forward );
+			up = up.Normalized( );
+		}
+	}
+
 	__forceinline float AngleDiff( float srcAngle, float destAngle ) {
 		float delta; // xmm1_4
 

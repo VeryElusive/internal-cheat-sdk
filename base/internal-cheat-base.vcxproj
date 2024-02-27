@@ -71,6 +71,7 @@
     <ClCompile Include="sdk\utlmemory.cpp" />
     <ClCompile Include="sdk\valve\class_offsets.cpp" />
     <ClCompile Include="sdk\valve\trace.cpp" />
+    <ClCompile Include="utils\ray_tracer.cpp" />
     <ClCompile Include="utils\render\dxhook_uglyshit.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
     <ClCompile Include="utils\schema.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="sdk\valve\usercmd.h" />
     <ClInclude Include="sdk\vector.h" />
     <ClInclude Include="utils\math.h" />
+    <ClInclude Include="utils\ray_tracer.h" />
     <ClInclude Include="utils\render\render.h" />
     <ClInclude Include="utils\schema.h" />
     <ClInclude Include="utils\utils.h" />

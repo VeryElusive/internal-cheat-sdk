@@ -60,6 +60,9 @@ void CLagCompensation::Main( ) {
 void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 	auto cmd{ Interfaces::Input->GetUserCmd( ) };
 
+	if ( ctx.m_flRenderTickFraction > 0.01f )
+		++ctx.m_iRenderTick;
+
 	auto& record{ entry.Animations.m_vecLagRecords.emplace_back( entry.m_pPawn, ctx.m_iRenderTick, ctx.m_flRenderTickFraction, Interfaces::GlobalVars->m_nTickCount, ctx.m_flPlayerTickFraction ) };
 
 	const auto gameSceneNode{ entry.m_pPawn->m_pGameSceneNode( ) };

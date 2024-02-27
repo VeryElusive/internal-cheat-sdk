@@ -20,14 +20,11 @@ void __fastcall Hooks::hkFrameStageNotify( void* rcx, int frameStage ) {
 	if ( !localPawn )
 		return og( rcx, frameStage );
 
-	const auto backup{ localPawn->m_vecViewOffset( ) };
-
 	og( rcx, frameStage );
-
-	localPawn->m_vecViewOffset( ) = backup;
 
 	switch ( frameStage ) {
 	case FRAME_NET_UPDATE_END:
+		Features::LagCompensation.Main( );
 		break;
 	default:
 		break;

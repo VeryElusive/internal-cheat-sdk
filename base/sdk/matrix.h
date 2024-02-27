@@ -48,6 +48,38 @@ struct Matrix3x4_t
 		return arrData[ nIndex ];
 	}
 
+	Matrix3x4_t operator+( const Matrix3x4_t& other ) const {
+		Matrix3x4_t ret;
+		auto& m = arrData;
+		for ( int i = 0; i < 12; i++ ) {
+			( ( float* ) ret.arrData )[ i ] = ( ( float* ) m )[ i ] + ( ( float* ) other.arrData )[ i ];
+		}
+		return ret;
+	}
+
+	Matrix3x4_t operator*( const Matrix3x4_t& vm ) const {
+		return ConcatTransforms( vm );
+	}
+
+	Matrix3x4_t operator*( const float& other ) const {
+		Matrix3x4_t ret;
+		auto& m = arrData;
+		for ( int i = 0; i < 12; i++ ) {
+			( ( float* ) ret.arrData )[ i ] = ( ( float* ) m )[ i ] * other;
+		}
+		return ret;
+	}
+
+	Vector operator*( const Vector& vVec ) const {
+		auto& m = arrData;
+		Vector vRet;
+		vRet.x = m[ 0 ][ 0 ] * vVec.x + m[ 0 ][ 1 ] * vVec.y + m[ 0 ][ 2 ] * vVec.z + m[ 0 ][ 3 ];
+		vRet.y = m[ 1 ][ 0 ] * vVec.x + m[ 1 ][ 1 ] * vVec.y + m[ 1 ][ 2 ] * vVec.z + m[ 1 ][ 3 ];
+		vRet.z = m[ 2 ][ 0 ] * vVec.x + m[ 2 ][ 1 ] * vVec.y + m[ 2 ][ 2 ] * vVec.z + m[ 2 ][ 3 ];
+
+		return vRet;
+	}
+
 	Vector Transform( const Vector& vector ) const {
 		return {
 			vector.Dot( arrData[ 0 ] ) + arrData[ 0 ][ 3 ],

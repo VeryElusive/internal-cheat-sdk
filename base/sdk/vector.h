@@ -7,6 +7,10 @@ struct Vector {
 
 	Vector( ) {};
 
+	Vector Cross( const Vector& vecCross ) const {
+		return Vector( this->y * vecCross.z - this->z * vecCross.y, this->z * vecCross.x - this->x * vecCross.z, this->x * vecCross.y - this->y * vecCross.x );
+	}
+
 	float Dot( const Vector& v ) const {
 		return ( this->x * v.x +
 			this->y * v.y );
@@ -54,6 +58,12 @@ struct Vector {
 		this->z *= flRadius;
 
 		return flLength;
+	}
+
+	Vector Normalized( ) const {
+		Vector vecOut = *this;
+		vecOut.NormalizeInPlace( );
+		return vecOut;
 	}
 
 	bool operator==( const Vector& angBase ) const {
