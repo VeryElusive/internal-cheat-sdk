@@ -92,12 +92,12 @@ void CLagCompensation::AddRecord( PlayerEntry_t& entry ) {
 
 	std::memcpy( record.m_arrBones, &modelState.m_pBones[ 0 ], 128 * sizeof( CBoneData ) );
 
-	if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecOrigin( ) ) {
-		const auto delta{ gameSceneNode->m_vecOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
+	/*if ( entry.Animations.m_vecLastBoneOrigin != gameSceneNode->m_vecAbsOrigin( ) ) {
+		const auto delta{ gameSceneNode->m_vecAbsOrigin( ) - entry.Animations.m_vecLastBoneOrigin };
 
 		for ( std::int32_t i = 0; i < 128; ++i )
 			record.m_arrBones[ i ].m_vecPosition += delta;
-	}
+	}*/
 
 	//skeleton->m_vecAbsOrigin( ) = entry.m_pPawn->GetAbsOrigin( ) = backupAbsOrigin;
 }
