@@ -74,8 +74,8 @@ struct Config_t {
 	int m_iRageBotMinimumOverrideDamage{ };
 	bool m_bRageBotAutostop{ };
 	bool m_bRageBotAutostopMoveBetweenShots{ };
-	bool m_bRageBotHitboxes[ 9 ];
-	bool m_bRageBotMultipoint[ 9 ];
+	bool m_bRageBotHitboxes[ 8 ];
+	bool m_bRageBotMultipoint[ 8 ];
 	bool m_bRageBotStaticPoints{ };
 	int m_iRageBotHeadPointScale{ };
 	int m_iRageBotBodyPointScale{ };

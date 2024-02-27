@@ -76,6 +76,9 @@ struct Context_t {
 	HWND hwnd{ };
 
 	CBoneData DEBUGBacktrackBones[ 128u ]{ };//
+	C_CSPlayerPawn* DEBUGBactrackPawn{ };
+
+	Vector DEBUGPointPrintout[ 32 ];
 
 	float m_flRenderTickFraction{ };
 	int m_iRenderTick{ };

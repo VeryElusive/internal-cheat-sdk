@@ -45,11 +45,43 @@ void CVisuals::Main( ) {
 				Features::Visuals.HandlePlayer( entry );
 		}
 	}
+	if ( ctx.DEBUGBactrackPawn ) {
+		const auto gameSceneNode{ ctx.DEBUGBactrackPawn->m_pGameSceneNode( ) };
+		if ( !gameSceneNode )
+			return;
 
-	for ( std::int32_t i = 0; i < 128; ++i ) {
+		const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
+		if ( !skeleton )
+			return;
+
+		const auto modelState{ skeleton->m_modelState( ) };
+
+		const auto model{ modelState.m_hModel };
+		if ( !model.IsValid( ) )
+			return;
+
+		for ( std::int32_t i = 0; i < 128; ++i ) {
+			const auto boneFlag{ model->GetBoneFlags( i ) };
+			if ( !( boneFlag & FLAG_HITBOX ) )
+				continue;
+
+			const auto boneParentIndex{ model->GetBoneParent( i ) };
+			if ( boneParentIndex == -1 )
+				continue;
+
+			Vector2D screen{ };
+			Vector2D parentScreen{ };
+
+			if ( Render::WorldToScreen( ctx.DEBUGBacktrackBones[ i ].m_vecPosition, screen )
+				&& Render::WorldToScreen( ctx.DEBUGBacktrackBones[ boneParentIndex ].m_vecPosition, parentScreen ) )
+				Render::Line( screen, parentScreen, Color( 255, 255, 255 ) );
+		}
+	}
+
+	for ( std::int32_t i = 0; i < 32; ++i ) {
 		Vector2D screen{ };
 
-		if ( Render::WorldToScreen( ctx.DEBUGBacktrackBones[ i ].m_vecPosition, screen ) )
+		if ( Render::WorldToScreen( ctx.DEBUGPointPrintout[ i ], screen ) )
 			Render::RectFilled( screen, { 4, 4 }, Color( 255, 255, 255 ) );
 	}
 }

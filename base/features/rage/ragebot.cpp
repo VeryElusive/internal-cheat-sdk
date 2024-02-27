@@ -30,6 +30,9 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		target.m_pRecord = nullptr;
 		target.m_iBestDamage = 0;
 
+		if ( !entry.Animations.m_vecLagRecords.size( ) )
+			continue;
+
 		target.GetBestLagRecord( entry );
 
 		bestTarget.SelectBetterTarget( target );
@@ -38,7 +41,7 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( !bestTarget.m_pRecord )
 		return;
 
-	bestTarget.Attack( local, cmd );
+	bestTarget.ScanTarget( local );
 }
 
 bool CRageBot::CanFire( C_CSPlayerPawn* local ) {
@@ -92,12 +95,11 @@ void CAimTarget::SelectBetterTarget( const CAimTarget& compareTarget ) {
 
 void SetupHitboxes( std::vector< int >& hitboxes ) {
 	int hitboxCount{ };
-	for ( int i{ }; i < 9; ++i ) {
+	for ( int i{ }; i < 8; ++i ) {
 		if ( Configs::m_cConfig.m_bRageBotHitboxes[ i ] ) {
-			if ( i == 6 )
+			if ( i == 5 )
 				hitboxCount += 4;
-			else if ( i == 7
-				|| i == 8 )
+			else if ( i == 6 || i == 7 )
 				hitboxCount += 2;
 			else
 				++hitboxCount;
@@ -106,34 +108,36 @@ void SetupHitboxes( std::vector< int >& hitboxes ) {
 
 	hitboxes.resize( hitboxCount );
 
+	size_t index { };
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 1 ] )
-		hitboxes.push_back( HITBOX_UPPER_CHEST );
+		hitboxes[ index++ ] = HITBOX_UPPER_CHEST;
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 2 ] )
-		hitboxes.push_back( HITBOX_CHEST );
+		hitboxes[ index++ ] = HITBOX_CHEST;
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 3 ] )
-		hitboxes.push_back( HITBOX_LOWER_CHEST );
+		hitboxes[ index++ ] = HITBOX_LOWER_CHEST;
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 4 ] )
-		hitboxes.push_back( HITBOX_STOMACH );
-	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 5 ] )
-		hitboxes.push_back( HITBOX_PELVIS );
+		hitboxes[ index++ ] = HITBOX_STOMACH;
+	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 5 ] ) {
+		hitboxes[ index++ ] = HITBOX_RIGHT_UPPER_ARM;
+		hitboxes[ index++ ] = HITBOX_RIGHT_FOREARM;
+		hitboxes[ index++ ] = HITBOX_LEFT_UPPER_ARM;
+		hitboxes[ index++ ] = HITBOX_LEFT_FOREARM;
+	}
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 6 ] ) {
-		hitboxes.push_back( HITBOX_RIGHT_UPPER_ARM );
-		hitboxes.push_back( HITBOX_RIGHT_FOREARM );
-		hitboxes.push_back( HITBOX_LEFT_UPPER_ARM );
-		hitboxes.push_back( HITBOX_LEFT_FOREARM );
+		hitboxes[ index++ ] = HITBOX_RIGHT_CALF;
+		hitboxes[ index++ ] = HITBOX_LEFT_CALF;
 	}
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 7 ] ) {
-		hitboxes.push_back( HITBOX_RIGHT_CALF );
-		hitboxes.push_back( HITBOX_LEFT_CALF );
-	}
-	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 8 ] ) {
-		hitboxes.push_back( HITBOX_RIGHT_FOOT );
-		hitboxes.push_back( HITBOX_LEFT_FOOT );
+		hitboxes[ index++ ] = HITBOX_RIGHT_FOOT;
+		hitboxes[ index++ ] = HITBOX_LEFT_FOOT;
 	}
 
 	if ( Configs::m_cConfig.m_bRageBotHitboxes[ 0 ] )
-		hitboxes.push_back( HITBOX_HEAD );
+		hitboxes[ index++ ] = HITBOX_HEAD;
+
 }
+
+static int pointz{ };
 
 void CAimTarget::ScanTarget( C_CSPlayerPawn* local ) {
 	std::vector< int > hitboxes{ };
@@ -168,6 +172,13 @@ void CAimTarget::ScanTarget( C_CSPlayerPawn* local ) {
 	else if ( Configs::m_cConfig.m_bRageBotScaleDamage )
 		mindmg *= this->m_pEntry->m_pPawn->m_iHealth( ) / 100.f;
 
+	std::vector< Vector > points{ };
+
+	pointz = 0;
+	for ( int i{ }; i < 32; ++i ) {
+		ctx.DEBUGPointPrintout[ i ] = { 0,0,0 };
+	}
+
 	for ( const auto& hb : hitboxes ) {
 		auto& hitbox{ hitboxSet->m_arrHitboxs[ hb ] };
 		const auto boneIndex{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
@@ -182,18 +193,119 @@ void CAimTarget::ScanTarget( C_CSPlayerPawn* local ) {
 		if ( damage < mindmg )
 			continue;
 
-		int scale{ ( hb ? Configs::m_cConfig.m_iRageBotBodyPointScale : Configs::m_cConfig.m_iRageBotHeadPointScale ) };
+		int scale{ ( hb != HITBOX_HEAD ? Configs::m_cConfig.m_iRageBotBodyPointScale : Configs::m_cConfig.m_iRageBotHeadPointScale ) };
 		if ( !Configs::m_cConfig.m_bRageBotStaticPoints ) {
 			// TODO:
 			scale = 100;
 		}
 
+		if ( scale < 1 )
+			scale = 1;
+
 		const auto scaleFloat{ static_cast< float >( scale ) / 100.f };
 		const auto bone{ this->m_pRecord->m_arrBones[ boneIndex ] };
+
+		GenerateMultiPoints( bone, hitbox, hb, scaleFloat, hitboxes );
 	}
 }
 
+void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, const float scale, std::vector< int > hitboxes ) {
+	ScanPoint( bone.m_vecPosition, hitbox, hitboxes );
+
+	const auto r{ hitbox.m_flShapeRadius * scale };
+
+	// rotation matrix 45 degrees.
+	// https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
+	// std::cos( deg_to_rad( 45.f ) )
+	constexpr float rotation{ 0.70710678f };
+
+	switch ( hitboxIndex ) {
+	case HITBOX_HEAD:
+
+		// top.
+		/*ScanPoint(
+			{ bone.m_vecPosition.x + hitbox.m_vecMaxs.x,
+			  bone.m_vecPosition.y + hitbox.m_vecMaxs.y,
+			  bone.m_vecPosition.z + hitbox.m_vecMaxs.z + r
+			},
+			hitbox, hitboxes
+		);*/
+
+		// left.
+		ScanPoint(
+			{ bone.m_vecPosition.x,
+			  bone.m_vecPosition.y + ( hitbox.m_flShapeRadius * scale ),
+			  bone.m_vecPosition.z
+			},
+			hitbox, hitboxes
+		);
+
+		// right.
+		ScanPoint(
+			{ bone.m_vecPosition.x,
+			  bone.m_vecPosition.y - ( hitbox.m_flShapeRadius * scale ),
+			  bone.m_vecPosition.z
+			},
+			hitbox, hitboxes
+		);
+
+		// bottom.
+		/*ScanPoint(
+			{ bone.m_vecPosition.x + hitbox.m_vecMaxs.x,
+			  bone.m_vecPosition.y + hitbox.m_vecMaxs.y,
+			  bone.m_vecPosition.z + hitbox.m_vecMaxs.z - r
+			},
+			hitbox, hitboxes
+		);*/
+
+		// left.
+		/*ScanPoint(
+			{ bone.m_vecPosition.x + hitbox.m_vecMaxs.x,
+			  bone.m_vecPosition.y + hitbox.m_vecMaxs.y,
+			  bone.m_vecPosition.z + hitbox.m_vecMaxs.z - r
+			},
+			hitbox, hitboxes
+		);
+
+		// back.
+		ScanPoint(
+			{ bone.m_vecPosition.x + hitbox.m_vecMaxs.x,
+			  bone.m_vecPosition.y + hitbox.m_vecMaxs.y - r,
+			  bone.m_vecPosition.z + hitbox.m_vecMaxs.z
+			},
+			hitbox, hitboxes
+		);*/
+
+		// top/back 45 deg.
+		// this is the best spot to shoot at.
+		/*ScanPoint(
+			{ bone.m_vecPosition.x + hitbox.m_vecMaxs.x + ( rotation * r ),
+			  bone.m_vecPosition.y + hitbox.m_vecMaxs.y + ( -rotation * r ),
+			  bone.m_vecPosition.z + hitbox.m_vecMaxs.z
+			},
+			hitbox, hitboxes
+		);*/
+		break;
+	//case HITGROUP_CHEST:
+	//	ScanPoint( bone.m_vecPosition, hitbox, hitboxes );
+	default: break;
+	}
+
+}
+
+void CAimTarget::ScanPoint( const Vector point, const CHitbox& hitbox, std::vector<int> hitboxes ) {
+
+	if ( pointz < 32 )
+		ctx.DEBUGPointPrintout[ pointz ] = point;
+
+	++pointz;
+}
+
 void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
+
+	this->m_pRecord = &entry.Animations.m_vecLagRecords.back( ); this->m_iBestDamage = 100;
+	return;
+
 	CLagRecord* oldestRecord{ };
 
 	for ( auto& record : entry.Animations.m_vecLagRecords ) {
@@ -324,6 +436,7 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	const auto point{ this->m_pRecord->m_arrBones[ bone ].m_vecPosition };
 
 	std::memcpy( ctx.DEBUGBacktrackBones, this->m_pRecord->m_arrBones, sizeof( this->m_pRecord->m_arrBones ) );
+	ctx.DEBUGBactrackPawn = this->m_pEntry->m_pPawn;
 
 	// TODO: this->m_pPoint->m_vecPoint
 	Features::RageBot.m_cData.m_vecPoint = point;// this->m_pPoint->m_vecPoint;

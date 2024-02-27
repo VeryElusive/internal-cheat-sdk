@@ -10,7 +10,7 @@ public:
 	CUtlString m_strName{ };//0x0
 	Vector m_vecMins{ };//0x18
 	Vector m_vecMaxs{ };//0x24
-	MEM_PAD( 0x4 );//0x30
+	float m_flShapeRadius;//0x30
 	unsigned int m_nBoneNameHash{ };//0x34
 	int m_nGroupId{ };//0x38
 	MEM_PAD( 0x34 );// 0x3C

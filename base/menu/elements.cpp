@@ -35,8 +35,8 @@ void Menu::Register( ) {
 		}
 		auto selectionGroup{ aimbot->AddGroup( "Selection", 0.6f ) };
 		{
-			selectionGroup->Register( ( "Hitboxes" ), 9, hitboxes );
-			selectionGroup->Register( ( "Multipoint hitboxes" ), 9, multipoints );
+			selectionGroup->Register( ( "Hitboxes" ), 8, hitboxes );
+			selectionGroup->Register( ( "Multipoint hitboxes" ), 8, multipoints );
 
 			selectionGroup->Register( ( "Static point scale" ), &Configs::m_cConfig.m_bRageBotStaticPoints );
 			selectionGroup->Register( ( "Head point scale" ), &Configs::m_cConfig.m_iRageBotHeadPointScale, 0, 100, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
