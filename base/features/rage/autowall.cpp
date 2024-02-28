@@ -2,8 +2,9 @@
 #include "../../sdk/valve/interfaces/ienginecvar.h"
 
 bool CPenetration::FireBullet( Vector start, Vector end, 
-    C_CSPlayerPawn* shooter, C_CSPlayerPawn* target, 
-    CCSWeaponBaseVData* weaponData, PenetrationData_t& penData ) {
+    const C_CSPlayerPawn* shooter, const C_CSPlayerPawn* target,
+    const CCSWeaponBaseVData* weaponData, PenetrationData_t& penData,
+    const float minDmgCap ) {
     TraceData_t traceData{ };
     traceData.m_pUnk = &traceData.m_arr;
 
@@ -38,6 +39,7 @@ bool CPenetration::FireBullet( Vector start, Vector end,
                     ScaleDamage( trace.m_pHitboxData->m_iHitgroup, target, weaponData, penData.m_flDamage );
 
                 penData.m_iHitGroup = trace.m_pHitboxData->m_iHitgroup;
+                penData.m_bPenetrated = i == 0;
                 return true;
             }
 
@@ -45,6 +47,9 @@ bool CPenetration::FireBullet( Vector start, Vector end,
                 goto FAILED;
 
             penData.m_flDamage = handleBulletPenetrationData.m_flDamage;
+
+            if ( penData.m_flDamage < minDmgCap )
+                goto FAILED;
         }
     }
 
@@ -60,7 +65,7 @@ bool IsEntityArmored( const C_CSPlayerPawn* entity, const int hitgroup ) {
     return entity->m_ArmorValue( ) > 0;
 }
 
-void CPenetration::ScaleDamage( const int hitgroup, const C_CSPlayerPawn* entity, CCSWeaponBaseVData* weaponData, float& damage ) {
+void CPenetration::ScaleDamage( const int hitgroup, const C_CSPlayerPawn* entity, const CCSWeaponBaseVData* weaponData, float& damage ) {
     // ida: server.dll; 80 78 42 00 74 08 F3 0F 59 35 ?? ?? ?? ?? 80 BE 04 0D 00 00 00
     CVAR( mp_damage_scale_ct_head );
     CVAR( mp_damage_scale_t_head );

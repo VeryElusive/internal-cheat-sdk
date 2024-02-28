@@ -15,6 +15,9 @@ void CLagCompensation::Main( ) {
 
 	const auto local{ ctx.GetLocal( ) };
 
+	static bool removalSwitch{ };
+	removalSwitch = !removalSwitch;
+
 	for ( int i{ 1 }; i < Interfaces::Engine->GetMaxClients( ); ++i ) {
 		const auto ent{ Interfaces::GameResourceService->m_pGameEntitySystem->Get( i ) };
 		if ( !ent
@@ -40,7 +43,9 @@ void CLagCompensation::Main( ) {
 			if ( entry.m_pPawn != pawn )
 				entry.Reset( pawn );
 
-			for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); ) {
+			entry.m_bRemovalSwitch = removalSwitch;
+
+			for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); it = std::next( it ) ) {
 				const auto ticks{ it->m_nPlayerTickCount };
 				if ( ticks >= deadTicks )
 					break;
@@ -52,6 +57,19 @@ void CLagCompensation::Main( ) {
 				|| entry.m_pPawn->m_flSimulationTime( ) != entry.Animations.m_vecLagRecords.back( ).m_flSimulationTime )
 				AddRecord( entry );
 		}
+	}
+
+	if ( ctx.m_mapPlayerEntries.empty( ) )
+		return;
+
+	for ( auto it{ ctx.m_mapPlayerEntries.begin( ) }; 
+		it != ctx.m_mapPlayerEntries.end( ); ) {
+		if ( it->second.m_bRemovalSwitch == removalSwitch ) {
+			it = std::next( it );
+			continue;
+		}
+
+		it = ctx.m_mapPlayerEntries.erase( it );
 	}
 }
 

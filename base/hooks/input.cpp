@@ -45,6 +45,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 			//Interfaces::Input->AddButton( IN_ATTACK );
 
 			//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+			//Features::RageBot.Main( localPawn, cmd );
 			return false;
 		}
 

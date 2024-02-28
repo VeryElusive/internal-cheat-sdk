@@ -79,6 +79,9 @@ void CVisuals::Main( ) {
 	}
 
 	for ( std::int32_t i = 0; i < 32; ++i ) {
+		if ( ctx.DEBUGPointPrintout[ i ] == Vector( 0, 0, 0 ) )
+			continue;
+
 		Vector2D screen{ };
 
 		if ( Render::WorldToScreen( ctx.DEBUGPointPrintout[ i ], screen ) )

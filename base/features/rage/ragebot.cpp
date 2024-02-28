@@ -27,6 +27,9 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		if ( !entry.m_pPawn )
 			continue;
 
+		if ( entry.m_pPawn->m_iTeamNum( ) == local->m_iTeamNum( ) )
+			continue;
+
 		target.m_pEntry = &entry;
 		target.m_pRecord = nullptr;
 		target.m_iBestDamage = 0;
@@ -43,6 +46,7 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		return;
 
 	bestTarget.ScanTarget( local );
+	bestTarget.Attack( local, cmd );
 }
 
 bool CRageBot::CanFire( C_CSPlayerPawn* local ) {
@@ -206,7 +210,7 @@ void CAimTarget::ScanTarget( C_CSPlayerPawn* local ) {
 		const auto scaleFloat{ static_cast< float >( scale ) / 100.f };
 		const auto bone{ this->m_pRecord->m_arrBones[ boneIndex ] };
 
-		GenerateMultiPoints( bone, hitbox, hb, scaleFloat, hitboxes );
+		ScanHitbox( local, weaponData, bone, hitbox, hb, scaleFloat, hitboxes );
 	}
 }
 
@@ -222,7 +226,14 @@ Vector rotateAroundCenter( const Vector& center, float radius, float angleDegree
 	return { newX, newY, newZ };
 }
 
-void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, const float scale, std::vector< int > hitboxes ) {
+// TODO:
+void CAimTarget::ScanHitbox( 
+	const C_CSPlayerPawn* local, const CCSWeaponBaseVData* weaponData, 
+	const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, 
+	const float scale, std::vector< int > hitboxes
+) {
+	CLagBackup backup{ this->m_pEntry->m_pPawn };
+	this->m_pRecord->Apply( this->m_pEntry->m_pPawn );
 	const auto local{ ctx.GetLocalPawn( ) };
 
 	const auto radius{ hitbox.m_flShapeRadius * scale };
@@ -233,6 +244,9 @@ void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbo
 	Math::VectorAngles( center - local->GetAbsOrigin( ), angleForward );
 
 	Vector angleTmp{ };
+
+	ScanPoint( local, weaponData, bone.m_vecPosition, hitbox, hitboxes );
+
 
 	switch ( hitboxIndex ) {
 	case HITBOX_HEAD:
@@ -250,15 +264,17 @@ void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbo
 		angleTmp = angleForward;
 		angleTmp.y += 90.f;
 
-		ScanPoint( rotateAroundCenter( center, radius, angleTmp.y, bone.m_vecRotation ),
+		ScanPoint( local, weaponData,
+			rotateAroundCenter( center, radius, angleTmp.y, bone.m_vecRotation ),
 			hitbox, hitboxes );
 
 		// right.
 		angleTmp = angleForward;
 		angleTmp.y -= 90.f;
 
-		ScanPoint( rotateAroundCenter( center, radius, angleTmp.y, bone.m_vecRotation ),
-			hitbox, hitboxes );
+		ScanPoint( local, weaponData,
+			rotateAroundCenter( center, radius, angleTmp.y, bone.m_vecRotation ),
+			hitbox, hitboxes ); 
 
 		/*ScanPoint( {
 				bone.m_vecPosition.x + hitbox.m_vecMaxs.x,
@@ -328,14 +344,59 @@ void CAimTarget::GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbo
 	default: break;
 	}
 
+	backup.Apply( this->m_pEntry->m_pPawn );
 }
 
-void CAimTarget::ScanPoint( const Vector point, const CHitbox& hitbox, std::vector<int> hitboxes ) {
-
+void CAimTarget::ScanPoint( 
+	const C_CSPlayerPawn* local, const CCSWeaponBaseVData* weaponData, 
+	const Vector point, const CHitbox& hitbox, std::vector<int> hitboxes ) {
 	if ( pointz < 32 )
 		ctx.DEBUGPointPrintout[ pointz ] = point;
-
 	++pointz;
+
+	const auto headPos{ ( local->GetAbsOrigin( ) + local->m_vecViewOffset( ) ) };
+
+	PenetrationData_t data{ };
+
+	float minDmgCap{ static_cast< float >( Configs::m_cConfig.m_iRageBotMinimumPenetrationDamage ) };
+	if ( Configs::m_cConfig.m_bRageBotOverrideDamage
+		&& Configs::m_cConfig.m_kRageBotOverrideDamage.m_bEnabled )
+		minDmgCap = Configs::m_cConfig.m_iRageBotMinimumOverrideDamage;
+	else if ( Configs::m_cConfig.m_bRageBotScaleDamage )
+		minDmgCap *= this->m_pEntry->m_pPawn->m_iHealth( ) / 100.f;
+
+	if ( Configs::m_cConfig.m_bRageBotAutowall )
+		minDmgCap = FLT_MAX;
+
+	const auto success{
+			Features::Penetration.FireBullet( headPos, point, local, this->m_pEntry->m_pPawn, weaponData, data, minDmgCap )
+	};
+	if ( !success )
+		return;
+
+	auto mindmg{ data.m_bPenetrated ? Configs::m_cConfig.m_iRageBotMinimumPenetrationDamage : Configs::m_cConfig.m_iRageBotMinimumDamage };
+
+	if ( Configs::m_cConfig.m_bRageBotOverrideDamage
+		&& Configs::m_cConfig.m_kRageBotOverrideDamage.m_bEnabled )
+		mindmg = Configs::m_cConfig.m_iRageBotMinimumOverrideDamage;
+	else if ( Configs::m_cConfig.m_bRageBotScaleDamage )
+		mindmg *= this->m_pEntry->m_pPawn->m_iHealth( ) / 100.f;
+
+	if ( data.m_flDamage < mindmg )
+		return;
+
+	if ( !this->m_cPoint.m_bValid ) {
+		this->m_cPoint.m_bValid = true;
+		goto UPDATE_TARGET_POINT;
+	}
+	
+	if ( data.m_flDamage <= this->m_cPoint.m_flDamage )
+		return;
+
+UPDATE_TARGET_POINT:
+	this->m_cPoint.m_flDamage = data.m_flDamage;
+	this->m_cPoint.m_iHitgroup = data.m_iHitGroup;// TODO: MAKE ENTIRE RAGEBOT RUN OFF HITBOX
+	this->m_cPoint.m_vecPoint = point;
 }
 
 void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
@@ -358,7 +419,7 @@ void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
 	std::vector <int> hitgroups{ HITBOX_HEAD, HITBOX_RIGHT_UPPER_ARM, HITBOX_LEFT_UPPER_ARM, HITBOX_RIGHT_FOOT, HITBOX_LEFT_FOOT };//HITBOX_STOMACH
 
 	const auto damage{ QuickScan( oldestRecord, hitgroups ) };
-	if ( damage > 100 ) {
+	if ( damage > 0 ) {
 		this->m_iBestDamage = damage;
 		this->m_pRecord = oldestRecord;
 	}
@@ -382,7 +443,7 @@ void CAimTarget::GetBestLagRecord( PlayerEntry_t& entry ) {
 			continue;
 		}
 
-		if ( damage > 100 ) {
+		if ( damage > this->m_iBestDamage ) {
 			this->m_iBestDamage = damage;
 			this->m_pRecord = &record;
 		}
@@ -416,7 +477,10 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 
 	int dmg{ };
 
+	const auto headPos{ ( localPawn->GetAbsOrigin( ) + localPawn->m_vecViewOffset( ) ) };
+
 	CLagBackup backup{ this->m_pEntry->m_pPawn };
+	record->Apply( this->m_pEntry->m_pPawn );
 
 	for ( const auto& hb : hitgroups ) {
 		auto& hitbox{ hitboxSet->m_arrHitboxs[ hb ] };
@@ -428,9 +492,6 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 
 		PenetrationData_t data{ };
 
-		record->Apply( this->m_pEntry->m_pPawn );
-
-		const auto headPos{ ( localPawn->GetAbsOrigin( ) + localPawn->m_vecViewOffset( ) ) };
 
 		const auto success{
 			Features::Penetration.FireBullet( headPos, point, localPawn, this->m_pEntry->m_pPawn, weaponData, data )
@@ -452,31 +513,14 @@ float CAimTarget::QuickScan( const CLagRecord* record, std::vector<int> hitgroup
 
 void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	// rebuild of LagCompensation (called from createmove)
-
-	const auto gameSceneNode{ this->m_pEntry->m_pPawn->m_pGameSceneNode( ) };
-	if ( !gameSceneNode )
+	if ( !this->m_cPoint.m_bValid )
 		return;
-
-	const auto skeleton{ gameSceneNode->GetSkeletonInstance( ) };
-	if ( !skeleton )
-		return;
-
-	const auto hitboxSet{ this->m_pEntry->m_pPawn->GetHitboxSet( skeleton->m_nHitboxSet( ) ) };
-
-	auto& model{ skeleton->m_modelState( ).m_hModel };
-	if ( !model.IsValid( ) )
-		return;
-
-	auto& hitbox{ hitboxSet->m_arrHitboxs[ HITBOX_HEAD ] };
-	const auto& bone{ hitbox.GetBoneIndex( skeleton->GetModel( ) ) };
-
-	const auto point{ this->m_pRecord->m_arrBones[ bone ].m_vecPosition };
 
 	std::memcpy( ctx.DEBUGBacktrackBones, this->m_pRecord->m_arrBones, sizeof( this->m_pRecord->m_arrBones ) );
 	ctx.DEBUGBactrackPawn = this->m_pEntry->m_pPawn;
 
 	// TODO: this->m_pPoint->m_vecPoint
-	Features::RageBot.m_cData.m_vecPoint = point;// this->m_pPoint->m_vecPoint;
+	Features::RageBot.m_cData.m_vecPoint = this->m_cPoint.m_vecPoint;// this->m_pPoint->m_vecPoint;
 	Features::RageBot.m_cData.m_pRecord = this->m_pRecord;
 	Features::RageBot.m_cData.m_pEntry = this->m_pEntry;
 	Features::RageBot.m_cData.m_bValid = true;

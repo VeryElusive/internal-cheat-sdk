@@ -48,6 +48,8 @@ struct PlayerEntry_t {
 
 	C_CSPlayerPawn* m_pPawn{ };
 
+	bool m_bRemovalSwitch{ };
+
 
 	void Reset( C_CSPlayerPawn* pawn ) {
 		m_pPawn = pawn;

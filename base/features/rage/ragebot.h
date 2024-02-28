@@ -11,7 +11,7 @@ struct AimPoint_t {
 
 	float m_flDamage{ };
 
-	bool m_bPenetrated{ };
+	//bool m_bPenetrated{ };
 
 	bool m_bValid{ };
 };
@@ -33,14 +33,16 @@ public:
 
 	int m_iBestDamage{ };
 
+	bool m_bShouldStop{ };
+
 	void GetBestLagRecord( PlayerEntry_t& entry );
 	void SelectBetterTarget( const CAimTarget& compareTarget );
 	void Attack( C_CSPlayerPawn* local, CUserCmd* cmd );
 	void ScanTarget( C_CSPlayerPawn* local );
 
 private:
-	void GenerateMultiPoints( const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, const float scale, std::vector< int > hitboxes );
-	void ScanPoint( const Vector point, const CHitbox& hitbox, std::vector< int > hitboxes );
+	void ScanHitbox( const C_CSPlayerPawn* local, const CCSWeaponBaseVData* weaponData, const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, const float scale, std::vector< int > hitboxes );
+	void ScanPoint( const C_CSPlayerPawn* local, const CCSWeaponBaseVData* weaponData, const Vector point, const CHitbox& hitbox, std::vector< int > hitboxes );
 	float QuickScan( const CLagRecord* record, std::vector <int> hitgroups );
 };
 
