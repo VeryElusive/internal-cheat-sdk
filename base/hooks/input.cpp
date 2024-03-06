@@ -34,6 +34,17 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 	if ( !localPawn )
 		return og( rcx, edx, a3 );
 
+	const auto weaponServices{ localPawn->m_pWeaponServices( ) };
+	if ( !weaponServices )
+		return og( rcx, edx, a3 );;
+
+	const auto weapon{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSWeaponBase>( weaponServices->m_hActiveWeapon( ) ) };
+	if ( !weapon )
+		return og( rcx, edx, a3 );;
+
+	ctx.DEBUGSpread = weapon->GetSpread( );
+	ctx.DEBUGInac = weapon->GetInaccuracy( );
+
 	// RAPIDFIRE:
 	// TODO: investigate this!!!!
 
@@ -54,7 +65,8 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	//printf( "%i | %i\n", Interfaces::Input->m_nSequenceNumber, Interfaces::Input->m_iCommandPassCount );
 
-	Features::RageBot.Main( localPawn, cmd );
+	if ( Interfaces::Input->m_iCommandPassCount == 0 )
+		Features::RageBot.Main( localPawn, cmd );
 
 	const auto result{ og( rcx, edx, a3 ) };
 

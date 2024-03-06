@@ -44,6 +44,8 @@ private:
 	void ScanHitbox( const C_CSPlayerPawn* local, const CCSWeaponBaseVData* weaponData, const CBoneData bone, const CHitbox& hitbox, const int hitboxIndex, const float scale, std::vector< int > hitboxes );
 	void ScanPoint( const C_CSPlayerPawn* local, const CCSWeaponBaseVData* weaponData, const Vector point, const CHitbox& hitbox, std::vector< int > hitboxes );
 	float QuickScan( const CLagRecord* record, std::vector <int> hitgroups );
+
+	float ScaleMinDamage( float damage );
 };
 
 class CRageBot {

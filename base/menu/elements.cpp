@@ -39,8 +39,8 @@ void Menu::Register( ) {
 			selectionGroup->Register( ( "Multipoint hitboxes" ), 8, multipoints );
 
 			selectionGroup->Register( ( "Static point scale" ), &Configs::m_cConfig.m_bRageBotStaticPoints );
-			selectionGroup->Register( ( "Head point scale" ), &Configs::m_cConfig.m_iRageBotHeadPointScale, 0, 100, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
-			selectionGroup->Register( ( "Body point scale" ), &Configs::m_cConfig.m_iRageBotBodyPointScale, 0, 100, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
+			selectionGroup->Register( ( "Head point scale" ), &Configs::m_cConfig.m_iRageBotHeadPointScale, 0, 110, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
+			selectionGroup->Register( ( "Body point scale" ), &Configs::m_cConfig.m_iRageBotBodyPointScale, 0, 110, SHOW( Configs::m_cConfig.m_bRageBotStaticPoints ) );
 		}
 		auto exploitsGroup{ aimbot->AddGroup( "Exploits", 0.4f ) };
 		{

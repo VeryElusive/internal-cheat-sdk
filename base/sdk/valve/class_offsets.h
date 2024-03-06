@@ -1,5 +1,5 @@
 #pragma once
 
 namespace ClassOffsets {
-	void Initialise( );
+	void Init( );
 }

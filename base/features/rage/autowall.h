@@ -17,7 +17,7 @@ public:
 	bool FireBullet( Vector start, Vector end, 
 		const C_CSPlayerPawn* shooter, const C_CSPlayerPawn* target,
 		const CCSWeaponBaseVData* weaponData, PenetrationData_t& penData,
-		const float minDmgCap = 0 );
+		const float minDmgCap = 0, bool ignorePenetration = false );
 
 	void ScaleDamage( const int hitgroup, const C_CSPlayerPawn* entity, const CCSWeaponBaseVData* weaponData, float& damage );
 };

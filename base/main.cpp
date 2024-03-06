@@ -28,7 +28,7 @@ void Entry( HMODULE hModule ) {
 
 	Displacement::Init( );
 
-	ClassOffsets::Initialise( );
+	ClassOffsets::Init( );
 
 	Hooks::Init( );
 

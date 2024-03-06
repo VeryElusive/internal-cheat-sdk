@@ -4,7 +4,7 @@
 bool CPenetration::FireBullet( Vector start, Vector end, 
     const C_CSPlayerPawn* shooter, const C_CSPlayerPawn* target,
     const CCSWeaponBaseVData* weaponData, PenetrationData_t& penData,
-    const float minDmgCap ) {
+    const float minDmgCap, bool ignorePenetration ) {
     TraceData_t traceData{ };
     traceData.m_pUnk = &traceData.m_arr;
 
@@ -43,7 +43,8 @@ bool CPenetration::FireBullet( Vector start, Vector end,
                 return true;
             }
 
-            if ( HandleBulletPenetration( &traceData, &handleBulletPenetrationData, value, false ) ) 
+            if ( !ignorePenetration 
+                && HandleBulletPenetration( &traceData, &handleBulletPenetrationData, value, false ) )
                 goto FAILED;
 
             penData.m_flDamage = handleBulletPenetrationData.m_flDamage;

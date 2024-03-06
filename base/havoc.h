@@ -78,7 +78,10 @@ struct Context_t {
 	HWND hwnd{ };
 
 	CBoneData DEBUGBacktrackBones[ 128u ]{ };//
-	C_CSPlayerPawn* DEBUGBactrackPawn{ };
+	PlayerEntry_t* DEBUGBactrackEntry{ };
+
+	float DEBUGSpread{ };
+	float DEBUGInac{ };
 
 	Vector DEBUGPointPrintout[ 32 ];
 

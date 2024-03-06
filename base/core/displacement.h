@@ -27,6 +27,7 @@ using fnInitCSGOInterpolationInfoPB = __int64( __fastcall* ) ( __int64 );
 using fnResetSubTickElement = __int64( __fastcall* ) ( __int64 );
 using fnGetButtonState = __int64*( __fastcall* ) ( void*, int );
 using fnSetupInterpolationFractions = bool( __fastcall* ) ( void*, void*, void*, void*, void* );
+using fnGetInaccuracy = float( __fastcall* ) ( void* );
 
 namespace Displacement {
 	void Init( );
@@ -54,6 +55,9 @@ namespace Displacement {
 	inline fnGetBoneIndexFromHitbox GetBoneIndexFromHitbox;
 
 	inline fnGetButtonState GetButtonState;
+
+	inline fnGetInaccuracy GetInaccuracy;
+	inline fnGetInaccuracy GetSpread;
 
 	inline fnSetupInterpolationFractions SetupInterpolationFractions;
 

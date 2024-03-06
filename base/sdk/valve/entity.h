@@ -239,6 +239,14 @@ public:
 	VAR_AT_OFFSET( float, m_flRangeModifier, 0xd54 );
 	VAR_AT_OFFSET( float, m_flHeadshotMultiplier, 0xd44 );
 	VAR_AT_OFFSET( float, m_flArmorRatio, 0xd48 );
+	VAR_AT_OFFSET( float, m_flSpread, 0xc54 );
+	VAR_AT_OFFSET( float, m_flInaccuracyCrouch, 0xc5c );
+	VAR_AT_OFFSET( float, m_flInaccuracyStand, 0xc64 );
+	VAR_AT_OFFSET( float, m_flInaccuracyJump, 0xc6c );
+	VAR_AT_OFFSET( float, m_flInaccuracyLand, 0xc74 );
+	VAR_AT_OFFSET( float, m_flInaccuracyLadder, 0xc7c );
+	VAR_AT_OFFSET( float, m_flInaccuracyFire, 0xc84 );
+	VAR_AT_OFFSET( float, m_flInaccuracyMove, 0xc8c );
 
 public:
 	static void Initialise( );
@@ -250,6 +258,14 @@ public:
 	VAR_AT_OFFSET( CCSWeaponBaseVData*, m_pWeaponData, 0x368 );
 	VAR_AT_OFFSET( std::uint32_t, Index, 0x10 );
 	SCHEMA( bool, m_bInReload );
+
+	float GetSpread( ) {
+		return Displacement::GetSpread( this );
+	}	
+	
+	float GetInaccuracy( ) {
+		return Displacement::GetInaccuracy( this );
+	}
 
 	static void Initialise( );
 };

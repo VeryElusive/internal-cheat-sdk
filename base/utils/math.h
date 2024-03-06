@@ -131,4 +131,10 @@ namespace Math {
 			;
 		return delta;
 	}
+
+	inline int( __cdecl* RandomSeed )( int iSeed ) = nullptr;
+	inline float( __cdecl* RandomFloat )( float flMinValue, float flMaxValue ) = nullptr;
+	inline float( __cdecl* RandomFloatExp )( float flMinValue, float flMaxValue, float flExponent ) = nullptr;
+	inline int( __cdecl* RandomInt )( int iMinValue, int iMaxValue ) = nullptr;
+	inline float( __cdecl* RandomGaussianFloat )( float flMean, float flStdDev ) = nullptr;
 }

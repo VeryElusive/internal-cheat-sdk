@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "class_offsets.h"
 #include "../../utils/schema.h"
+#include "../../utils/math.h"
 #include <string>
 
 //e.g expansion: #define INIT_SCHEMA( table, var ) var = Schema::GetOffset( FNV1A::HashConst( "CBasePlayerController::m_hPawn" )
@@ -12,7 +13,7 @@
 #endif
 
 
-void ClassOffsets::Initialise( ) {
+void ClassOffsets::Init( ) {
 	ENTER_REGION( "Schema" );
 
 	CBasePlayerController::Initialise( );
@@ -37,7 +38,16 @@ void ClassOffsets::Initialise( ) {
 
 	//CPlayer_CameraServices::Initialise( );
 
+	const void* hTier0Lib{ Memory::GetModuleBaseHandle( TIER0_DLL ) };
+	if ( hTier0Lib == nullptr )
+		return;
+
 	// other
+	Math::RandomSeed = reinterpret_cast< decltype( Math::RandomSeed ) >( Memory::GetExportAddress( hTier0Lib, _( "RandomSeed" ) ) );
+	Math::RandomFloat = reinterpret_cast< decltype( Math::RandomFloat ) >( Memory::GetExportAddress( hTier0Lib, _( "RandomFloat" ) ) );
+	Math::RandomFloatExp = reinterpret_cast< decltype( Math::RandomFloatExp ) >( Memory::GetExportAddress( hTier0Lib, _( "RandomFloatExp" ) ) );
+	Math::RandomInt = reinterpret_cast< decltype( Math::RandomInt ) >( Memory::GetExportAddress( hTier0Lib, _( "RandomInt" ) ) );
+	Math::RandomGaussianFloat = reinterpret_cast< decltype( Math::RandomGaussianFloat ) >( Memory::GetExportAddress( hTier0Lib, _( "RandomGaussianFloat" ) ) );
 }
 
 

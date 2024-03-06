@@ -6,7 +6,7 @@
 #include "../../utils/render/render.h"
 
 void CVisuals::Main( ) {
-	if ( !ctx.GetLocal( ) )
+	if ( !ctx.GetLocalPawn( ) )
 		return;
 
 	Render::Text( { 300, 500 }, ( "fw: " + std::to_string( ctx.m_flForwardmove ) ).c_str( ), Color( 255,255,255 ), 0, 13, Render::Fonts.NameESP );
@@ -45,8 +45,9 @@ void CVisuals::Main( ) {
 				Features::Visuals.HandlePlayer( entry );
 		}
 	}
-	if ( ctx.DEBUGBactrackPawn ) {
-		const auto gameSceneNode{ ctx.DEBUGBactrackPawn->m_pGameSceneNode( ) };
+
+	if ( ctx.DEBUGBactrackEntry ) {
+		const auto gameSceneNode{ ctx.DEBUGBactrackEntry->m_pPawn->m_pGameSceneNode( ) };
 		if ( !gameSceneNode )
 			return;
 
@@ -87,4 +88,15 @@ void CVisuals::Main( ) {
 		if ( Render::WorldToScreen( ctx.DEBUGPointPrintout[ i ], screen ) )
 			Render::RectFilled( screen, { 4, 4 }, Color( 255, 255, 255 ) );
 	}
+
+	const auto weaponServices{ ctx.GetLocalPawn( )->m_pWeaponServices( ) };
+	if ( !weaponServices )
+		return;
+
+	const auto weapon{ Interfaces::GameResourceService->m_pGameEntitySystem->Get<C_CSWeaponBase>( weaponServices->m_hActiveWeapon( ) ) };
+	if ( !weapon )
+		return;
+
+	Render::Text( { 300, 600 }, ( "spread: " + std::to_string( ctx.DEBUGSpread ) ).c_str( ), Color( 255, 255, 255 ), 0, 13, Render::Fonts.NameESP );
+	Render::Text( { 300, 610 }, ( "inaccuracy: " + std::to_string( ctx.DEBUGInac ) ).c_str( ), Color( 255, 255, 255 ), 0, 13, Render::Fonts.NameESP );
 }
