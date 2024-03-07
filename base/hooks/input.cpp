@@ -77,6 +77,8 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	Features::Movement.Main( localPawn, cmd );
 
+	Features::RageBot.AutoStop( localPawn, cmd );
+
 	const auto backupViewAngles{ cmd->pBase->pViewangles->angValue.y };
 
 	Features::RageBot.PostCMove( localPawn, cmd );

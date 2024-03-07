@@ -33,8 +33,6 @@ public:
 
 	int m_iBestDamage{ };
 
-	bool m_bShouldStop{ };
-
 	void GetBestLagRecord( PlayerEntry_t& entry );
 	void SelectBetterTarget( const CAimTarget& compareTarget );
 	void Attack( C_CSPlayerPawn* local, CUserCmd* cmd );
@@ -52,10 +50,14 @@ class CRageBot {
 public:
 	void Main( C_CSPlayerPawn* local, CUserCmd* cmd );
 	void PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd );
+	void AutoStop( C_CSPlayerPawn* local, CUserCmd* cmd );
 
 	PostCMoveData_t m_cData{ };
+	bool m_bShouldStop{ };
+
 private:
 	bool CanFire( C_CSPlayerPawn* local );
+
 };
 
 namespace Features { inline CRageBot RageBot; };

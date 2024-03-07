@@ -45,12 +45,16 @@ void CLagCompensation::Main( ) {
 
 			entry.m_bRemovalSwitch = removalSwitch;
 
-			for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); it = std::next( it ) ) {
-				const auto ticks{ it->m_nPlayerTickCount };
-				if ( ticks >= deadTicks )
-					break;
+			if ( entry.Animations.m_vecLagRecords.size( ) ) {
+				for ( auto it{ entry.Animations.m_vecLagRecords.begin( ) }; it != entry.Animations.m_vecLagRecords.end( ); it = std::next( it ) ) {
+					const auto ticks{ it->m_nPlayerTickCount };
+					if ( ticks >= deadTicks )
+						break;
 
-				it = entry.Animations.m_vecLagRecords.erase( it );
+					it = entry.Animations.m_vecLagRecords.erase( it );
+					if ( !entry.Animations.m_vecLagRecords.size( ) )
+						break;
+				}
 			}
 
 			if ( entry.Animations.m_vecLagRecords.empty( )

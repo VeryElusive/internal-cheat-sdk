@@ -25,6 +25,7 @@ void ClassOffsets::Init( ) {
 	CCSWeaponBaseVData::Initialise( );
 	C_BasePlayerPawn::Initialise( );
 	CPlayer_WeaponServices::Initialise( );
+	CPlayer_MovementServices::Initialise( );
 	C_AttributeContainer::Initialise( );
 	C_EconEntity::Initialise( );
 	C_EconItemView::Initialise( );
@@ -98,6 +99,7 @@ void CCSWeaponBaseVData::Initialise( ) {
 
 void C_BasePlayerPawn::Initialise( ) {
 	INIT_SCHEMA( C_BasePlayerPawn, m_pWeaponServices );
+	INIT_SCHEMA( C_BasePlayerPawn, m_pMovementServices );
 	//INIT_SCHEMA( C_BasePlayerPawn, m_hPawn );
 	INIT_SCHEMA( C_BasePlayerPawn, m_pItemServices );
 	INIT_SCHEMA( C_BasePlayerPawn, m_vOldOrigin );
@@ -105,6 +107,11 @@ void C_BasePlayerPawn::Initialise( ) {
 
 void CPlayer_WeaponServices::Initialise( ) {
 	INIT_SCHEMA( CPlayer_WeaponServices, m_hActiveWeapon );
+}
+
+void CPlayer_MovementServices::Initialise( ) {
+	INIT_SCHEMA( CPlayer_MovementServices, m_flMaxSpeed );
+	INIT_SCHEMA( CPlayer_MovementServices, m_flSurfaceFriction );
 }
 
 void C_AttributeContainer::Initialise( ) {

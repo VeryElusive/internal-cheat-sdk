@@ -1,6 +1,8 @@
 #include "movement.h"
+#include "../rage/ragebot.h"
 #include "../../core/config.h"
 #include "../../utils/math.h"
+#include "../../sdk/valve/interfaces/ienginecvar.h"
 
 void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( local->m_MoveType( ) != MOVETYPE_WALK )
@@ -13,6 +15,14 @@ void CMovement::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	if ( Configs::m_cConfig.m_bAutoStrafer )
 		AutoStrafer( local, cmd );
+
+	if ( Configs::m_cConfig.m_bSlowWalk && Configs::m_cConfig.m_kSlowWalk.m_bEnabled ) {
+		const auto weaponData{ ctx.GetWeaponData( ) };
+		if ( !weaponData )
+			return;
+
+		LimitSpeed( local, cmd, weaponData->m_flMaxSpeed( ) / 3.f );
+	}
 	//ctx.m_flUpmove = cmd->pBase->flUpMove;
 }
 
@@ -139,4 +149,45 @@ void CMovement::ClampMovement( CUserCmd* cmd, const float oldMovementLength ) {
 			cmd->pBase->flSideMove *= scale;
 		}
 	}
+}
+
+void CMovement::LimitSpeed( C_CSPlayerPawn* player, CUserCmd* cmd, float maxSpeed ) {
+	CVAR( sv_accelerate )
+
+	const auto cmdSpeed{ std::sqrt( ( cmd->pBase->flSideMove * cmd->pBase->flSideMove ) + ( cmd->pBase->flForwardMove * cmd->pBase->flForwardMove ) ) };
+	const auto velocity{ player->m_vecAbsVelocity( ) };
+	const auto speed{ velocity.Length2D( ) };
+
+	if ( cmdSpeed <= maxSpeed + 1.f
+		&& velocity.Length2D( ) <= maxSpeed + 1.f )
+		return;
+
+	Vector forward{ }, right{ };
+	Math::AngleVectors( cmd->pBase->pViewangles->angValue, &forward, &right, nullptr );
+
+	const auto diff{ speed - maxSpeed };
+	auto wishSpeed{ maxSpeed };
+
+	Vector velDir{ forward.x * cmd->pBase->flForwardMove + right.x * cmd->pBase->flSideMove,
+		forward.y * cmd->pBase->flForwardMove + right.y * cmd->pBase->flSideMove, 0.f };
+
+	const auto accel{ sv_accelerate->value.fl };
+	const auto maxAccelSpeed{ accel * 0.015625f * std::max( 250.f, player->m_pMovementServices( )->m_flMaxSpeed( ) ) * player->m_pMovementServices( )->m_flSurfaceFriction( ) };
+
+	if ( diff - maxAccelSpeed <= 0.f
+		|| speed - maxAccelSpeed - 3.f <= 0.f )
+		wishSpeed = maxSpeed;
+	else {
+		velDir = velocity;
+		wishSpeed = -1.f;
+	}
+
+	cmd->pBase->flForwardMove = wishSpeed;
+	cmd->pBase->flSideMove = 0;
+
+	auto moveDir{ cmd->pBase->pViewangles->angValue.y };
+
+	const auto direction{ std::atan2( velDir.y, velDir.x ) };
+	moveDir = std::remainderf( Math::RadiansToDegree( direction ), 360.f );
+	MoveMINTFix( player, cmd, moveDir );
 }

@@ -7,7 +7,7 @@
 	const auto og{ ModifyBonePosition.Original<decltype( &hkModifyBonePosition )>( ) };
 
 	ctx.GetLocal( );
-	if ( !Configs::m_cConfig.m_bBugWalk )
+	if ( !Configs::m_cConfig.m_bSlowWalk )
 		return og( a1, a2, a3, a4 );
 
 	return 1;

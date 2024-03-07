@@ -32,6 +32,21 @@ enum ECommandButtons : int
 	IN_USE_OR_RELOAD = ( 1 << 26 )
 };
 
+template <typename T>
+struct RepeatedPtrField_t
+{
+	struct Rep_t
+	{
+		int nAllocatedSize;
+		T* tElements[ ( std::numeric_limits<int>::max( ) - 2 * sizeof( int ) ) / sizeof( void* ) ];
+	};
+
+	//void* pArena;
+	int nCurrentSize;
+	int nTotalSize;
+	Rep_t* pRep;
+};
+
 class CBasePB
 {
 	MEM_PAD( 0x18 ); // 0x0
@@ -82,24 +97,6 @@ public:
 	int nTargetEntIndex; // 0x74
 };
 
-class CCSGOUserCmdPB
-{
-public:
-	int32_t m_iSize; // 0x0
-	MEM_PAD( 0x4 ); // 0x4
-	void* pInputHistory; // 0x8
-
-	CCSGOInputHistoryEntryPB* GetInputHistoryEntry( std::int32_t tickFrameIndex ) {
-		if ( tickFrameIndex < this->m_iSize ) {
-			CCSGOInputHistoryEntryPB** arrTickList{ reinterpret_cast< CCSGOInputHistoryEntryPB** >( reinterpret_cast< std::uintptr_t >( pInputHistory ) + 0x8 ) };
-			return arrTickList[ tickFrameIndex ];
-		}
-
-		return nullptr;
-	}
-};
-static_assert( sizeof( CCSGOUserCmdPB ) == 0x10 );
-
 struct ButtonState_t
 {
 	void* m_pVtable;
@@ -138,12 +135,14 @@ public:
 	MEM_PAD( 0x10 );
 	int m_iFlags;//0x10
 	MEM_PAD( 0xc );//0x14
-	CCSGOUserCmdPB cmd; // 0x20
+	RepeatedPtrField_t<CCSGOInputHistoryEntryPB> inputHistoryField;// 0x20
 	CBaseUserCmdPB* pBase; // 0x30
-	MEM_PAD( 0x10 ); // 0x38
-	ButtonState_t m_cButtonStates; // 0x4C
-	MEM_PAD( 0x14 ); // 0x64
-	int m_iAmountOfPasses;//0x78
-	MEM_PAD( 0x4 );//0x7C
+	MEM_PAD( 0x4 ); // 0x38
+	int m_nStartAttackHistoryIndex{ };//0x3c
+	MEM_PAD( 0x8 ); // 0x40
+	ButtonState_t m_cButtonStates; // 0x48
+	MEM_PAD( 0x14 ); // 0x68
+	int m_iAmountOfPasses;//0x7C
+	MEM_PAD( 0x8 );//0x80
 };
 static_assert( sizeof( CUserCmd ) == 0x88 );

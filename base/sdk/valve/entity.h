@@ -116,6 +116,15 @@ public:
 	static void Initialise( );
 };
 
+class CPlayer_MovementServices
+{
+public:
+	SCHEMA( float, m_flMaxSpeed );
+	SCHEMA( float, m_flSurfaceFriction );
+public:
+	static void Initialise( );
+};
+
 class C_BaseEntity : public CEntityInstance
 {
 public:
@@ -247,6 +256,7 @@ public:
 	VAR_AT_OFFSET( float, m_flInaccuracyLadder, 0xc7c );
 	VAR_AT_OFFSET( float, m_flInaccuracyFire, 0xc84 );
 	VAR_AT_OFFSET( float, m_flInaccuracyMove, 0xc8c );
+	VAR_AT_OFFSET( float, m_flMaxSpeed, 0xc4c );
 
 public:
 	static void Initialise( );
@@ -291,6 +301,7 @@ class C_BasePlayerPawn : public C_BaseModelEntity
 {
 public:
 	SCHEMA( CPlayer_WeaponServices*, m_pWeaponServices );
+	SCHEMA( CPlayer_MovementServices*, m_pMovementServices );
 	//SCHEMA( CBaseHandle, m_hPawn );
 	SCHEMA( CCSPlayer_ItemServices*, m_pItemServices );
 	SCHEMA( Vector, m_vOldOrigin );

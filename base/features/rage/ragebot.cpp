@@ -14,6 +14,7 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 			&& ctx.m_pWeapon->m_iItemDefinitionIndex( ) != WEAPON_TASER )
 		|| ctx.m_pLocal->m_MoveType( ) == MOVETYPE_LADDER )
 		return;*/
+	m_bShouldStop = false;
 
 	if ( !Configs::m_cConfig.m_bRageBotEnable
 		|| !CanFire( local ) )
@@ -44,9 +45,43 @@ void CRageBot::Main( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	if ( !bestTarget.m_pRecord )
 		return;
-
 	bestTarget.ScanTarget( local );
+
+	AutoStop( local, cmd );
+
 	bestTarget.Attack( local, cmd );
+}
+
+void CRageBot::AutoStop( C_CSPlayerPawn* local, CUserCmd* cmd ) {
+	if ( !Configs::m_cConfig.m_bRageBotAutostop )
+		return;
+
+	if ( !m_bShouldStop )
+		return;
+
+	if ( !( local->m_fFlags( ) & FL_ONGROUND ) )
+		return;
+
+	const auto weaponData{ ctx.GetWeaponData( ) };
+	if ( !weaponData )
+		return;
+
+	//if ( Features::Ragebot.MenuVars.RagebotAutostopInAir &&
+	//	( /*ctx.m_pLocal->m_vecVelocity( ).z > 100.f ||*/ ctx.m_pLocal->m_vecVelocity( ).z < -5.f ) )
+	//	return;
+	//else if ( !Features::Ragebot.MenuVars.RagebotAutostopInAir && !( ctx.m_pLocal->m_fFlags( ) & FL_ONGROUND ) )
+	//	return;
+
+	if ( Configs::m_cConfig.m_bRageBotAutostopMoveBetweenShots && !CanFire( local ) )
+		return;
+
+	const auto maxWeaponSpeed{ weaponData->m_flMaxSpeed( ) };
+	auto optSpeed{ maxWeaponSpeed * 0.25f };
+
+	if ( !( local->m_fFlags( ) & FL_ONGROUND ) )
+		optSpeed = 0.f;
+
+	Features::Movement.LimitSpeed( local, cmd, optSpeed );
 }
 
 bool CRageBot::CanFire( C_CSPlayerPawn* local ) {
@@ -376,9 +411,11 @@ void CAimTarget::ScanPoint(
 	if ( data.m_flDamage < mindmg )
 		return;
 
+	Features::RageBot.m_bShouldStop = true;
+
 	if ( !this->m_cPoint.m_bValid ) {
 		this->m_cPoint.m_bValid = true;
-		goto UPDATE_TARGET_POINT;
+		//goto UPDATE_TARGET_POINT;
 	}
 	
 	if ( data.m_flDamage <= this->m_cPoint.m_flDamage )
@@ -569,7 +606,7 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 		PenetrationData_t data{ };
 		const auto success{
-			Features::Penetration.FireBullet( headPos, headPos + dir * weaponData->m_flRange( ), local, this->m_pEntry->m_pPawn, weaponData, data, 0, true )
+			Features::Penetration.FireBullet( headPos, headPos + dir * weaponData->m_flRange( ), local, this->m_pEntry->m_pPawn, weaponData, data )
 		};
 		if ( !success )
 			continue;
@@ -654,34 +691,32 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
 	//cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
 
-	for ( int i{ }; i < cmd->cmd.m_iSize; ++i ) {
-		const auto subTick{ cmd->cmd.GetInputHistoryEntry( i ) };
+	const auto subTick{ cmd->inputHistoryField.pRep->tElements[ cmd->m_nStartAttackHistoryIndex ] };
 
-		//const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
+	//const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
 
-		if ( subTick->pTargetViewCmd )
-			subTick->pTargetViewCmd->angValue = angle;
-		if ( subTick->pViewCmd )
-			subTick->pViewCmd->angValue = angle;
+	if ( subTick->pTargetViewCmd )
+		subTick->pTargetViewCmd->angValue = angle;
+	if ( subTick->pViewCmd )
+		subTick->pViewCmd->angValue = angle;
 
-		subTick->nRenderTickCount = record->nRenderTickCount;
-		subTick->flRenderTickFraction = record->flRenderTickFraction;
+	subTick->nRenderTickCount = record->nRenderTickCount;
+	subTick->flRenderTickFraction = record->flRenderTickFraction;
 
-		if ( subTick->cl_interp ) {
-			subTick->cl_interp->nSrcTick = cl_interp.nSrcTick;
-			//subTick->cl_interp->nDstTick = cl_interp.nDstTick;
-			subTick->cl_interp->flFraction = cl_interp.flFraction;
-		}
+	if ( subTick->cl_interp ) {
+		subTick->cl_interp->nSrcTick = cl_interp.nSrcTick;
+		//subTick->cl_interp->nDstTick = cl_interp.nDstTick;
+		subTick->cl_interp->flFraction = cl_interp.flFraction;
+	}
 
-		if ( subTick->sv_interp0 ) {
-			subTick->sv_interp0->nSrcTick = sv_interp0.nSrcTick;
-			//subTick->sv_interp0->nDstTick = sv_interp0.nDstTick;
-			subTick->sv_interp0->flFraction = sv_interp0.flFraction;
-		}
-		if ( subTick->sv_interp1 ) {
-			subTick->sv_interp1->nSrcTick = sv_interp1.nSrcTick;
-			//subTick->sv_interp1->nDstTick = sv_interp1.nDstTick;
-			subTick->sv_interp1->flFraction = sv_interp1.flFraction;
-		}
+	if ( subTick->sv_interp0 ) {
+		subTick->sv_interp0->nSrcTick = sv_interp0.nSrcTick;
+		//subTick->sv_interp0->nDstTick = sv_interp0.nDstTick;
+		subTick->sv_interp0->flFraction = sv_interp0.flFraction;
+	}
+	if ( subTick->sv_interp1 ) {
+		subTick->sv_interp1->nSrcTick = sv_interp1.nSrcTick;
+		//subTick->sv_interp1->nDstTick = sv_interp1.nDstTick;
+		subTick->sv_interp1->flFraction = sv_interp1.flFraction;
 	}
 }

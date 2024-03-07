@@ -41,13 +41,12 @@ struct Config_t {
 	bool m_bBunnyhop{ };
 	bool m_bAutoStrafer{ };
 	int m_iAutoStraferSpeed{ 80 };
-	bool m_bBugWalk{ };
-	Keybind_t m_kBugWalk{ };
+	bool m_bSlowWalk{ };
+	Keybind_t m_kSlowWalk{ };
 
 	bool m_bThirdperson{ };
 	int m_iThirdpersonDistance{ 130 };
 	Keybind_t m_kThirdperson{ };
-
 #pragma endregion misc
 
 #pragma region antiaim
