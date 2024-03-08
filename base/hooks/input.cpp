@@ -65,8 +65,7 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	//printf( "%i | %i\n", Interfaces::Input->m_nSequenceNumber, Interfaces::Input->m_iCommandPassCount );
 
-	if ( Interfaces::Input->m_iCommandPassCount == 0 )
-		Features::RageBot.Main( localPawn, cmd );
+	Features::RageBot.Main( localPawn, cmd );
 
 	const auto result{ og( rcx, edx, a3 ) };
 

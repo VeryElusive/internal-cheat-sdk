@@ -628,26 +628,20 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Features::RageBot.m_cData.m_pEntry = this->m_pEntry;
 	Features::RageBot.m_cData.m_bValid = true;
 
-	// TODO: CHECK IF THE LAST FRAME THE BUTTON WAS DOWN
-	Interfaces::Input->AddButton( IN_ATTACK );
+	if ( Configs::m_cConfig.m_bRageBotAutoFire ) {
+		// TODO: CHECK IF THE LAST FRAME THE BUTTON WAS DOWN
+		Interfaces::Input->AddButton( IN_ATTACK );
 
-	cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+		cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
+	}
 }
 
-struct LockAngle_t {
-	int slot;
-	Vector angle;
-};
-
-LockAngle_t lockAngle;
-
 void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
-	if ( !m_cData.m_bValid ) {
-		if ( lockAngle.slot == Interfaces::Input->m_nSequenceNumber )
-			cmd->pBase->pViewangles->angValue = lockAngle.angle;
-
+	if ( !m_cData.m_bValid )
 		return;
-	}
+
+	if ( cmd->m_nStartAttackHistoryIndex == -1 )
+		return;
 
 	m_cData.m_bValid = false;
 
@@ -660,9 +654,6 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 	cmd->pBase->pViewangles->angValue = angle;
 	cmd->pBase->nTickCount = record->m_nPlayerTickCount;
-
-	lockAngle.angle = angle;
-	lockAngle.slot = Interfaces::Input->m_nSequenceNumber;
 
 	if ( !Configs::m_cConfig.m_bRageBotSilentAim )
 		Interfaces::Input->SetViewAngles( angle );
@@ -688,12 +679,7 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Interfaces::Input->m_pSubTickData->m_iPlayerTick = backupTick;
 	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;
 
-	//cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
-	//cmd->m_cButtonStates.m_iToggle |= IN_ATTACK;
-
 	const auto subTick{ cmd->inputHistoryField.pRep->tElements[ cmd->m_nStartAttackHistoryIndex ] };
-
-	//const auto subTickAttack{ cmd->cmd.inputHistoryField.pRep->tElements[ cmd->cmd.nAttackStartHistoryIndex ] };
 
 	if ( subTick->pTargetViewCmd )
 		subTick->pTargetViewCmd->angValue = angle;
