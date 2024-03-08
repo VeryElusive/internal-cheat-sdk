@@ -581,6 +581,7 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 		auto v3 = Math::RandomFloat( 0.f, 1.f );
 		auto v4 = Math::RandomFloat( 0.f, M_2PI );
 
+		// TODO:
 		/*if ( recoil_index < 3.f && item_index == WEAPON_NEGEV ) {
 			for ( auto i = 3; i > recoil_index; --i ) {
 				v1 *= v1;
@@ -622,8 +623,7 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	std::memcpy( ctx.DEBUGBacktrackBones, this->m_pRecord->m_arrBones, sizeof( this->m_pRecord->m_arrBones ) );
 	ctx.DEBUGBactrackEntry = this->m_pEntry;
 
-	// TODO: this->m_pPoint->m_vecPoint
-	Features::RageBot.m_cData.m_vecPoint = this->m_cPoint.m_vecPoint;// this->m_pPoint->m_vecPoint;
+	Features::RageBot.m_cData.m_vecPoint = this->m_cPoint.m_vecPoint;
 	Features::RageBot.m_cData.m_pRecord = this->m_pRecord;
 	Features::RageBot.m_cData.m_pEntry = this->m_pEntry;
 	Features::RageBot.m_cData.m_bValid = true;
@@ -634,16 +634,18 @@ void CAimTarget::Attack( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 
 		cmd->m_cButtonStates.m_iHeld |= IN_ATTACK;
 	}
+
+	printf( "num: %i\n", Interfaces::Input->m_iCommandPassCount );
 }
 
 void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	if ( !m_cData.m_bValid )
 		return;
 
+	m_cData.m_bValid = false;
+
 	if ( cmd->m_nStartAttackHistoryIndex == -1 )
 		return;
-
-	m_cData.m_bValid = false;
 
 	const auto headPos{ ( local->GetAbsOrigin( ) + local->m_vecViewOffset( ) ) };
 
@@ -680,6 +682,8 @@ void CRageBot::PostCMove( C_CSPlayerPawn* local, CUserCmd* cmd ) {
 	Interfaces::Input->m_pSubTickData->m_flPlayerTickFraction = backupFrac;
 
 	const auto subTick{ cmd->inputHistoryField.pRep->tElements[ cmd->m_nStartAttackHistoryIndex ] };
+
+	ctx.TESTPingTimes = cl_interp.nDstTick - cl_interp.nSrcTick;
 
 	if ( subTick->pTargetViewCmd )
 		subTick->pTargetViewCmd->angValue = angle;

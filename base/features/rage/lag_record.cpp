@@ -11,7 +11,7 @@ void CLagCompensation::Main( ) {
 	// TODO: make this calc the server curtime.
 	// on server it is: TIME_TO_TICKS( Interfaces::GlobalVars->m_flCurTime - sv_maxunlag->value.fl )
 	CVAR( sv_maxunlag );
-	const auto deadTicks{ Interfaces::GlobalVars->m_nTickCount - TIME_TO_TICKS( sv_maxunlag->value.fl ) };
+	const auto deadTicks{ Interfaces::GlobalVars->m_nTickCount + 1 + TIME_TO_TICKS( ctx.GetLocal( )->m_iPing( ) / 1000.f ) - TIME_TO_TICKS( sv_maxunlag->value.fl ) };
 
 	const auto local{ ctx.GetLocal( ) };
 

@@ -55,6 +55,7 @@ namespace Hooks {
 	NEW_HOOK( Unknown02, void, __fastcall ) void* rcx, int edx );
 	NEW_HOOK( CallsCreatemove, void*, __fastcall ) void* rcx );
 	NEW_HOOK( ReadFrameInput, void*, __fastcall ) void* rcx, int edx );
+	//NEW_HOOK( PostNetworkDataReceived, void*, __fastcall ) void* rcx );
 	//NEW_HOOK( SendMove, void*, __fastcall ) void* rcx, void* rdx );
 
 	//NEW_HOOK( SetTargetTime, void*, __fastcall ) int* output, int* input );

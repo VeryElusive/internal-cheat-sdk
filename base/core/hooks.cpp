@@ -40,6 +40,8 @@ void Hooks::Init( ) {
 
 	INIT_HOOK( PredictionUpdate, Memory::FindPattern( CLIENT_DLL, _( "40 55 56 57 48 81 EC ? ? ? ? 48 8B F9 41 8B F0 48 8B 0D" ) ) );
 
+	//INIT_HOOK( PostNetworkDataReceived, Memory::FindPattern( CLIENT_DLL, _( "40 55 53 41 56 41 57 48 8D 6C 24 ? 48 81 EC" ) ) );
+
 	//INIT_HOOK( ReadFrameInput, Memory::FindPattern( CLIENT_DLL, _( "40 55 53 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 8B" ) ) );
 
 

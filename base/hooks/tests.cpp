@@ -3,6 +3,15 @@
 #include "../core/config.h"
 #include "../sdk/valve/usercmd.h"
 
+/*void* __fastcall Hooks::hkPostNetworkDataReceived( void* rcx ) {
+	const auto og{ PostNetworkDataReceived.Original<decltype( &hkPostNetworkDataReceived )>( ) };
+
+	const auto ack = RECAST_AT_OFFSET( int, rcx, 72 );
+	printf( "%i\n", ack );
+
+	return og( rcx );
+}*/
+
 void __fastcall Hooks::hkCalcAnimationState( void* rcx, int flags ) {
 	const auto og{ CalcAnimationState.Original<decltype( &hkCalcAnimationState )>( ) };
 	auto skeleton{ ( ( CSkeletonInstance* ) rcx ) };

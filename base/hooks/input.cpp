@@ -65,14 +65,11 @@ bool __fastcall Hooks::hkCreateMove( void* rcx, unsigned int edx, std::int64_t a
 
 	//printf( "%i | %i\n", Interfaces::Input->m_nSequenceNumber, Interfaces::Input->m_iCommandPassCount );
 
-	Features::RageBot.Main( localPawn, cmd );
+	if ( Interfaces::Input->m_iCommandPassCount != 0 )
+
+		Features::RageBot.Main( localPawn, cmd );
 
 	const auto result{ og( rcx, edx, a3 ) };
-
-	//ctx.m_flRenderTickFraction = Interfaces::Input->m_pSubTickData->m_flRenderTickFraction;
-	//ctx.m_iRenderTick = Interfaces::Input->m_pSubTickData->m_iRenderTick;
-	//if ( Interfaces::Input->m_iCommandPassCount == 1 )
-		//Features::LagCompensation.Main( );
 
 	Features::Movement.Main( localPawn, cmd );
 

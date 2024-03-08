@@ -353,6 +353,7 @@ class CCSPlayerController : public CBasePlayerController
 public:
 	SCHEMA( bool, m_bPawnIsAlive );
 	SCHEMA( const char*, m_sSanitizedPlayerName );
+	VAR_AT_OFFSET( uint32_t, m_iPing, 0x718 );
 
 public:
 	static void Initialise( );

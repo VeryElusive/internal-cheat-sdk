@@ -95,6 +95,8 @@ struct Context_t {
 	float m_flSidemove{ };
 	float m_flUpmove{ };
 
+	int TESTPingTimes{ };
+
 	CCSPlayerController* GetLocal( );
 	C_CSPlayerPawn* GetPlayerPawn( CCSPlayerController* player );
 	C_CSPlayerPawn* GetLocalPawn( );
